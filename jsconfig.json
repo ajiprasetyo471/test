@@ -1,0 +1,23 @@
+{
+  "include": ["./vite.config.*", "./src/**/*", "./src/**/*.vue"],
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "jsx": "preserve",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@layouts/*": ["./src/@layouts/*"],
+      "@layouts": ["./src/@layouts"],
+      "@core/*": ["./src/@core/*"],
+      "@core": ["./src/@core"],
+      "@services": ["./src/services"],
+      "@stores": ["./src/stores"],
+      "@views": ["./src/views"],
+      "@styles/*": ["./src/assets/styles/*"],
+      "@validators": ["./src/@core/utils/validators"]
+    },
+    "types": ["vite/client", "vite-plugin-vue-layouts/client"]
+  },
+  "exclude": ["node_modules", "dist"]
+}
