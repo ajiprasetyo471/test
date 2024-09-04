@@ -4,6 +4,7 @@ import Components from 'unplugin-vue-components/vite';
 import Fonts from 'unplugin-fonts/vite';
 import Layouts from 'vite-plugin-vue-layouts';
 import Vue from '@vitejs/plugin-vue';
+import vueJsx from '@vitejs/plugin-vue-jsx';
 import {
   getPascalCaseRouteName,
   VueRouterAutoImports,
@@ -35,6 +36,7 @@ export default defineConfig({
     Vue({
       template: { transformAssetUrls },
     }),
+    vueJsx(),
     // https://github.com/vuetifyjs/vuetify-loader/tree/master/packages/vite-plugin#readme
     Vuetify({
       autoImport: true,
@@ -79,7 +81,7 @@ export default defineConfig({
     chunkSizeWarningLimit: 5000,
     sourcemap: false,
   },
-  define: { 'process.env': {} },
+  define: { 'process.env': process.env },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
