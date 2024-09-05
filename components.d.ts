@@ -17,6 +17,7 @@ declare module 'vue' {
     ButtonLoader: typeof import('./src/@core/components/ButtonLoader.vue')['default']
     ButtonPrimary: typeof import('./src/@core/components/ButtonPrimary.vue')['default']
     ButtonSecondary: typeof import('./src/@core/components/ButtonSecondary.vue')['default']
+    CardComponent: typeof import('./src/components/card/CardComponent.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     PageSpinLoader: typeof import('./src/@core/components/PageSpinLoader.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']

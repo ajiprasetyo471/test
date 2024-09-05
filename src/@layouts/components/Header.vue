@@ -1,6 +1,4 @@
 <script setup>
-import { Icon } from '@iconify/vue'
-
 const search = ref('')
 </script>
 
@@ -12,7 +10,7 @@ const search = ref('')
           <VImg src="https://via.placeholder.com/40" alt="Profile" />
         </VAvatar>
         <div class="d-flex align-center flex-column">
-          <span class="text-text-grey text-caption">Hallo, Norman</span>
+          <span class="text-text-grey text-xs">Hallo, Norman</span>
           <div class="d-flex align-center">
             <Icon icon="solar:map-point-linear" class="mr-2" />
             <span class="font-weight-medium text-caption">Ciputat, Tangerang Selatan</span>

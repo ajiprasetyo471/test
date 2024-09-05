@@ -21,7 +21,9 @@ export default createVuetify({
         background: '#f9fafb',
         colors: {
           'bg-main': '#f9fafb',
-          'text-grey': '#666666'
+          'text-grey': '#666666',
+          'text-grey-2': '#6B7280',
+          'text-orange': '#F87304'
         }
       }
     }

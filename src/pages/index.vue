@@ -1,4 +1,6 @@
 <script setup>
+import Dasboard from '@/views/Dashboard/Dasboard.vue'
+
 definePage({
   meta: {
     // layout: "blank",
@@ -10,7 +12,5 @@ definePage({
 </script>
 
 <template>
-  <div>
-    <h1>Hello</h1>
-  </div>
+  <Dasboard />
 </template>

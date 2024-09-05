@@ -1,6 +1,4 @@
 <script setup>
-import { Icon } from '@iconify/vue'
-
 const route = useRoute()
 const active = ref(route.path)
 
@@ -48,7 +46,7 @@ watch(route, (newRoute) => {
           class=""
           :class="{ 'text-primary': active == item.route }"
           :icon="item.icon"
-          style="font-size: 35px"
+          style="font-size: 30px"
         />
         <span v-if="active === item.route" class="dot-indicator"></span>
         <span class="text-caption mt-2">{{ item.title }}</span>
