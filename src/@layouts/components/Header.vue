@@ -1,81 +1,48 @@
 <script setup>
-import logo from "@/assets/images/logo/bayarind-logo.svg";
-import { useAuthStore } from "@/stores/auth.store";
-import { useSnackbarStore } from "@/stores/snackbar";
-import { useDisplay } from "vuetify/lib/framework.mjs";
+import { Icon } from '@iconify/vue'
 
-const { mobile } = useDisplay();
-
-const isMobile = computed(() => mobile.value);
-
-const snackbarStores = useSnackbarStore();
-
-const stores = useAuthStore();
-
-const router = useRouter();
-const loading = ref(false);
-
-const logout = () => {
-  loading.value = true;
-  stores
-    .logout()
-    .then((r) => {
-      if (r) {
-        router.replace("/auth/login");
-      }
-    })
-    .catch((err) => {
-      console.log(err);
-    })
-    .finally(() => {
-      loading.value = false;
-    });
-};
-
-const changePassword = () => {
-  router.replace("/change-password");
-};
+const search = ref('')
 </script>
 
 <template>
-  <VAppBar class="bg-bg-sidebar" app flat>
-    <!-- Button untuk toggle sidebar -->
-    <VBtn icon @click="$emit('toggleSidebar')">
-      <VIcon>mdi-menu</VIcon>
-    </VBtn>
-
-    <VImg v-if="isMobile" :src="logo" max-width="100" class="mx-auto" />
-    <VSpacer v-else></VSpacer>
-
-    <VBtn icon>
-      <VIcon>mdi-account-circle</VIcon>
-      <VMenu activator="parent">
-        <VList class="bg-bg-sidebar">
-          <VListItem @click="changePassword">
-            <VListItemTitle>
-              <VIcon class="mr-2">mdi-key</VIcon>
-              Change Password
-            </VListItemTitle>
-          </VListItem>
-
-          <VListItem :disabled="loading" @click="logout">
-            <VListItemTitle>
-              <VIcon class="mr-2">mdi-logout</VIcon>
-              Sign Out
-            </VListItemTitle>
-          </VListItem>
-        </VList>
-      </VMenu>
-    </VBtn>
+  <VAppBar flat class="bg-bg-main" height="170">
+    <VContainer class="d-flex flex-column">
+      <div class="d-flex justify-space-between align-center">
+        <VAvatar size="32">
+          <VImg src="https://via.placeholder.com/40" alt="Profile" />
+        </VAvatar>
+        <div class="d-flex align-center flex-column">
+          <span class="text-text-grey text-caption">Hallo, Norman</span>
+          <div class="d-flex align-center">
+            <Icon icon="solar:map-point-linear" class="mr-2" />
+            <span class="font-weight-medium text-caption">Ciputat, Tangerang Selatan</span>
+          </div>
+        </div>
+        <div class="d-flex align-center">
+          <VBtn size="35" icon>
+            <VBadge color="#FF4141">
+              <Icon style="font-size: 28px" icon="uiw:bell" />
+            </VBadge>
+          </VBtn>
+          <VBtn size="35" class="ml-1" icon>
+            <Icon style="font-size: 28px" icon="mage:message-dots" />
+          </VBtn>
+        </div>
+      </div>
+      <div class="pt-4">
+        <VTextField
+          v-model="search"
+          placeholder=" Cari"
+          prepend-inner-icon="mdi-magnify"
+          hide-details
+          variant="outlined"
+          rounded="xl"
+        >
+          <template #append-inner>
+            <Icon style="font-size: 20px; color: #666666" icon="mage:filter" />
+          </template>
+        </VTextField>
+      </div>
+    </VContainer>
   </VAppBar>
-
-  <VSnackbar
-    v-model="snackbarStores.isSnackbarOpen"
-    :absolute="true"
-    location="top right"
-    timeout="2000"
-    :color="snackbarStores.color"
-  >
-    {{ snackbarStores.title }}
-  </VSnackbar>
 </template>

@@ -1,16 +1,17 @@
 <script setup>
-import logo from "@/assets/images/logo/bayarind-logo.svg";
+import Header from '@/@layouts/components/Header.vue'
+import FooterMenu from '@/@layouts/components/FooterMenu.vue'
 
-const route = useRoute();
+// const route = useRoute()
 
-const metaPage = computed({
-  get: () => route.meta,
-  set: () => route.meta,
-});
+// const metaPage = computed({
+//   get: () => route.meta,
+//   set: () => route.meta
+// })
 </script>
 
 <template>
-  <VContainer>
+  <!-- <VContainer>
     <div class="pa-2 px-3">
       <VRow>
         <VCol cols="12" v-if="metaPage.topLogo">
@@ -22,6 +23,15 @@ const metaPage = computed({
       </VRow>
     </div>
     <slot />
-  </VContainer>
+  </VContainer> -->
+  <VApp>
+    <Header />
+    <VMain class="bg-bg-main">
+      <!-- Tempatkan Router View di sini -->
+      <slot />
+    </VMain>
+    <!-- Tempatkan FooterMenu di layout -->
+    <FooterMenu />
+  </VApp>
 </template>
 <style scoped></style>
