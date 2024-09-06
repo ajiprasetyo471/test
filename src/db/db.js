@@ -1,139 +1,178 @@
-export const depositData = [
-  {
-    id: 1,
-    date: "2024-03-13 21:26:59",
-    code: "TU-20240313212659",
-    type: "EDUCATION",
-    in: 554000,
-    out: null,
-    balance: 0,
-    status: "failed",
-  },
-  {
-    id: 2,
-    date: "2024-03-13 21:26:59",
-    code: "TU-20240313212659",
-    type: "PROPERTY",
-    in: 554000,
-    out: 104000,
-    balance: 7579000,
-    status: "success",
-  },
-  {
-    id: 3,
-    date: "2024-03-13 21:26:59",
-    code: "TU-20240313212659",
-    type: "CORRECTION",
-    in: 0,
-    out: 104000,
-    balance: 7579000,
-    status: "refund",
-  },
-  {
-    id: 4,
-    date: "2024-03-13 21:26:59",
-    code: "TU-20240313212659",
-    type: "TOPUP",
-    in: 10000000,
-    out: null,
-    balance: 7579000,
-    status: "success",
-  },
-  {
-    id: 1,
-    date: "2024-03-13 21:26:59",
-    code: "TU-20240313212659",
-    type: "EDUCATION",
-    in: 554000,
-    out: null,
-    balance: 0,
-    status: "failed",
-  },
-  {
-    id: 2,
-    date: "2024-03-13 21:26:59",
-    code: "TU-20240313212659",
-    type: "PROPERTY",
-    in: 554000,
-    out: 104000,
-    balance: 7579000,
-    status: "success",
-  },
-  {
-    id: 3,
-    date: "2024-03-13 21:26:59",
-    code: "TU-20240313212659",
-    type: "CORRECTION",
-    in: 0,
-    out: 104000,
-    balance: 7579000,
-    status: "refund",
-  },
-  {
-    id: 4,
-    date: "2024-03-13 21:26:59",
-    code: "TU-20240313212659",
-    type: "TOPUP",
-    in: 10000000,
-    out: null,
-    balance: 7579000,
-    status: "success",
-  },
-  {
-    id: 1,
-    date: "2024-03-13 21:26:59",
-    code: "TU-20240313212659",
-    type: "EDUCATION",
-    in: 554000,
-    out: null,
-    balance: 0,
-    status: "failed",
-  },
-  {
-    id: 2,
-    date: "2024-03-13 21:26:59",
-    code: "TU-20240313212659",
-    type: "PROPERTY",
-    in: 554000,
-    out: 104000,
-    balance: 7579000,
-    status: "success",
-  },
-  {
-    id: 3,
-    date: "2024-03-13 21:26:59",
-    code: "TU-20240313212659",
-    type: "CORRECTION",
-    in: 0,
-    out: 104000,
-    balance: 7579000,
-    status: "refund",
-  },
-  {
-    id: 4,
-    date: "2024-03-13 21:26:59",
-    code: "TU-20240313212659",
-    type: "TOPUP",
-    in: 10000000,
-    out: null,
-    balance: 7579000,
-    status: "success",
-  },
-];
+import activityImg1 from '@/assets/images/image-activity-dashboard-1.jpg'
+import activityImg2 from '@/assets/images/image-activity-dashboard-2.jpg'
+import venueImg from '@/assets/images/image-venue-dashboard.jpg'
+import bannerImg from '@/assets/images/dashboard-banner.jpg'
 
-export const settingAdminData = [
+export const activityItemsData = [
   {
     id: 1,
-    name: "Lorem Ipsum",
-    phone: "081234567890",
-    email: "loremipsum@email.com",
-    status: "active",
+    title: 'Semua',
+    value: ''
   },
   {
     id: 2,
-    name: "Lorem Ipsum",
-    phone: "081234567890",
-    email: "loremipsum@email.com",
-    status: "inactive",
+    title: 'Yang Diikuti',
+    value: 'followed'
   },
-];
+  {
+    id: 3,
+    title: 'Futsal',
+    value: 'futsal'
+  },
+  {
+    id: 4,
+    title: 'Sepak Bola',
+    value: 'football'
+  },
+  {
+    id: 5,
+    title: 'Mini Soccer',
+    value: 'mini soccer'
+  },
+  {
+    id: 6,
+    title: 'Bola Basket',
+    value: 'basket'
+  },
+  {
+    id: 7,
+    title: 'Skateboard',
+    value: 'skateboard'
+  }
+]
+
+export const activityCardData = [
+  {
+    id: 1,
+    title: 'Jakarta Fun Football',
+    location: 'Jakarta Selatan',
+    image: activityImg1,
+    amount: '150.000'
+  },
+  {
+    id: 2,
+    title: '3 On 3 Community',
+    location: 'Tangerang Selatan',
+    image: activityImg2,
+    amount: '100.000'
+  },
+  {
+    id: 3,
+    title: 'Jakarta Fun Football',
+    location: 'Jakarta Selatan',
+    image: activityImg1,
+    amount: '150.000'
+  },
+  {
+    id: 4,
+    title: '3 On 3 Community',
+    location: 'Tangerang Selatan',
+    image: activityImg2,
+
+    amount: '100.000'
+  },
+  {
+    id: 5,
+    title: 'Jakarta Fun Football',
+    location: 'Jakarta Selatan',
+    image: activityImg1,
+    amount: '150.000'
+  },
+  {
+    id: 6,
+    title: '3 On 3 Community',
+    location: 'Tangerang Selatan',
+    image: activityImg2,
+    amount: '100.000'
+  },
+  {
+    id: 7,
+    title: 'Jakarta Fun Football',
+    location: 'Jakarta Selatan',
+    image: activityImg1,
+    amount: '150.000'
+  },
+  {
+    id: 8,
+    title: '3 On 3 Community',
+    location: 'Tangerang Selatan',
+    image: activityImg2,
+    amount: '100.000'
+  },
+  {
+    id: 9,
+    title: 'Jakarta Fun Football',
+    location: 'Jakarta Selatan',
+    image: activityImg1,
+    amount: '150.000'
+  },
+  {
+    id: 10,
+    title: '3 On 3 Community',
+    location: 'Tangerang Selatan',
+    image: activityImg2,
+    amount: '100.000'
+  }
+]
+
+export const venueCardData = [
+  {
+    id: 1,
+    title: 'British School Jakarta Football',
+    location: 'Serpong, Tangerang Selatan',
+    activities: ['Futsal', 'Bola Basket'],
+    image: activityImg1,
+    amount: '428.000'
+  },
+  {
+    id: 2,
+    title: 'British School Jakarta Football',
+    location: 'Serpong, Tangerang Selatan',
+    activities: ['Futsal', 'Bola Basket'],
+    image: activityImg1,
+    amount: '428.000'
+  },
+  {
+    id: 3,
+    title: 'British School Jakarta Football',
+    location: 'Serpong, Tangerang Selatan',
+    activities: ['Futsal', 'Bola Basket'],
+    image: activityImg1,
+    amount: '428.000'
+  },
+  {
+    id: 4,
+    title: 'British School Jakarta Football',
+    location: 'Serpong, Tangerang Selatan',
+    activities: ['Futsal', 'Bola Basket'],
+    image: activityImg1,
+    amount: '428.000'
+  },
+  {
+    id: 5,
+    title: 'British School Jakarta Football',
+    location: 'Serpong, Tangerang Selatan',
+    activities: ['Futsal', 'Bola Basket'],
+    image: activityImg1,
+    amount: '428.000'
+  },
+  {
+    id: 6,
+    title: 'British School Jakarta Football',
+    location: 'Serpong, Tangerang Selatan',
+    activities: ['Futsal', 'Bola Basket'],
+    image: activityImg1,
+    amount: '428.000'
+  }
+]
+
+export const venueRecommendationCardData = {
+  id: 1,
+  title: 'British School Jakarta Football',
+  location: 'Serpong, Tangerang Selatan',
+  activities: ['Futsal', 'Bola Basket'],
+  image: venueImg,
+  amount: '428.000'
+}
+
+export const bannerImage = bannerImg

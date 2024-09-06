@@ -1,6 +1,6 @@
 <script setup>
 import Header from '@/@layouts/components/Header.vue'
-import FooterMenu from '@/@layouts/components/FooterMenu.vue'
+import Footer from '@/@layouts/components/Footer.vue'
 
 // const route = useRoute()
 
@@ -31,7 +31,7 @@ import FooterMenu from '@/@layouts/components/FooterMenu.vue'
       <slot />
     </VMain>
     <!-- Tempatkan FooterMenu di layout -->
-    <FooterMenu />
+    <Footer />
   </VApp>
 </template>
 <style scoped></style>

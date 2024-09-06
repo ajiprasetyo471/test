@@ -1,5 +1,5 @@
 <script setup>
-import Homepage from '@/views/Homepage/Homepage.vue'
+import Activity from '@/views/Activity/Activity.vue'
 
 definePage({
   meta: {
@@ -7,11 +7,11 @@ definePage({
     // topTitle: "Authorize (Merchant Name)",
     // topLogo: true,
     public: false,
-    title: 'Homepage'
+    title: 'Activity'
   }
 })
 </script>
 
 <template>
-  <Homepage />
+  <Activity />
 </template>

@@ -1,6 +1,22 @@
 <script setup>
 const props = defineProps({
+  title: {
+    type: String,
+    required: true
+  },
   img: {
+    type: String,
+    required: true
+  },
+  location: {
+    type: String,
+    required: true
+  },
+  activities: {
+    type: Array,
+    required: false
+  },
+  amount: {
     type: String,
     required: true
   }
@@ -22,20 +38,24 @@ const props = defineProps({
     </VRow>
     <VRow no-gutters class="pa-2">
       <VCol cols="12">
-        <h3 class="font-weight-black text-body-2">British School Jakarta Tennis</h3>
+        <h3 class="font-weight-black text-body-2">{{ props.title }}</h3>
       </VCol>
       <VCol cols="12" class="mt-2">
         <div class="d-flex justify-start">
           <Icon icon="solar:map-point-linear" class="mr-4 text-text-grey" />
-          <p class="text-xs text-text-grey">Serpong, Tangerang Selatan</p>
+          <p class="text-xs text-text-grey">{{ props.location }}</p>
         </div>
         <div class="d-flex justify-start mt-1">
           <Icon icon="guidance:stadium" class="mr-4 text-text-grey" />
-          <p class="text-xs text-text-grey">Futsal, Bola Basket</p>
+          <p class="text-xs text-text-grey">
+            <span v-for="(item, index) in props.activities" :key="index"
+              >{{ item }} {{ index == props.activities.length - 1 ? '' : ', ' }}</span
+            >
+          </p>
         </div>
       </VCol>
       <VCol cols="12" class="mt-4">
-        <span class="text-text-orange text-body-2 font-weight-black"> Rp 428.000 </span>
+        <span class="text-text-orange text-body-2 font-weight-black"> Rp {{ props.amount }} </span>
       </VCol>
     </VRow>
   </VCard>

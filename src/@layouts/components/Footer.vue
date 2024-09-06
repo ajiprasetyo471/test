@@ -2,6 +2,11 @@
 const route = useRoute()
 const active = ref(route.path)
 
+const pageMeta = computed({
+  get: () => route.meta,
+  set: () => route.meta
+})
+
 const menuItems = ref([
   { name: 'home', title: 'Home', icon: 'material-symbols-light:home-outline-rounded', route: '/' },
   {
@@ -33,7 +38,11 @@ watch(route, (newRoute) => {
 
 <template>
   <VBottomNavigation v-model="active" app height="80">
+    <VContainer v-if="pageMeta.title == 'Detail Aktifitas'">
+      <VBtn class="bg-bg-blue rounded-lg" block density="compact">Join</VBtn>
+    </VContainer>
     <VBtn
+      v-else
       v-for="item in menuItems"
       :key="item.name"
       :to="item.route"
@@ -44,12 +53,24 @@ watch(route, (newRoute) => {
       <div class="position-relative d-flex flex-column align-center">
         <Icon
           class=""
-          :class="{ 'text-primary': active == item.route }"
+          :class="{
+            'text-primary': item.route === '/' ? active === item.route : active.includes(item.route)
+          }"
           :icon="item.icon"
-          style="font-size: 30px"
+          style="font-size: 27px"
         />
-        <span v-if="active === item.route" class="dot-indicator"></span>
-        <span class="text-caption mt-2">{{ item.title }}</span>
+        <span
+          v-if="item.route === '/' ? active === item.route : active.includes(item.route)"
+          class="dot-indicator"
+        ></span>
+        <span
+          class="text-xxs mt-2"
+          :class="{
+            'text-text-blue':
+              item.route === '/' ? active === item.route : active.includes(item.route)
+          }"
+          >{{ item.title }}</span
+        >
       </div>
     </VBtn>
   </VBottomNavigation>
@@ -66,7 +87,7 @@ watch(route, (newRoute) => {
 
 .dot-indicator {
   position: absolute;
-  bottom: 22px; /* Menyesuaikan posisi dot di bawah ikon */
+  bottom: 18px; /* Menyesuaikan posisi dot di bawah ikon */
   width: 4px;
   height: 4px;
   background-color: #1976d2; /* Warna sesuai dengan tema aktif */
