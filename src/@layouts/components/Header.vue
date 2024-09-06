@@ -25,7 +25,7 @@ const pageMeta = computed({
 const headerHeight = computed({
   get: () => {
     if (route.meta.isDetail) {
-      return 80
+      return 60
     } else {
       if (route.path === '/activity') {
         return 210
