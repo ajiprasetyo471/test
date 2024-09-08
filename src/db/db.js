@@ -3,6 +3,8 @@ import activityImg2 from '@/assets/images/image-activity-dashboard-2.jpg'
 import venueImg from '@/assets/images/image-venue-dashboard.jpg'
 import bannerImg from '@/assets/images/dashboard-banner.jpg'
 
+export const bannerImage = bannerImg
+
 export const activityItemsData = [
   {
     id: 1,
@@ -175,4 +177,32 @@ export const venueRecommendationCardData = {
   amount: '428.000'
 }
 
-export const bannerImage = bannerImg
+export const bookingListData = [
+  {
+    id: 1,
+    title: 'British Football',
+    location: 'Jl. Jombang Raya, Parigi, Kec. Pd. Aren, Kota Tangerang Selatan, Banten 15227',
+    img: venueImg,
+    date: 'August 26, 2024',
+    time: '18:00-21:00',
+    amount: '150.000'
+  },
+  {
+    id: 2,
+    title: 'London School Football',
+    location: 'Jl. Jombang Raya, Parigi, Kec. Pd. Aren, Kota Tangerang Selatan, Banten 15227',
+    img: venueImg,
+    date: 'August 26, 2024',
+    time: '18:00-21:00',
+    amount: '150.000'
+  },
+  {
+    id: 3,
+    title: 'France School Jakarta Football',
+    location: 'Jl. Jombang Raya, Parigi, Kec. Pd. Aren, Kota Tangerang Selatan, Banten 15227',
+    img: venueImg,
+    date: 'August 26, 2024',
+    time: '18:00-21:00',
+    amount: '150.000'
+  }
+]

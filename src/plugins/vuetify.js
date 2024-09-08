@@ -23,8 +23,11 @@ export default createVuetify({
           'bg-main': '#f9fafb',
           'text-grey': '#666666',
           'text-grey-2': '#6B7280',
+          'text-grey-3': '#A3A3A3',
+          'bg-grey': '#F4F5F5',
           'text-orange': '#F87304',
           'bg-blue': '#00549B',
+          'bg-blue-light': '#DDEFFC',
           'text-blue': '#1078CA'
         }
       }

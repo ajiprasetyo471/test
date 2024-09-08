@@ -30,7 +30,11 @@ const headerHeight = computed({
       if (route.path === '/activity') {
         return 210
       } else {
-        return 170
+        if (route.path === '/booking') {
+          return 80
+        } else {
+          return 170
+        }
       }
     }
   }
@@ -68,7 +72,11 @@ watch(searchQuery, (newQuery) => {
           <h3 class="text-body-1 font-weight-black text-center">{{ pageMeta.title }}</h3>
         </VCol>
         <VCol cols="2" class="d-flex justify-end">
-          <VBtn class="border-thin rounded-lg text-h5" size="32">
+          <VBtn
+            v-if="pageMeta.title !== 'Detail Booking'"
+            class="border-thin rounded-lg text-h5"
+            size="32"
+          >
             <Icon icon="material-symbols:share-outline" />
           </VBtn>
         </VCol>
@@ -103,7 +111,7 @@ watch(searchQuery, (newQuery) => {
           </VBtn>
         </div>
       </div>
-      <div class="pt-4">
+      <div v-if="pagePath != '/booking'" class="pt-4">
         <VTextField
           v-model="searchQuery"
           :placeholder="` Cari ${pageMeta.title || ''}`"

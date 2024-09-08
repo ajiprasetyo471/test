@@ -7,8 +7,6 @@ const appStores = useAppStore()
 
 const router = useRouter()
 
-const cardItems = ref([])
-
 const goToDetail = (id) => {
   // appStores.setCurrentActivityId(id)
   router.push(`/activity/${id}`)
