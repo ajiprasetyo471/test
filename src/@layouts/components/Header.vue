@@ -1,10 +1,10 @@
 <script setup>
 import userImage from '@/assets/images/user-image.jpg'
-import { useAppStore } from '@/stores/app.store.js'
+import { useHomeStore } from '@/stores/home.store.js'
 import { useVenueStore } from '@/stores/venue.store.js'
 import { useActivityStore } from '@/stores/activity.store'
 
-const stores = useAppStore()
+const stores = useHomeStore()
 const activityStores = useActivityStore()
 const venueStores = useVenueStore()
 const route = useRoute()
@@ -27,7 +27,7 @@ const headerHeight = computed({
     if (route.meta.isDetail) {
       return 60
     } else {
-      if (route.path === '/activity') {
+      if (route.meta.isActivityItems) {
         return 210
       } else {
         if (route.path === '/booking') {
@@ -126,7 +126,7 @@ watch(searchQuery, (newQuery) => {
           </template>
         </VTextField>
       </div>
-      <div v-if="pagePath === '/activity'">
+      <div v-if="pageMeta.isActivityItems == true">
         <VSheet class="mx-auto mt-4">
           <VSlideGroup>
             <VSlideGroupItem

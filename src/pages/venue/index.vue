@@ -1,5 +1,5 @@
 <script setup>
-import ActivityDetail from '@/views/Activity/ActivityDetail.vue'
+import Venue from '@/views/Venue/Venue.vue'
 
 definePage({
   meta: {
@@ -7,13 +7,12 @@ definePage({
     // topTitle: "Authorize (Merchant Name)",
     // topLogo: true,
     public: false,
-    isDetail: true,
-    isJoinFooter: true,
-    title: 'Detail Aktifitas'
+    isActivityItems: true,
+    title: 'Venue'
   }
 })
 </script>
 
 <template>
-  <ActivityDetail />
+  <Venue />
 </template>

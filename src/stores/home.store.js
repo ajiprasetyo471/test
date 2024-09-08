@@ -1,7 +1,13 @@
-import { venueRecommendationCardData, activityCardData, bannerImage } from '@/db/db'
+import {
+  activityItemsData,
+  venueRecommendationCardData,
+  activityCardData,
+  bannerImage
+} from '@/db/db'
 
 export const useHomeStore = defineStore('homeStore', {
   state: () => ({
+    activityItems: [],
     venueRecommendationCard: [],
     activityRecommendationCards: [],
     bannerImageData: []
@@ -15,6 +21,9 @@ export const useHomeStore = defineStore('homeStore', {
     //     console.error('Gagal mengambil data aktivitas:', error)
     //   }
     // }
+    getActivityItems() {
+      this.activityItems = activityItemsData
+    },
     getVenueRecommendationCard() {
       this.venueRecommendationCard = venueRecommendationCardData
       return venueRecommendationCardData

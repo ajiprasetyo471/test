@@ -37,8 +37,8 @@ watch(route, (newRoute) => {
 </script>
 
 <template>
-  <VBottomNavigation v-model="active" app height="80">
-    <VContainer v-if="pageMeta.title == 'Detail Aktifitas'">
+  <VBottomNavigation v-if="pageMeta.isFooter != false" v-model="active" app height="80">
+    <VContainer v-if="pageMeta.isJoinFooter == true">
       <VBtn class="bg-bg-blue rounded-lg" block density="compact">Join</VBtn>
     </VContainer>
     <VBtn

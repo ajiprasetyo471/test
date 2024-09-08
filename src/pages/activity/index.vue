@@ -7,6 +7,7 @@ definePage({
     // topTitle: "Authorize (Merchant Name)",
     // topLogo: true,
     public: false,
+    isActivityItems: true,
     title: 'Activity'
   }
 })

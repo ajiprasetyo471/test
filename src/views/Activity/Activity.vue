@@ -1,9 +1,9 @@
 <script setup>
-import { useAppStore } from '@/stores/app.store.js'
 import { useActivityStore } from '@/stores/activity.store.js'
+import { useHomeStore } from '@/stores/home.store'
 
 const stores = useActivityStore()
-const appStores = useAppStore()
+const homeStores = useHomeStore()
 
 const router = useRouter()
 
@@ -13,8 +13,8 @@ const goToDetail = (id) => {
 }
 
 onMounted(() => {
-  appStores.getActivityItems()
   stores.getActivityCards()
+  homeStores.getActivityItems()
 })
 </script>
 
