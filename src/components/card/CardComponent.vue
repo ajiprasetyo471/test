@@ -10,7 +10,11 @@ const props = defineProps({
   },
   location: {
     type: String,
-    required: true
+    required: false
+  },
+  activity: {
+    type: String,
+    required: false
   },
   amount: {
     type: String,
@@ -36,10 +40,23 @@ const props = defineProps({
       <VCol cols="12">
         <h3 class="font-weight-black text-xs">{{ props.title }}</h3>
       </VCol>
-      <VCol cols="12" class="mt-1">
+      <VCol v-if="props.location" cols="12" class="mt-1">
         <div class="d-flex justify-start">
           <Icon icon="solar:map-point-linear" class="mr-2 text-text-grey" />
           <p class="text-xxs text-text-grey">{{ props.location }}</p>
+        </div>
+      </VCol>
+      <VCol v-if="props.activity" cols="12" class="mt-1">
+        <div class="d-flex justify-start">
+          <Icon
+            :icon="
+              props.activity == 'Futsal'
+                ? 'iconoir:basketball-field'
+                : 'fluent-emoji-high-contrast:basketball'
+            "
+            class="mr-2 text-text-grey"
+          />
+          <p class="text-xxs text-text-grey">{{ props.activity }}</p>
         </div>
       </VCol>
       <VCol cols="12" class="mt-2">

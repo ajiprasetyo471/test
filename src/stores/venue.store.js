@@ -1,8 +1,9 @@
-import { venueCardData } from '@/db/db'
+import { venueCardData, venueFieldData } from '@/db/db'
 
 export const useVenueStore = defineStore('venueStore', {
   state: () => ({
     venueCards: [],
+    fieldCards: [],
     filteredCards: []
   }),
   actions: {
@@ -18,6 +19,10 @@ export const useVenueStore = defineStore('venueStore', {
       this.venueCards = venueCardData
       this.filteredCards = venueCardData
       return venueCardData
+    },
+    getFieldCards() {
+      this.fieldCards = venueFieldData
+      return venueFieldData
     },
     filterVenueCards(query) {
       if (!query || query == '' || query == undefined || query == null) {

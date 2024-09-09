@@ -168,6 +168,23 @@ export const venueCardData = [
   }
 ]
 
+export const venueFieldData = [
+  {
+    id: 1,
+    title: 'Futsal Venue',
+    activity: 'Futsal',
+    image: activityImg1,
+    amount: '150.000'
+  },
+  {
+    id: 2,
+    title: 'Basket Ball Venue',
+    activity: 'Bola Basket',
+    image: activityImg2,
+    amount: '100.000'
+  }
+]
+
 export const venueRecommendationCardData = {
   id: 1,
   title: 'British School Jakarta Football',

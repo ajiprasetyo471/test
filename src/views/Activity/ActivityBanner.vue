@@ -53,3 +53,13 @@ const props = defineProps({
     </VRow>
   </VCard>
 </template>
+
+<style scoped>
+::v-deep .v-carousel__controls__item.v-btn.v-btn--icon .v-btn__content .mdi-circle {
+  color: #fff; /* Background color of non-active ones */
+}
+
+::v-deep .v-carousel__controls__item.v-btn.v-btn--icon.v-btn--active .v-btn__content .mdi-circle {
+  color: #f87304; /* Colour for active one */
+}
+</style>
