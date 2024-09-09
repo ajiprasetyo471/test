@@ -46,7 +46,7 @@ const props = defineProps({
           <p class="text-xs text-text-grey">{{ props.location }}</p>
         </div>
         <div class="d-flex justify-start mt-1">
-          <Icon icon="guidance:stadium" class="mr-4 text-text-grey" />
+          <Icon icon="iconoir:basketball-field" class="mr-4 text-text-grey" />
           <p class="text-xs text-text-grey">
             <span v-for="(item, index) in props.activities" :key="index"
               >{{ item }} {{ index == props.activities.length - 1 ? '' : ', ' }}</span

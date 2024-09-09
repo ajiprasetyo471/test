@@ -2,7 +2,8 @@ import { venueCardData } from '@/db/db'
 
 export const useVenueStore = defineStore('venueStore', {
   state: () => ({
-    venueCards: []
+    venueCards: [],
+    filteredCards: []
   }),
   actions: {
     // async fetchActivityItems() {
@@ -15,7 +16,17 @@ export const useVenueStore = defineStore('venueStore', {
     // }
     getVenueCards() {
       this.venueCards = venueCardData
+      this.filteredCards = venueCardData
       return venueCardData
+    },
+    filterVenueCards(query) {
+      if (!query || query == '' || query == undefined || query == null) {
+        this.filteredCards = this.venueCards
+      } else {
+        this.filteredCards = this.venueCards.filter((item) =>
+          item.title.toLowerCase().includes(query.toLowerCase())
+        )
+      }
     }
   }
 })

@@ -1,7 +1,11 @@
 <script setup>
 import moment from 'moment'
+import { useVenueStore } from '@/stores/venue.store.js'
 import { useHomeStore } from '@/stores/home.store'
+import VenueItem from './VenueItem.vue'
 
+const router = useRouter()
+const stores = useVenueStore()
 const homeStores = useHomeStore()
 
 const showDatePicker = ref(false)
@@ -20,7 +24,7 @@ const formattedTimeRange = computed(() => {
   return `${moment(startTime.value, 'HH:mm').format('HH:mm')} - ${moment(endTime.value, 'HH:mm').format('HH:mm')}`
 })
 
-function onDateSelected(newDate) {
+const onDateSelected = (newDate) => {
   selectedDate.value = newDate
 }
 
@@ -51,7 +55,7 @@ function getDates() {
   return dates
 }
 
-function selectDate(index) {
+const selectDate = (index) => {
   if (!dates.value[index].disabled) {
     dates.value.forEach((date, i) => {
       date.selected = i === index
@@ -59,7 +63,13 @@ function selectDate(index) {
   }
 }
 
+const goToDetail = (id) => {
+  // appStores.setCurrentActivityId(id)
+  router.push(`/venue/${id}`)
+}
+
 onMounted(() => {
+  stores.getVenueCards()
   homeStores.getActivityItems()
   const todayIndex = dates.value.findIndex((date) => date.selected)
   if (todayIndex !== -1) {
@@ -85,7 +95,7 @@ onMounted(() => {
       </VCol>
     </VRow>
 
-    <VRow>
+    <VRow class="mb-4">
       <VCol v-for="(date, index) in dates" :key="index" class="px-2" cols="2">
         <VCard
           class="border-thin rounded-lg"
@@ -107,6 +117,18 @@ onMounted(() => {
         </VCard>
       </VCol>
     </VRow>
+
+    <VenueItem
+      class="mb-4"
+      v-for="item in stores.filteredCards"
+      :key="item.id"
+      :title="item.title"
+      :location="item.location"
+      :activities="item.activities"
+      :amount="item.amount"
+      :img="item.image"
+      @click="goToDetail(item.id)"
+    />
 
     <VDialog v-model="showDatePicker">
       <VCard>

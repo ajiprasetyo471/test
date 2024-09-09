@@ -57,6 +57,10 @@ const filterItems = (query) => {
 watch(searchQuery, (newQuery) => {
   filterItems(newQuery)
 })
+
+watch(route, () => {
+  searchQuery.value = ''
+})
 </script>
 
 <template>
