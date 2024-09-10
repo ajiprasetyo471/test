@@ -1,4 +1,4 @@
-import { venueCardData, venueFieldData, venueFieldHourData } from '@/db/db'
+import { venueCardData, venueFieldData, venueFieldHourData, venueFieldReviewData } from '@/db/db'
 
 export const useVenueStore = defineStore('venueStore', {
   state: () => ({
@@ -6,8 +6,10 @@ export const useVenueStore = defineStore('venueStore', {
     filteredCards: [],
     fieldCards: [],
     fieldHourCards: [],
+    fieldReviewCards: [],
     bookingDate: null,
-    bookingHour: null
+    bookingHour: null,
+    datesMember: []
   }),
   actions: {
     // async fetchActivityItems() {
@@ -40,11 +42,18 @@ export const useVenueStore = defineStore('venueStore', {
       this.fieldHourCards = venueFieldHourData
       return venueFieldHourData
     },
+    getFieldReviewCards() {
+      this.fieldReviewCards = venueFieldReviewData
+      return venueFieldReviewData
+    },
     setBookingDate(date) {
       this.bookingDate = date
     },
     setBookingHour(hour) {
       this.bookingHour = hour
+    },
+    setDatesMember(dates) {
+      this.datesMember = dates
     }
   }
 })

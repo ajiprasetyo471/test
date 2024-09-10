@@ -8,6 +8,8 @@ definePage({
     // topLogo: true,
     public: false,
     isActivityItems: true,
+    isFooter: true,
+    isMenuFooter: true,
     title: 'Activity'
   }
 })

@@ -8,6 +8,8 @@ definePage({
     // topLogo: true,
     public: false,
     isDetail: true,
+    isFooter: true,
+    isMenuFooter: true,
     title: 'Detail Booking'
   }
 })

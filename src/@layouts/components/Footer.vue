@@ -21,7 +21,9 @@ const footerHeight = computed({
 
 const isBooking = computed({
   get: () => {
-    return venueStores.bookingDate && venueStores.bookingHour
+    return (
+      venueStores.datesMember.length > 0 || (venueStores.bookingDate && venueStores.bookingHour)
+    )
   }
 })
 
@@ -55,12 +57,7 @@ watch(route, (newRoute) => {
 </script>
 
 <template>
-  <VBottomNavigation
-    v-if="pageMeta.isFooterHide != true"
-    v-model="active"
-    app
-    :height="footerHeight"
-  >
+  <VBottomNavigation v-if="pageMeta.isFooter == true" v-model="active" app :height="footerHeight">
     <VContainer v-if="pageMeta.isJoinFooter == true">
       <VBtn class="bg-bg-blue rounded-lg" block density="compact">Join</VBtn>
     </VContainer>
@@ -72,7 +69,18 @@ watch(route, (newRoute) => {
         <span v-if="!isBooking" class="text-xxs text-white">Silahkan pilih jadwal booking</span>
         <div v-else class="">
           <p class="text-xxs text-white">Basket Ball Venue</p>
-          <p class="text-body-1 font-weight-bold text-white">Rp 150.000</p>
+          <p
+            v-if="venueStores.datesMember.length == 0"
+            class="text-body-1 font-weight-bold text-white"
+          >
+            Rp 150.000
+          </p>
+          <p
+            v-if="venueStores.datesMember.length > 0"
+            class="text-body-1 font-weight-bold text-white"
+          >
+            Rp {{ 150000 * venueStores.datesMember.length }}
+          </p>
         </div>
         <VBtn
           readonly
@@ -98,7 +106,7 @@ watch(route, (newRoute) => {
       </div>
     </VContainer>
     <VBtn
-      v-else
+      v-if="pageMeta.isMenuFooter == true"
       v-for="item in menuItems"
       :key="item.name"
       :to="item.route"

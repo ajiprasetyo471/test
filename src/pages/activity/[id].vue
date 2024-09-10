@@ -8,6 +8,7 @@ definePage({
     // topLogo: true,
     public: false,
     isDetail: true,
+    isFooter: true,
     isJoinFooter: true,
     title: 'Detail Aktifitas'
   }

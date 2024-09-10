@@ -8,7 +8,8 @@ definePage({
     // topLogo: true,
     public: false,
     isDetail: true,
-    isFooterHide: true,
+    isFooter: false,
+    isMenuFooter: true,
     title: 'Detail Venue'
   }
 })

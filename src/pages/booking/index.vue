@@ -7,6 +7,8 @@ definePage({
     // topTitle: "Authorize (Merchant Name)",
     // topLogo: true,
     public: false,
+    isFooter: true,
+    isMenuFooter: true,
     title: 'Booking'
   }
 })

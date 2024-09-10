@@ -244,6 +244,29 @@ export const venueFieldHourData = [
   }
 ]
 
+export const venueFieldReviewData = [
+  {
+    id: 1,
+    review: 'Fasilitas Bagus',
+    count: 1
+  },
+  {
+    id: 2,
+    review: 'Tempat Bersih',
+    count: 2
+  },
+  {
+    id: 3,
+    review: 'Toilet Bersih',
+    count: 2
+  },
+  {
+    id: 4,
+    review: 'Area Strategis',
+    count: 1
+  }
+]
+
 export const venueRecommendationCardData = {
   id: 1,
   title: 'British School Jakarta Football',

@@ -9,8 +9,10 @@ const stores = useVenueStore()
 
 const tab = ref('daily')
 const selectedMonth = ref(moment(new Date(), 'YYYY-MM'))
+const selectedDates = ref([])
 const dates = ref(getDates())
 const hourCards = ref([])
+const reviewCards = ref([])
 
 const formattedMonth = (month) => {
   return moment(month, 'YYYY-MM').format('MMMM, YYYY')
@@ -63,8 +65,19 @@ const selectHour = (hour, index) => {
   }
 }
 
+const onDateSelected = (dates) => {
+  stores.setDatesMember(dates)
+}
+
+watch(tab, () => {
+  stores.setDatesMember([])
+  stores.setBookingHour('')
+  stores.setBookingDate('')
+})
+
 onMounted(() => {
   hourCards.value = stores.getFieldHourCards()
+  reviewCards.value = stores.getFieldReviewCards()
 })
 </script>
 
@@ -78,6 +91,31 @@ onMounted(() => {
       :field-type="'Outdoor'"
       :floor-type="'Vinyl'"
     />
+    <VRow v-if="tab == 'member'" no-gutters class="mt-4">
+      <VCol cols="12" class="border-b-thin pb-2">
+        <p class="text-body-2 font-weight-bold">Review Venue</p>
+        <p class="text-xxs">Penilaian venue menurut players.</p>
+      </VCol>
+      <VCol cols="12">
+        <VSheet class="mt-2">
+          <VSlideGroup>
+            <VSlideGroupItem v-for="item in reviewCards" :key="item.id" v-slot="{ toggle }">
+              <VBtn
+                class="mr-1 border-thin text-none text-xxs"
+                rounded="lg"
+                density="comfortable"
+                elevation="0"
+                @click="toggle"
+              >
+                <span class="text-text-grey-3">{{ item.review }}</span>
+                <span class="text-text-orange">({{ item.count }})</span>
+              </VBtn>
+            </VSlideGroupItem>
+          </VSlideGroup>
+        </VSheet>
+      </VCol>
+    </VRow>
+
     <VTabs
       v-model="tab"
       class="rounded-pill border-thin text-text-grey-3 mt-6"
@@ -214,7 +252,50 @@ onMounted(() => {
           </VCol>
         </VRow>
       </VTabsWindowItem>
-      <VTabsWindowItem value="member" class="mt-4"> </VTabsWindowItem>
+      <VTabsWindowItem value="member" class="mt-2">
+        <VRow no-gutters>
+          <VCol cols="12">
+            <VCard
+              class="bg-bg-orange pa-4"
+              style="border: 1px solid #f2c94c"
+              elevation="0"
+              rounded="lg"
+            >
+              <div class="d-flex">
+                <Icon icon="ion:warning-outline" class="text-text-orange" />
+                <span class="text-caption font-weight-bold ml-2">Aturan Membership</span>
+              </div>
+              <p class="text-text-grey-4 text-xxs">
+                Slot membership yang dapat dipesan adalah slot yang masih tersedia paling lambat
+                tanggal 7 setiap bulannya. Anda hanya dapat memilih 1 slot membership dalam 1 kali
+                transaksi.
+              </p>
+            </VCard>
+          </VCol>
+        </VRow>
+        <VRow no-gutters class="mt-6">
+          <VCol cols="12">
+            <p class="text-body-2 font-weight-bold text-center">Membership untuk bulan</p>
+            <div class="d-flex align-center text-text-grey-3 mt-2 justify-center">
+              <Icon icon="solar:calendar-outline" />
+              <span class="text-caption mx-2">Agustus, 2024</span>
+            </div>
+          </VCol>
+        </VRow>
+        <VRow no-gutters class="mt-2">
+          <VCol cols="12">
+            <p class="text-caption">Jadwal Setiap:</p>
+            <VDatePicker
+              v-model="selectedDates"
+              max-height="300"
+              hide-header
+              class="mx-auto"
+              multiple
+              @update:model-value="onDateSelected"
+            />
+          </VCol>
+        </VRow>
+      </VTabsWindowItem>
     </VTabsWindow>
   </VContainer>
 </template>
@@ -226,5 +307,13 @@ onMounted(() => {
 
 .dp__input {
   font-size: 12px;
+}
+
+.v-date-picker-month__day--selected .v-btn {
+  background-color: white !important;
+  border: 1px solid #f87304 !important;
+}
+.v-date-picker-month__day--selected .v-btn__content {
+  color: black;
 }
 </style>
