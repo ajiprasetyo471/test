@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup>
 import activityImg from '@/assets/images/image-activity-detail.jpg'
 import activityImg1 from '@/assets/images/image-activity-dashboard-1.jpg'
 import activityImg2 from '@/assets/images/image-activity-dashboard-2.jpg'

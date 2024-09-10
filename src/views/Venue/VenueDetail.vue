@@ -9,7 +9,14 @@ import { useVenueStore } from '@/stores/venue.store.js'
 
 const stores = useVenueStore()
 
+const router = useRouter()
+
 const cardItems = ref()
+
+const goToDetail = (id) => {
+  // appStores.setCurrentActivityId(id)
+  router.push(`/venue/field/${id}`)
+}
 
 onMounted(() => {
   cardItems.value = stores.getFieldCards()

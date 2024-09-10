@@ -1,0 +1,19 @@
+<script setup>
+import FieldDetail from '@/views/Venue/Field/FieldDetail.vue'
+
+definePage({
+  meta: {
+    // layout: "blank",
+    // topTitle: "Authorize (Merchant Name)",
+    // topLogo: true,
+    public: false,
+    isDetail: true,
+    isFieldFooter: true,
+    title: 'Detail Lapangan'
+  }
+})
+</script>
+
+<template>
+  <FieldDetail />
+</template>

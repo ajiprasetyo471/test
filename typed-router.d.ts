@@ -25,5 +25,6 @@ declare module 'vue-router/auto-routes' {
     'booking-id': RouteRecordInfo<'booking-id', '/booking/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
     'venue': RouteRecordInfo<'venue', '/venue', Record<never, never>, Record<never, never>>,
     'venue-id': RouteRecordInfo<'venue-id', '/venue/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
+    'venue-field-id': RouteRecordInfo<'venue-field-id', '/venue/field/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
   }
 }

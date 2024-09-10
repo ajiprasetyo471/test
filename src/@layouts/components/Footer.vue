@@ -1,10 +1,28 @@
 <script setup>
+import { useVenueStore } from '@/stores/venue.store.js'
+const venueStores = useVenueStore()
 const route = useRoute()
 const active = ref(route.path)
 
 const pageMeta = computed({
   get: () => route.meta,
   set: () => route.meta
+})
+
+const footerHeight = computed({
+  get: () => {
+    if (route.meta.isFieldFooter) {
+      return 100
+    } else {
+      return 80
+    }
+  }
+})
+
+const isBooking = computed({
+  get: () => {
+    return venueStores.bookingDate && venueStores.bookingHour
+  }
 })
 
 const menuItems = ref([
@@ -37,9 +55,47 @@ watch(route, (newRoute) => {
 </script>
 
 <template>
-  <VBottomNavigation v-if="pageMeta.isFooterHide != true" v-model="active" app height="80">
+  <VBottomNavigation
+    v-if="pageMeta.isFooterHide != true"
+    v-model="active"
+    app
+    :height="footerHeight"
+  >
     <VContainer v-if="pageMeta.isJoinFooter == true">
       <VBtn class="bg-bg-blue rounded-lg" block density="compact">Join</VBtn>
+    </VContainer>
+    <VContainer v-if="pageMeta.isFieldFooter == true">
+      <div
+        class="rounded-lg w-100 d-flex justify-space-between pa-4 align-center"
+        :class="isBooking ? 'bg-bg-blue' : 'bg-bg-grey-3'"
+      >
+        <span v-if="!isBooking" class="text-xxs text-white">Silahkan pilih jadwal booking</span>
+        <div v-else class="">
+          <p class="text-xxs text-white">Basket Ball Venue</p>
+          <p class="text-body-1 font-weight-bold text-white">Rp 150.000</p>
+        </div>
+        <VBtn
+          readonly
+          class="bg-white rounded-lg d-flex align-center"
+          density="compact"
+          size="small"
+        >
+          <span v-if="!isBooking" class="text-text-grey-3 text-caption font-weight-bold"
+            >BELUM PILIH</span
+          >
+          <span v-else class="text-black text-caption font-weight-bold">LANJUT</span>
+          <template #append>
+            <VIcon
+              size="25"
+              class="rounded-circle text-body-1 pa-2 mt-n1 ml-2"
+              :class="isBooking ? 'bg-text-orange' : 'bg-bg-grey-3'"
+              style="color: white !important"
+            >
+              mdi-arrow-right
+            </VIcon>
+          </template>
+        </VBtn>
+      </div>
     </VContainer>
     <VBtn
       v-else

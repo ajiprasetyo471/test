@@ -31,6 +31,7 @@ export default createVuetify({
           'text-grey-3': '#A3A3A3',
           'bg-grey': '#F4F5F5',
           'bg-grey-2': '#EAEBEB',
+          'bg-grey-3': '#C5CAD0',
           'text-orange': '#F87304',
           'bg-blue': '#00549B',
           'bg-blue-light': '#DDEFFC',
