@@ -185,6 +185,65 @@ export const venueFieldData = [
   }
 ]
 
+export const venueFieldHourData = [
+  {
+    id: 1,
+    hour: '16.00 - 17.00',
+    price: '150.000',
+    isActive: true,
+    selected: false
+  },
+  {
+    id: 2,
+    hour: '17.00 - 18.00',
+    price: '150.000',
+    isActive: true,
+    selected: false
+  },
+  {
+    id: 3,
+    hour: '18.00 - 19.00',
+    price: '150.000',
+    isActive: false,
+    selected: false
+  },
+  {
+    id: 4,
+    hour: '19.00 - 20.00',
+    price: '150.000',
+    isActive: true,
+    selected: false
+  },
+  {
+    id: 5,
+    hour: '20.00 - 21.00',
+    price: '150.000',
+    isActive: true,
+    selected: false
+  },
+  {
+    id: 6,
+    hour: '21.00 - 22.00',
+    price: '150.000',
+    isActive: true,
+    selected: false
+  },
+  {
+    id: 7,
+    hour: '22.00 - 23.00',
+    price: '150.000',
+    isActive: true,
+    selected: false
+  },
+  {
+    id: 8,
+    hour: '23.00 - 00.00',
+    price: '150.000',
+    isActive: true,
+    selected: false
+  }
+]
+
 export const venueRecommendationCardData = {
   id: 1,
   title: 'British School Jakarta Football',

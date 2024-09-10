@@ -8,6 +8,8 @@
 import { createApp } from 'vue'
 import { registerPlugins } from '@/plugins'
 
+import '@vuepic/vue-datepicker/dist/main.css'
+
 // Components
 import App from './App.vue'
 

@@ -8,16 +8,12 @@ import FieldHourCont from './FieldHourCont.vue'
 const stores = useVenueStore()
 
 const tab = ref('daily')
-const showDatePicker = ref(false)
-const selectedDate = ref(new Date())
+const selectedMonth = ref(moment(new Date(), 'YYYY-MM'))
 const dates = ref(getDates())
+const hourCards = ref([])
 
-const formattedMonth = computed(() => {
-  return moment(selectedDate.value, 'YYYY-MM-DD').format('MMMM D, YYYY')
-})
-
-const onDateSelected = (newDate) => {
-  selectedDate.value = newDate
+const formattedMonth = (month) => {
+  return moment(month, 'YYYY-MM').format('MMMM, YYYY')
 }
 
 function getDates() {
@@ -56,6 +52,20 @@ const selectDate = (date, index) => {
     stores.setBookingDate(date)
   }
 }
+
+const selectHour = (hour, index) => {
+  if (!hourCards.value[index].disabled) {
+    hourCards.value.forEach((hour, i) => {
+      hour.selected = i === index
+    })
+
+    stores.setBookingHour(hour)
+  }
+}
+
+onMounted(() => {
+  hourCards.value = stores.getFieldHourCards()
+})
 </script>
 
 <template>
@@ -84,11 +94,30 @@ const selectDate = (date, index) => {
         <VRow no-gutters>
           <VCol cols="12" class="d-flex align-center justify-space-between">
             <p class="text-body-2 font-weight-bold">Pilih Jadwal Booking</p>
-            <VBtn @click="showDatePicker = true" class="d-flex align-center" variant="text">
+            <!-- <VBtn @click="showDatePicker = true" class="d-flex align-center" variant="text">
               <Icon icon="solar:calendar-outline" />
               <span class="text-caption mx-2">{{ formattedMonth }}</span>
               <Icon icon="mdi-chevron-down" />
-            </VBtn>
+            </VBtn> -->
+
+            <VueDatePicker
+              style="width: 45%; font-size: 12px !important"
+              class="text-caption"
+              :format="formattedMonth"
+              month-picker
+              v-model="selectedMonth"
+            >
+              <template #input-icon>
+                <Icon
+                  style="font-size: 20px"
+                  class="mt-1 text-black"
+                  icon="solar:calendar-outline"
+                />
+              </template>
+              <template #clear-icon>
+                <Icon style="font-size: 18px" class="text-black" icon="mdi:chevron-down" />
+              </template>
+            </VueDatePicker>
           </VCol>
         </VRow>
         <VRow class="">
@@ -142,15 +171,41 @@ const selectDate = (date, index) => {
               >
                 <div class="d-flex flex-wrap justify-space-between">
                   <VCard
-                    v-for="i in 8"
-                    :key="i"
+                    v-for="(item, index) in hourCards"
+                    :key="index"
+                    :disabled="item.isActive == false"
                     class="py-2 border-thin rounded-lg mt-2"
+                    :class="{
+                      'bg-bg-grey-2': item.isActive == false,
+                      'bg-text-orange': item.selected == true
+                    }"
                     style="width: 48%"
                     elevation="0"
+                    @click="item.isActive == true ? selectHour(item, index) : undefined"
                   >
-                    <p class="text-center text-xxs text-text-grey">16.00 - 17.00</p>
-                    <p class="text-center text-caption text-text-orange font-weight-bold">
-                      Rp150.000
+                    <p
+                      class="text-center text-xxs"
+                      :class="
+                        item.isActive == false
+                          ? 'text-text-grey-3'
+                          : item.selected == true
+                            ? 'text-white'
+                            : 'text-text-grey'
+                      "
+                    >
+                      {{ item.hour }}
+                    </p>
+                    <p
+                      class="text-center text-caption font-weight-bold"
+                      :class="
+                        item.isActive == false
+                          ? 'text-text-grey-3'
+                          : item.selected == true
+                            ? 'text-white'
+                            : 'text-text-orange'
+                      "
+                    >
+                      Rp{{ item.price }}
                     </p>
                   </VCard>
                 </div>
@@ -161,19 +216,15 @@ const selectDate = (date, index) => {
       </VTabsWindowItem>
       <VTabsWindowItem value="member" class="mt-4"> </VTabsWindowItem>
     </VTabsWindow>
-
-    <VDialog v-model="showDatePicker">
-      <VCard>
-        <VDatePicker
-          v-model="selectedDate"
-          @update:model-value="onDateSelected"
-          @click:cancel="showDatePicker = false"
-        />
-        <VCardActions class="position-fixed bottom-0 bg-white w-100">
-          <VBtn @click="showDatePicker = false" text>Cancel</VBtn>
-          <VBtn @click="showDatePicker = false" color="primary">OK</VBtn>
-        </VCardActions>
-      </VCard>
-    </VDialog>
   </VContainer>
 </template>
+
+<style>
+.dp__theme_light {
+  --dp-border-color: none;
+}
+
+.dp__input {
+  font-size: 12px;
+}
+</style>
