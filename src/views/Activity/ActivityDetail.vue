@@ -5,7 +5,6 @@ import activityImg2 from '@/assets/images/image-activity-dashboard-2.jpg'
 
 import ActivityBanner from './ActivityBanner.vue'
 import ActivityRecommend from './ActivityRecommend.vue'
-import DetailActivityItem from './DetailActivityItem.vue'
 </script>
 
 <template>
@@ -24,24 +23,24 @@ import DetailActivityItem from './DetailActivityItem.vue'
         <VCard class="pa-4 border-thin rounded-lg" elevation="0">
           <VRow no-gutters>
             <VCol cols="6">
-              <DetailActivityItem
+              <CardCategoryItem
                 :icon="'solar:bag-check-outline'"
                 :category="'Kategori'"
                 :title="'Publik'"
               />
-              <DetailActivityItem
+              <CardCategoryItem
                 class="mt-3"
                 :icon="'solar:calendar-outline'"
                 :category="'Tipe Aktivitas'"
                 :title="'Event'"
               />
-              <DetailActivityItem
+              <CardCategoryItem
                 class="mt-3"
                 :icon="'ion:golf-outline'"
                 :category="'Tipe Venue'"
                 :title="'Outdoor'"
               />
-              <DetailActivityItem
+              <CardCategoryItem
                 class="mt-3"
                 :icon="'solar:calendar-outline'"
                 :category="'Hari dan Tanggal'"
@@ -49,24 +48,24 @@ import DetailActivityItem from './DetailActivityItem.vue'
               />
             </VCol>
             <VCol cols="6">
-              <DetailActivityItem
+              <CardCategoryItem
                 :icon="'akar-icons:people-group'"
                 :category="'Jumlah Peserta'"
                 :title="'2/20'"
               />
-              <DetailActivityItem
+              <CardCategoryItem
                 class="mt-3"
                 :icon="'streamline:star-badge'"
                 :category="'Level Aktivitas'"
                 :title="'Beginner'"
               />
-              <DetailActivityItem
+              <CardCategoryItem
                 class="mt-3"
                 :icon="'solar:dollar-linear'"
                 :category="'Metode Pembayaran'"
                 :title="'Cash or Transfer'"
               />
-              <DetailActivityItem
+              <CardCategoryItem
                 class="mt-3"
                 :icon="'solar:clock-circle-outline'"
                 :category="'Jam Aktivitas'"

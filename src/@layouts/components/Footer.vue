@@ -1,32 +1,11 @@
 <script setup>
 import { useVenueStore } from '@/stores/venue.store.js'
+
 const venueStores = useVenueStore()
 const route = useRoute()
+const router = useRouter()
+
 const active = ref(route.path)
-
-const pageMeta = computed({
-  get: () => route.meta,
-  set: () => route.meta
-})
-
-const footerHeight = computed({
-  get: () => {
-    if (route.meta.isFieldFooter) {
-      return 100
-    } else {
-      return 80
-    }
-  }
-})
-
-const isBooking = computed({
-  get: () => {
-    return (
-      venueStores.datesMember.length > 0 || (venueStores.bookingDate && venueStores.bookingHour)
-    )
-  }
-})
-
 const menuItems = ref([
   { name: 'home', title: 'Home', icon: 'material-symbols-light:home-outline-rounded', route: '/' },
   {
@@ -49,6 +28,33 @@ const menuItems = ref([
     route: '/account'
   }
 ])
+
+const pageMeta = computed({
+  get: () => route.meta,
+  set: () => route.meta
+})
+
+const footerHeight = computed({
+  get: () => {
+    if (route.meta.isFieldFooter || route.meta.isPaymentFooter) {
+      return 100
+    } else {
+      return 80
+    }
+  }
+})
+
+const isBooking = computed({
+  get: () => {
+    return (
+      venueStores.datesMember.length > 0 || (venueStores.bookingDate && venueStores.bookingHour)
+    )
+  }
+})
+
+const goToPayment = () => {
+  router.push('/venue/payment')
+}
 
 // Watch the current route to update the active state
 watch(route, (newRoute) => {
@@ -83,10 +89,11 @@ watch(route, (newRoute) => {
           </p>
         </div>
         <VBtn
-          readonly
+          :readonly="!isBooking"
           class="bg-white rounded-lg d-flex align-center"
           density="compact"
           size="small"
+          @click="isBooking ? goToPayment() : undefined"
         >
           <span v-if="!isBooking" class="text-text-grey-3 text-caption font-weight-bold"
             >BELUM PILIH</span
@@ -97,6 +104,26 @@ watch(route, (newRoute) => {
               size="25"
               class="rounded-circle text-body-1 pa-2 mt-n1 ml-2"
               :class="isBooking ? 'bg-text-orange' : 'bg-bg-grey-3'"
+              style="color: white !important"
+            >
+              mdi-arrow-right
+            </VIcon>
+          </template>
+        </VBtn>
+      </div>
+    </VContainer>
+    <VContainer v-if="pageMeta.isPaymentFooter == true">
+      <div class="rounded-lg w-100 d-flex justify-space-between pa-4 align-center bg-bg-blue">
+        <div class="">
+          <p class="text-xxs text-white">Total Pembayaran</p>
+          <p class="text-body-1 font-weight-bold text-white">Rp 155.000</p>
+        </div>
+        <VBtn class="bg-white rounded-lg d-flex align-center" density="compact" size="small">
+          <span class="text-black text-caption font-weight-bold">BAYAR</span>
+          <template #append>
+            <VIcon
+              size="25"
+              class="rounded-circle text-body-1 pa-2 mt-n1 ml-2 bg-text-orange"
               style="color: white !important"
             >
               mdi-arrow-right

@@ -77,7 +77,7 @@ watch(route, () => {
         </VCol>
         <VCol cols="2" class="d-flex justify-end">
           <VBtn
-            v-if="pageMeta.title !== 'Detail Booking'"
+            v-if="pageMeta.title !== 'Detail Booking' && pageMeta.title !== 'Detail Pembayaran'"
             class="border-thin rounded-lg text-h5"
             size="32"
           >

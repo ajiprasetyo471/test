@@ -212,7 +212,7 @@ onMounted(() => {
                     v-for="(item, index) in hourCards"
                     :key="index"
                     :disabled="item.isActive == false"
-                    class="py-2 border-thin rounded-lg mt-2"
+                    class="py-2 border-thin rounded-lg mt-2 position-relative"
                     :class="{
                       'bg-bg-grey-2': item.isActive == false,
                       'bg-text-orange': item.selected == true
@@ -245,6 +245,21 @@ onMounted(() => {
                     >
                       Rp{{ item.price }}
                     </p>
+                    <div
+                      v-if="item.selected == true"
+                      class="bg-text-blue position-absolute right-0 px-2"
+                      style="
+                        top: 30%;
+                        border-top-left-radius: 10px;
+                        border-bottom-left-radius: 10px;
+                      "
+                      size="x-small"
+                    >
+                      <Icon
+                        icon="fluent-emoji-high-contrast:check-mark"
+                        class="text-white text-caption"
+                      />
+                    </div>
                   </VCard>
                 </div>
               </FieldHourCont>
