@@ -64,7 +64,13 @@ watch(route, () => {
 </script>
 
 <template>
-  <VAppBar flat :class="pageMeta.isDetail ? 'border-b-thin' : 'bg-bg-main'" :height="headerHeight">
+  <template v-if="pageMeta.isNotHeader == true"> </template>
+  <VAppBar
+    v-else
+    flat
+    :class="pageMeta.isDetail ? 'border-b-thin' : 'bg-bg-main'"
+    :height="headerHeight"
+  >
     <VContainer v-if="pageMeta.isDetail" class="d-flex align-center">
       <VRow no-gutters class="d-flex align-center">
         <VCol cols="2" class="d-flex justify-start">

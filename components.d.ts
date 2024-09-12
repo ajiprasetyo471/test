@@ -22,6 +22,7 @@ declare module 'vue' {
     CardCategoryItem: typeof import('./src/components/card/CardCategoryItem.vue')['default']
     CardComponent: typeof import('./src/components/card/CardComponent.vue')['default']
     copy: typeof import('./src/@core/components/forms/AppTextField copy.vue')['default']
+    DateSlider: typeof import('./src/components/DateSlider.vue')['default']
     DetailActivityItem: typeof import('./src/components/card/DetailActivityItem.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     PageSpinLoader: typeof import('./src/@core/components/PageSpinLoader.vue')['default']
