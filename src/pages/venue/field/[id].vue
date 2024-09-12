@@ -8,6 +8,7 @@ definePage({
     // topLogo: true,
     public: false,
     isDetail: true,
+    isShareHeader: true,
     isFooter: true,
     isFieldFooter: true,
     title: 'Detail Lapangan'

@@ -45,12 +45,17 @@ import img from '@/assets/images/account-image.jpg'
         <VCol cols="12" class="border-b-thin border-e-0 border-s-0 border-t-0 pb-2 mb-4">
           <p class="text-xxs text-text-grey font-weight-light">Setting</p>
         </VCol>
-        <VCol cols="12" class="d-flex align-center justify-space-between w-100">
-          <div class="d-flex align-center">
-            <Icon icon="solar:settings-outline" class="text-h6" />
-            <span class="text-caption font-weight-medium ml-2">Pengaturan dan Keamanan</span>
-          </div>
-          <Icon icon="material-symbols:chevron-right" />
+        <VCol cols="12">
+          <RouterLink
+            class="d-flex align-center justify-space-between w-100 text-black text-decoration-none"
+            to="/account/setting-security"
+          >
+            <div class="d-flex align-center">
+              <Icon icon="solar:settings-outline" class="text-h6" />
+              <span class="text-caption font-weight-medium ml-2">Pengaturan dan Keamanan</span>
+            </div>
+            <Icon icon="material-symbols:chevron-right" />
+          </RouterLink>
         </VCol>
       </VRow>
     </VCard>
@@ -94,19 +99,29 @@ import img from '@/assets/images/account-image.jpg'
         <VCol cols="12" class="border-b-thin border-e-0 border-s-0 border-t-0 pb-2 mb-4">
           <p class="text-xxs text-text-grey font-weight-light">Support</p>
         </VCol>
-        <VCol cols="12" class="d-flex align-center justify-space-between w-100">
-          <div class="d-flex align-center">
-            <Icon icon="fluent:document-text-24-regular" class="text-h6" />
-            <span class="text-caption font-weight-medium ml-2">Syarat dan Ketentuan</span>
-          </div>
-          <Icon icon="material-symbols:chevron-right" />
+        <VCol cols="12">
+          <RouterLink
+            class="d-flex align-center justify-space-between w-100 text-black text-decoration-none"
+            to="/term-conditions"
+          >
+            <div class="d-flex align-center">
+              <Icon icon="fluent:document-text-24-regular" class="text-h6" />
+              <span class="text-caption font-weight-medium ml-2">Syarat dan Ketentuan</span>
+            </div>
+            <Icon icon="material-symbols:chevron-right" />
+          </RouterLink>
         </VCol>
-        <VCol cols="12" class="d-flex align-center justify-space-between w-100 mt-6">
-          <div class="d-flex align-center">
-            <Icon icon="solar:document-text-outline" class="text-h6" />
-            <span class="text-caption font-weight-medium ml-2">Kebijakan Privasi</span>
-          </div>
-          <Icon icon="material-symbols:chevron-right" />
+        <VCol cols="12" class="mt-6">
+          <RouterLink
+            class="d-flex align-center justify-space-between w-100 text-black text-decoration-none"
+            to="/privacy-policy"
+          >
+            <div class="d-flex align-center">
+              <Icon icon="solar:document-text-outline" class="text-h6" />
+              <span class="text-caption font-weight-medium ml-2">Kebijakan Privasi</span>
+            </div>
+            <Icon icon="material-symbols:chevron-right" />
+          </RouterLink>
         </VCol>
       </VRow>
     </VCard>

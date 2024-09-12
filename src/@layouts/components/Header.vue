@@ -82,12 +82,20 @@ watch(route, () => {
           <h3 class="text-body-1 font-weight-black text-center">{{ pageMeta.title }}</h3>
         </VCol>
         <VCol cols="2" class="d-flex justify-end">
+          <!-- v-if="pageMeta.title !== 'Detail Booking' && pageMeta.title !== 'Detail Pembayaran'" -->
           <VBtn
-            v-if="pageMeta.title !== 'Detail Booking' && pageMeta.title !== 'Detail Pembayaran'"
+            v-if="pageMeta.isShareHeader == true"
             class="border-thin rounded-lg text-h5"
             size="32"
           >
             <Icon icon="material-symbols:share-outline" />
+          </VBtn>
+          <VBtn
+            v-if="pageMeta.isEditHeader == true"
+            class="border-thin rounded-lg text-h5"
+            size="32"
+          >
+            <Icon icon="mage:edit" />
           </VBtn>
         </VCol>
       </VRow>

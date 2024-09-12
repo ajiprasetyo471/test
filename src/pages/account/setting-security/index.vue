@@ -1,5 +1,5 @@
 <script setup>
-import VenueDetail from '@/views/Venue/VenueDetail.vue'
+import SettingAndSecurity from '@/views/Account/SettingAndSecurity.vue'
 
 definePage({
   meta: {
@@ -8,14 +8,12 @@ definePage({
     // topLogo: true,
     public: false,
     isDetail: true,
-    isShareHeader: true,
     isFooter: false,
-    isMenuFooter: true,
-    title: 'Detail Venue'
+    title: 'Setting and Security'
   }
 })
 </script>
 
 <template>
-  <VenueDetail />
+  <SettingAndSecurity />
 </template>

@@ -1,5 +1,5 @@
 <script setup>
-import VenueDetail from '@/views/Venue/VenueDetail.vue'
+import PrivacyPolicy from '@/views/Account/PrivacyPolicy.vue'
 
 definePage({
   meta: {
@@ -8,14 +8,14 @@ definePage({
     // topLogo: true,
     public: false,
     isDetail: true,
-    isShareHeader: true,
+    isEditHeader: true,
+    isEditHeader: true,
     isFooter: false,
-    isMenuFooter: true,
-    title: 'Detail Venue'
+    title: 'Kebijakan Privasi'
   }
 })
 </script>
 
 <template>
-  <VenueDetail />
+  <PrivacyPolicy />
 </template>

@@ -1,5 +1,5 @@
 <script setup>
-import VenueDetail from '@/views/Venue/VenueDetail.vue'
+import TermCon from '@/views/Account/TermCon.vue'
 
 definePage({
   meta: {
@@ -8,14 +8,14 @@ definePage({
     // topLogo: true,
     public: false,
     isDetail: true,
-    isShareHeader: true,
+    isEditHeader: true,
+    isEditHeader: true,
     isFooter: false,
-    isMenuFooter: true,
-    title: 'Detail Venue'
+    title: 'Syarat dan Ketentuan'
   }
 })
 </script>
 
 <template>
-  <VenueDetail />
+  <TermCon />
 </template>
