@@ -9,7 +9,6 @@ definePage({
     public: false,
     isDetail: true,
     isEditHeader: true,
-    isEditHeader: true,
     isFooter: false,
     title: 'Syarat dan Ketentuan'
   }

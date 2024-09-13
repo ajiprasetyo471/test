@@ -36,6 +36,7 @@ export default createVuetify({
           'bg-orange': '#FCF4DB',
           'border-orange': '#F2C94C',
           'text-orange': '#F87304',
+          'text-orange-2': '#FDD5B4',
           'bg-blue': '#00549B',
           'bg-blue-light': '#DDEFFC',
           'text-blue': '#1078CA',

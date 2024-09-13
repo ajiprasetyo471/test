@@ -67,6 +67,9 @@ watch(route, (newRoute) => {
     <VContainer v-if="pageMeta.isJoinFooter == true">
       <VBtn class="bg-bg-blue rounded-lg" block density="compact">Join</VBtn>
     </VContainer>
+    <VContainer v-if="pageMeta.isSaveFooter == true">
+      <VBtn class="bg-bg-blue rounded-lg" block density="compact">Simpan</VBtn>
+    </VContainer>
     <VContainer v-if="pageMeta.isFieldFooter == true">
       <div
         class="rounded-lg w-100 d-flex justify-space-between pa-4 align-center"

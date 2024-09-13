@@ -1,5 +1,5 @@
 <script setup>
-import PrivacyPolicy from '@/views/Account/PrivacyPolicy.vue'
+import Sports from '@/views/Account/Sports.vue'
 
 definePage({
   meta: {
@@ -8,13 +8,13 @@ definePage({
     // topLogo: true,
     public: false,
     isDetail: true,
-    isEditHeader: true,
-    isFooter: false,
-    title: 'Kebijakan Privasi'
+    isFooter: true,
+    isSaveFooter: true,
+    title: 'Minat Olahraga'
   }
 })
 </script>
 
 <template>
-  <PrivacyPolicy />
+  <Sports />
 </template>

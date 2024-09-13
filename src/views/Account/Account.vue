@@ -28,6 +28,7 @@ import img from '@/assets/images/account-image.jpg'
               </VCol>
               <VCol cols="12" class="mt-2">
                 <VBtn
+                  to="/account/profile"
                   class="text-bg-blue text-none pa-0 text-caption"
                   density="compact"
                   variant="text"

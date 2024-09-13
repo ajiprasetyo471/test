@@ -1,47 +1,69 @@
-import moment from "moment";
+import moment from 'moment'
 
-export const apiImage =
-  import.meta.env.VITE_API_BASE_URL_IMG || process.env.VITE_API_BASE_URL_IMG;
+export const apiImage = import.meta.env.VITE_API_BASE_URL_IMG || process.env.VITE_API_BASE_URL_IMG
 
 export function formatDate(date) {
   const options = {
-    weekday: "long",
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  };
-  return date.toLocaleDateString("en-US", options);
+    weekday: 'long',
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  }
+  return date.toLocaleDateString('en-US', options)
 }
 
 export function formatDateTime(date) {
-  return moment(date).format("YYYY-DD-MM HH:mm:ss");
+  return moment(date).format('YYYY-DD-MM HH:mm:ss')
 }
 
 export function formatNumber(value) {
-  if (!value) return "0";
-  return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  if (!value) return '0'
+  return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
 }
 
 export const statusItems = [
-  { value: null, label: "All" },
-  { value: "1", label: "Active" },
-  { value: "0", label: "Inactive" },
-];
+  { value: null, label: 'All' },
+  { value: '1', label: 'Active' },
+  { value: '0', label: 'Inactive' }
+]
 
 export const statusTransactionItems = [
-  { value: null, label: "All" },
-  { value: "success", label: "Success" },
-  { value: "failed", label: "Failed" },
-];
+  { value: null, label: 'All' },
+  { value: 'success', label: 'Success' },
+  { value: 'failed', label: 'Failed' }
+]
 
 export const typeItems = [
-  { value: null, label: "All" },
-  { value: "education", label: "Education" },
-  { value: "property", label: "Property" },
-];
+  { value: null, label: 'All' },
+  { value: 'education', label: 'Education' },
+  { value: 'property', label: 'Property' }
+]
 
 export const typeDepositItems = [
-  { value: null, label: "All" },
-  { value: "topup", label: "Topup" },
-  { value: "correction", label: "Correction" },
-];
+  { value: null, label: 'All' },
+  { value: 'topup', label: 'Topup' },
+  { value: 'correction', label: 'Correction' }
+]
+
+// Array of month names in English
+export const monthNames = [
+  'Januari',
+  'Februari',
+  'Maret',
+  'April',
+  'Mei',
+  'Juni',
+  'Juli',
+  'Agustus',
+  'September',
+  'Oktober',
+  'November',
+  'Desember'
+]
+
+export const getMonthName = (monthNumber) => {
+  if (monthNumber < 1 || monthNumber > 12) {
+    throw new Error('Invalid month number. Must be between 1 and 12.')
+  }
+  return monthNames[monthNumber - 1]
+}

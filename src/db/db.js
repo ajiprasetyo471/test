@@ -305,3 +305,90 @@ export const bookingListData = [
     amount: '150.000'
   }
 ]
+
+export const profileSportInteracts = [
+  {
+    id: 1,
+    icon: 'maki:soccer',
+    name: 'Futsal',
+    isActive: true
+  },
+  {
+    id: 2,
+    icon: 'fluent:sport-soccer-20-regular',
+    name: 'Sepak Bola',
+    isActive: true
+  },
+  {
+    id: 3,
+    icon: 'hugeicons:badminton-shuttle',
+    name: 'Badminton',
+    isActive: true
+  },
+  {
+    id: 4,
+    icon: 'solar:tennis-outline',
+    name: 'Tenis',
+    isActive: true
+  },
+  {
+    id: 5,
+    icon: 'fluent-emoji-high-contrast:basketball',
+    name: 'Bola Basket',
+    isActive: true
+  },
+  {
+    id: 6,
+    icon: 'solar:running-outline',
+    name: 'Running',
+    isActive: false
+  },
+  {
+    id: 7,
+    icon: 'hugeicons:badminton-shuttle',
+    name: 'Fitness',
+    isActive: false
+  },
+  {
+    id: 8,
+    icon: 'solar:tennis-outline',
+    name: 'Renang',
+    isActive: false
+  },
+  {
+    id: 9,
+    icon: 'fluent-emoji-high-contrast:basketball',
+    name: 'Cycling',
+    isActive: false
+  },
+  {
+    id: 10,
+    icon: 'fluent:sport-soccer-20-regular',
+    name: 'Squash',
+    isActive: false
+  },
+  {
+    id: 11,
+    icon: 'solar:running-outline',
+    name: 'Bola Voli',
+    isActive: false
+  },
+  {
+    id: 12,
+    icon: 'hugeicons:badminton-shuttle',
+    name: 'Baseball',
+    isActive: false
+  },
+  {
+    id: 13,
+    icon: 'solar:tennis-outline',
+    name: 'Golf',
+    isActive: false
+  },
+  {
+    id: 14,
+    icon: 'fluent-emoji-high-contrast:basketball',
+    name: 'Motorsport',
+    isActive: false
+  }
+]

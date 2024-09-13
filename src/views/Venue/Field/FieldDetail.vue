@@ -125,7 +125,7 @@ onMounted(() => {
       selected-class="bg-bg-blue text-white"
     >
       <VTab class="rounded-pill text-caption" value="daily">Harian</VTab>
-      <VTab class="rounded-pill text-caption" value="member">Memebrship</VTab>
+      <VTab class="rounded-pill text-caption" value="member">Membership</VTab>
     </VTabs>
     <VTabsWindow v-model="tab">
       <VTabsWindowItem value="daily" class="mt-6">
