@@ -5,7 +5,7 @@ const venueStores = useVenueStore()
 const route = useRoute()
 const router = useRouter()
 
-const active = ref(route.path)
+const active = ref(route.path || '')
 const menuItems = ref([
   { name: 'home', title: 'Home', icon: 'material-symbols-light:home-outline-rounded', route: '/' },
   {
@@ -58,8 +58,15 @@ const goToPayment = () => {
 
 // Watch the current route to update the active state
 watch(route, (newRoute) => {
-  active.value = newRoute.path
+  active.value = newRoute.path || ''
 })
+
+const setActive = (routePath) => {
+  // Jika route yang diklik sudah aktif, jangan ubah state active
+  if (active.value !== routePath) {
+    active.value = routePath
+  }
+}
 </script>
 
 <template>
@@ -143,25 +150,27 @@ watch(route, (newRoute) => {
       :value="item.route"
       replace
       icon
+      @click="setActive(item.route)"
     >
       <div class="position-relative d-flex flex-column align-center">
         <Icon
           class=""
           :class="{
-            'text-primary': item.route === '/' ? active === item.route : active.includes(item.route)
+            'text-primary':
+              item.route === '/' ? active === item.route : active?.includes(item.route)
           }"
           :icon="item.icon"
           style="font-size: 27px"
         />
         <span
-          v-if="item.route === '/' ? active === item.route : active.includes(item.route)"
+          v-if="item.route === '/' ? active === item.route : active?.includes(item.route)"
           class="dot-indicator"
         ></span>
         <span
           class="text-xxs mt-2"
           :class="{
             'text-text-blue':
-              item.route === '/' ? active === item.route : active.includes(item.route)
+              item.route === '/' ? active === item.route : active?.includes(item.route)
           }"
           >{{ item.title }}</span
         >
