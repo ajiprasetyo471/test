@@ -61,6 +61,10 @@ watch(searchQuery, (newQuery) => {
 watch(route, () => {
   searchQuery.value = ''
 })
+
+onMounted(() => {
+  console.log('rendered header')
+})
 </script>
 
 <template>

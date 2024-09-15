@@ -67,6 +67,10 @@ const setActive = (routePath) => {
     active.value = routePath
   }
 }
+
+onMounted(() => {
+  console.log('rendered footer')
+})
 </script>
 
 <template>
