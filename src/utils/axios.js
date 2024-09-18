@@ -7,6 +7,7 @@ export const $axios = axios.create({
     'Access-Control-Allow-Credentials': 'true',
     'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
     'Content-Type': 'application/json',
+    lang: 'id',
     'Api-Key': import.meta.env.VITE_API_KEY || process.env.VITE_API_KEY
   }
   // {

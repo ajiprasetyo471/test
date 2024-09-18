@@ -19,7 +19,8 @@ export const useVenueStore = defineStore('venueStore', {
         this.venueCards = []
         const response = await venueService.list(data)
         const resData = response.data
-        if (resData.status) {
+        console.log(resData)
+        if (resData.success) {
           this.venueCards = resData?.data?.venueList
         } else {
           this.venueCards = []
@@ -34,7 +35,7 @@ export const useVenueStore = defineStore('venueStore', {
       return venueService.detail(id).then(
         (response) => {
           var resData = response.data
-          if (resData.status) {
+          if (resData.success) {
             this.venueDetail = resData?.data
           } else {
             this.venueDetail = null
@@ -51,7 +52,7 @@ export const useVenueStore = defineStore('venueStore', {
       return venueService.gallery(id).then(
         (response) => {
           var resData = response.data
-          if (resData.status) {
+          if (resData.success) {
             this.venueGallery = resData?.data?.venueGallery
           } else {
             this.venueGallery = []

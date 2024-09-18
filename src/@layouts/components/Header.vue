@@ -3,10 +3,13 @@ import userImage from '@/assets/images/user-image.jpg'
 import { useHomeStore } from '@/stores/home.store.js'
 import { useVenueStore } from '@/stores/venue.store.js'
 import { useActivityStore } from '@/stores/activity.store'
+import { useSnackbarStore } from '@/stores/snackbar'
 
 const stores = useHomeStore()
 const activityStores = useActivityStore()
 const venueStores = useVenueStore()
+const snackbarStores = useSnackbarStore()
+
 const route = useRoute()
 const router = useRouter()
 
@@ -153,7 +156,7 @@ onMounted(() => {
         <VSheet class="mx-auto mt-4">
           <VSlideGroup>
             <VSlideGroupItem
-              v-for="item in stores.activityItems"
+              v-for="item in stores.sportItems"
               :key="item.id"
               v-slot="{ isSelected, toggle }"
             >
@@ -172,4 +175,14 @@ onMounted(() => {
       </div>
     </VContainer>
   </VAppBar>
+
+  <VSnackbar
+    v-model="snackbarStores.isSnackbarOpen"
+    :absolute="true"
+    location="top right"
+    timeout="2000"
+    :color="snackbarStores.color"
+  >
+    {{ snackbarStores.title }}
+  </VSnackbar>
 </template>

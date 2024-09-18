@@ -1,41 +1,91 @@
 <script setup>
 import SectionContainer from './SectionContainer.vue'
 import CardVenue from './CardVenue.vue'
+import PageSpinLoader from '@/@core/components/PageSpinLoader.vue'
 
 import { useHomeStore } from '@/stores/home.store'
 import { useActivityStore } from '@/stores/activity.store'
 import { useVenueStore } from '@/stores/venue.store'
+import { useSnackbarStore } from '@/stores/snackbar'
 
 const stores = useHomeStore()
 const activityStores = useActivityStore()
 const venueStores = useVenueStore()
+const snackStores = useSnackbarStore()
 
 const router = useRouter()
 
+const venueRecommendation = ref()
+const activityRecommendation = ref([])
 const bannerImg = ref()
+const loading = ref(false)
 
-const goToDetail = (id) => {
+const goToActivityDetail = (id) => {
   // appStores.setCurrentActivityId(id)
   router.push(`/activity/${id}`)
 }
 
+const goToVenueDetail = (id) => {
+  // appStores.setCurrentActivityId(id)
+  router.push(`/venue/${id}`)
+}
+
+const getVenueRecommendation = async () => {
+  loading.value = true
+  try {
+    const response = await venueStores.getVenueCards({ homepage: true })
+
+    if (response.success) {
+      venueRecommendation.value = response?.data?.venueList[0]
+    } else {
+      // snackStores.openSnackbar(response.errors.message[0], 'error')
+      venueRecommendation.value = null
+    }
+  } catch (err) {
+    console.log(err)
+    snackStores.openSnackbar(err?.message, 'error')
+  } finally {
+    loading.value = false
+  }
+}
+
+const getActivityRecommendation = async () => {
+  loading.value = true
+  try {
+    const response = await activityStores.getActivityCards({ bestOffer: true })
+
+    if (response.success) {
+      activityRecommendation.value = response?.data?.activitySessions
+    } else {
+      // snackStores.openSnackbar(response.errors.message[0], 'error')
+      activityRecommendation.value = []
+    }
+  } catch (err) {
+    console.log(err)
+    snackStores.openSnackbar(err?.message, 'error')
+  } finally {
+    loading.value = false
+  }
+}
+
 onMounted(() => {
-  activityStores.getActivityCards({ bestOffer: true })
-  venueStores.getVenueCards({ homepage: true })
+  getVenueRecommendation()
+  getActivityRecommendation()
 
   bannerImg.value = stores.getBannerImageData()
 })
 </script>
 
 <template>
-  <VContainer class="pt-0">
+  <VContainer v-if="!loading" class="pt-0">
     <SectionContainer :title="'Rekomendasi Venue'" :desc="'Temukan venue terbaik untuk bermain!'">
       <CardVenue
-        :img="venueStores.venueCards?.image"
-        :title="venueStores.venueCards?.title"
-        :location="venueStores.venueCards?.location"
-        :activities="venueStores.venueCards?.activities"
-        :amount="venueStores.venueCards?.amount"
+        :img="venueRecommendation?.coverPictureUrl"
+        :title="venueRecommendation?.name"
+        :location="venueRecommendation?.address"
+        :activities="venueRecommendation?.sportTypes"
+        :amount="venueRecommendation?.maxPriceRange"
+        @click="goToVenueDetail(venueRecommendation?.id)"
       />
     </SectionContainer>
     <SectionContainer
@@ -46,8 +96,8 @@ onMounted(() => {
       <VRow no-gutters>
         <VCol cols="12" class="d-flex" style="gap: 20px">
           <CardComponent
-            v-for="item in activityStores.activityCards.slice(0, 2)"
-            @click="goToDetail(item.id)"
+            v-for="item in activityRecommendation.slice(0, 2)"
+            @click="goToActivityDetail(item.id)"
             :img="item.image"
             :title="item.title"
             :location="item.location"
@@ -68,4 +118,5 @@ onMounted(() => {
       </VCol>
     </VRow>
   </VContainer>
+  <PageSpinLoader v-model:is-loading="loading" />
 </template>
