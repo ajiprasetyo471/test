@@ -70,7 +70,6 @@ const goToDetail = (id) => {
 
 onMounted(() => {
   stores.getVenueCards()
-  homeStores.getActivityItems()
   const todayIndex = dates.value.findIndex((date) => date.selected)
   if (todayIndex !== -1) {
     selectDate(todayIndex)

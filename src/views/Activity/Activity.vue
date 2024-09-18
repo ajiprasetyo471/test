@@ -14,7 +14,6 @@ const goToDetail = (id) => {
 
 onMounted(() => {
   stores.getActivityCards()
-  homeStores.getActivityItems()
 })
 </script>
 

@@ -1,32 +1,62 @@
-import { activityCardData } from '@/db/db'
+// import { activityCardData } from '@/db/db'
+import activityService from '@/services/activity.service'
 
 export const useActivityStore = defineStore('activityStore', {
   state: () => ({
     activityCards: [],
-    filteredCards: []
+    activityDetail: null,
+    activityGallery: []
   }),
   actions: {
-    // async fetchActivityItems() {
-    //   try {
-    //     const response = await axios.get('https://api.example.com/activities') // Ganti dengan endpoint API yang sesuai
-    //     this.activityItems = response.data  // Mengisi state dengan data dari API
-    //   } catch (error) {
-    //     console.error('Gagal mengambil data aktivitas:', error)
-    //   }
-    // }
-    getActivityCards() {
-      this.activityCards = activityCardData
-      this.filteredCards = activityCardData
-      return activityCardData
-    },
-    filterActivityCards(query) {
-      if (!query || query == '' || query == undefined || query == null) {
-        this.filteredCards = this.activityCards
-      } else {
-        this.filteredCards = this.activityCards.filter((item) =>
-          item.title.toLowerCase().includes(query.toLowerCase())
-        )
+    async getActivityCards(data) {
+      try {
+        this.activityCards = []
+        const response = await activityService.list(data)
+        const resData = response.data
+        if (resData.status) {
+          this.activityCards = resData?.data?.activitySessions
+        } else {
+          this.activityCards = []
+        }
+        return resData
+      } catch (error) {
+        this.activityCards = []
+        throw error
       }
+    },
+    getDetailActivity(id) {
+      return activityService.detail(id).then(
+        (response) => {
+          var resData = response.data
+          if (resData.status) {
+            this.activityDetail = resData?.data
+          } else {
+            this.activityDetail = null
+          }
+          return Promise.resolve(resData)
+        },
+        (error) => {
+          this.activityDetail = null
+          return Promise.reject(error)
+        }
+      )
+    },
+    getDetailGallery(id) {
+      return activityService.gallery(id).then(
+        (response) => {
+          var resData = response.data
+          if (resData.status) {
+            this.activityGallery = resData?.data?.activityGallery
+          } else {
+            this.activityGallery = []
+          }
+          return Promise.resolve(resData)
+        },
+        (error) => {
+          this.activityGallery = []
+          return Promise.reject(error)
+        }
+      )
     }
   }
 })

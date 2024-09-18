@@ -63,7 +63,8 @@ watch(route, () => {
 })
 
 onMounted(() => {
-  console.log('rendered header')
+  stores.getActivityItems()
+  stores.getCityItems()
 })
 </script>
 
@@ -124,7 +125,7 @@ onMounted(() => {
         </div>
         <div v-if="pagePath == '/'" class="d-flex align-center">
           <VBtn size="35" icon>
-            <VBadge color="#FF4141">
+            <VBadge dot color="#FF4141">
               <Icon style="font-size: 28px" icon="uiw:bell" />
             </VBadge>
           </VBtn>
