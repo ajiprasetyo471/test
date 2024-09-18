@@ -1,9 +1,11 @@
 import { venueCardData, venueFieldData, venueFieldHourData, venueFieldReviewData } from '@/db/db'
+import venueService from '@/services/venue.service'
 
 export const useVenueStore = defineStore('venueStore', {
   state: () => ({
     venueCards: [],
-    filteredCards: [],
+    venueDetail: null,
+    venueGallery: [],
     fieldCards: [],
     fieldHourCards: [],
     fieldReviewCards: [],
@@ -12,28 +14,57 @@ export const useVenueStore = defineStore('venueStore', {
     datesMember: []
   }),
   actions: {
-    // async fetchActivityItems() {
-    //   try {
-    //     const response = await axios.get('https://api.example.com/activities') // Ganti dengan endpoint API yang sesuai
-    //     this.activityItems = response.data  // Mengisi state dengan data dari API
-    //   } catch (error) {
-    //     console.error('Gagal mengambil data aktivitas:', error)
-    //   }
-    // }
-    getVenueCards() {
-      this.venueCards = venueCardData
-      this.filteredCards = venueCardData
-      return venueCardData
-    },
-    filterVenueCards(query) {
-      if (!query || query == '' || query == undefined || query == null) {
-        this.filteredCards = this.venueCards
-      } else {
-        this.filteredCards = this.venueCards.filter((item) =>
-          item.title.toLowerCase().includes(query.toLowerCase())
-        )
+    async getVenueCards(data) {
+      try {
+        this.venueCards = []
+        const response = await venueService.list(data)
+        const resData = response.data
+        if (resData.status) {
+          this.venueCards = resData?.data?.venueList
+        } else {
+          this.venueCards = []
+        }
+        return resData
+      } catch (error) {
+        this.venueCards = []
+        throw error
       }
     },
+    getDetailVenue(id) {
+      return venueService.detail(id).then(
+        (response) => {
+          var resData = response.data
+          if (resData.status) {
+            this.venueDetail = resData?.data
+          } else {
+            this.venueDetail = null
+          }
+          return Promise.resolve(resData)
+        },
+        (error) => {
+          this.venueDetail = null
+          return Promise.reject(error)
+        }
+      )
+    },
+    getDetailGallery(id) {
+      return venueService.gallery(id).then(
+        (response) => {
+          var resData = response.data
+          if (resData.status) {
+            this.venueGallery = resData?.data?.venueGallery
+          } else {
+            this.venueGallery = []
+          }
+          return Promise.resolve(resData)
+        },
+        (error) => {
+          this.venueGallery = []
+          return Promise.reject(error)
+        }
+      )
+    },
+
     getFieldCards() {
       this.fieldCards = venueFieldData
       return venueFieldData

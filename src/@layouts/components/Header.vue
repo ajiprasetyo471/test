@@ -63,7 +63,7 @@ watch(route, () => {
 })
 
 onMounted(() => {
-  stores.getActivityItems()
+  stores.getSportItems()
   stores.getCityItems()
 })
 </script>

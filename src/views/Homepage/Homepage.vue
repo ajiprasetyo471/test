@@ -3,13 +3,15 @@ import SectionContainer from './SectionContainer.vue'
 import CardVenue from './CardVenue.vue'
 
 import { useHomeStore } from '@/stores/home.store'
+import { useActivityStore } from '@/stores/activity.store'
+import { useVenueStore } from '@/stores/venue.store'
 
 const stores = useHomeStore()
+const activityStores = useActivityStore()
+const venueStores = useVenueStore()
 
 const router = useRouter()
 
-const venueRecommendationCard = ref()
-const activityRecommendationCards = ref()
 const bannerImg = ref()
 
 const goToDetail = (id) => {
@@ -18,8 +20,9 @@ const goToDetail = (id) => {
 }
 
 onMounted(() => {
-  venueRecommendationCard.value = stores.getVenueRecommendationCard()
-  activityRecommendationCards.value = stores.getActivityRecommendationCards()
+  activityStores.getActivityCards({ bestOffer: true })
+  venueStores.getVenueCards({ homepage: true })
+
   bannerImg.value = stores.getBannerImageData()
 })
 </script>
@@ -28,11 +31,11 @@ onMounted(() => {
   <VContainer class="pt-0">
     <SectionContainer :title="'Rekomendasi Venue'" :desc="'Temukan venue terbaik untuk bermain!'">
       <CardVenue
-        :img="venueRecommendationCard?.image"
-        :title="venueRecommendationCard?.title"
-        :location="venueRecommendationCard?.location"
-        :activities="venueRecommendationCard?.activities"
-        :amount="venueRecommendationCard?.amount"
+        :img="venueStores.venueCards?.image"
+        :title="venueStores.venueCards?.title"
+        :location="venueStores.venueCards?.location"
+        :activities="venueStores.venueCards?.activities"
+        :amount="venueStores.venueCards?.amount"
       />
     </SectionContainer>
     <SectionContainer
@@ -43,7 +46,7 @@ onMounted(() => {
       <VRow no-gutters>
         <VCol cols="12" class="d-flex" style="gap: 20px">
           <CardComponent
-            v-for="item in activityRecommendationCards"
+            v-for="item in activityStores.activityCards.slice(0, 2)"
             @click="goToDetail(item.id)"
             :img="item.image"
             :title="item.title"

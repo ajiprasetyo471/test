@@ -3,33 +3,31 @@ import appService from '@/services/app.service'
 
 export const useHomeStore = defineStore('homeStore', {
   state: () => ({
-    activityItems: [],
+    sportItems: [],
     cityItems: [],
-    venueRecommendationCard: [],
-    activityRecommendationCards: [],
     bannerImageData: []
   }),
   actions: {
-    getActivityItems(data) {
+    getSportItems(data) {
       return appService
         .sports(data)
         .then((response) => {
           var resData = response.data
           if (resData.success && resData?.data) {
-            this.activityItems = resData?.data?.sportList.map((item) => {
+            this.sportItems = resData?.data?.sportList.map((item) => {
               return {
                 ...item,
                 title: item.nameId
               }
             })
           } else {
-            this.activityItems = []
+            this.sportItems = []
           }
           return Promise.resolve(resData)
         })
         .catch((error) => {
           console.log(error)
-          this.activityItems = []
+          this.sportItems = []
           return Promise.reject(error)
         })
     },
@@ -50,14 +48,6 @@ export const useHomeStore = defineStore('homeStore', {
           this.cityItems = []
           return Promise.reject(error)
         })
-    },
-    getVenueRecommendationCard() {
-      this.venueRecommendationCard = venueRecommendationCardData
-      return venueRecommendationCardData
-    },
-    getActivityRecommendationCards() {
-      this.activityRecommendationCards = activityCardData.slice(0, 2)
-      return activityCardData.slice(0, 2)
     },
     getBannerImageData() {
       this.bannerImageData = bannerImage
