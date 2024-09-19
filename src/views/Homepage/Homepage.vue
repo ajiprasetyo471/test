@@ -15,10 +15,8 @@ const snackStores = useSnackbarStore()
 
 const router = useRouter()
 
-const venueRecommendation = ref()
 const activityRecommendation = ref([])
 const bannerImg = ref()
-const loading = ref(false)
 
 const goToActivityDetail = (id) => {
   // appStores.setCurrentActivityId(id)
@@ -31,26 +29,21 @@ const goToVenueDetail = (id) => {
 }
 
 const getVenueRecommendation = async () => {
-  loading.value = true
   try {
-    const response = await venueStores.getVenueCards({ homepage: true })
+    const response = await venueStores.getVenueCardsHome({ homepage: true })
 
     if (response.success) {
-      venueRecommendation.value = response?.data?.venueList[0]
+      venueStores.setVenueCardsHome(response.data.venueList[0])
     } else {
-      // snackStores.openSnackbar(response.errors.message[0], 'error')
-      venueRecommendation.value = null
+      venueStores.setVenueCardsHome(null)
     }
   } catch (err) {
     console.log(err)
     snackStores.openSnackbar(err?.message, 'error')
-  } finally {
-    loading.value = false
   }
 }
 
 const getActivityRecommendation = async () => {
-  loading.value = true
   try {
     const response = await activityStores.getActivityCards({ bestOffer: true })
 
@@ -63,8 +56,6 @@ const getActivityRecommendation = async () => {
   } catch (err) {
     console.log(err)
     snackStores.openSnackbar(err?.message, 'error')
-  } finally {
-    loading.value = false
   }
 }
 
@@ -77,15 +68,15 @@ onMounted(() => {
 </script>
 
 <template>
-  <VContainer v-if="!loading" class="pt-0">
+  <VContainer v-if="!venueStores.loading" class="pt-0">
     <SectionContainer :title="'Rekomendasi Venue'" :desc="'Temukan venue terbaik untuk bermain!'">
       <CardVenue
-        :img="venueRecommendation?.coverPictureUrl"
-        :title="venueRecommendation?.name"
-        :location="venueRecommendation?.address"
-        :activities="venueRecommendation?.sportTypes"
-        :amount="venueRecommendation?.maxPriceRange"
-        @click="goToVenueDetail(venueRecommendation?.id)"
+        :img="venueStores.venueCardsHome?.coverPictureUrl"
+        :title="venueStores.venueCardsHome?.name"
+        :location="venueStores.venueCardsHome?.address"
+        :activities="venueStores.venueCardsHome?.sportTypes"
+        :amount="venueStores.venueCardsHome?.maxPriceRange"
+        @click="goToVenueDetail(venueStores.venueCardsHome?.id)"
       />
     </SectionContainer>
     <SectionContainer
@@ -118,5 +109,5 @@ onMounted(() => {
       </VCol>
     </VRow>
   </VContainer>
-  <PageSpinLoader v-model:is-loading="loading" />
+  <PageSpinLoader v-model:is-loading="venueStores.loading" />
 </template>

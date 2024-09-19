@@ -1,4 +1,6 @@
 <script setup>
+import { formatNumber } from '@/helpers/helpers'
+
 const props = defineProps({
   img: {
     type: String,
@@ -44,12 +46,16 @@ const props = defineProps({
             </VCol>
             <VCol cols="12" class="mt-1">
               <div class="d-flex justify-start">
-                <Icon icon="solar:map-point-linear" class="mr-2 text-text-grey" />
-                <p class="text-xxs text-text-grey">{{ props.location }}</p>
+                <div style="width: 10%">
+                  <Icon icon="solar:map-point-linear" class="mr-2 text-text-grey" />
+                </div>
+                <p style="width: 90%" class="text-xxs text-text-grey">{{ props.location }}</p>
               </div>
               <div class="d-flex justify-start mt-1">
-                <Icon icon="iconoir:basketball-field" class="mr-4 text-text-grey" />
-                <p class="text-xs text-text-grey">
+                <div style="width: 10%">
+                  <Icon icon="iconoir:basketball-field" class="mr-4 text-text-grey" />
+                </div>
+                <p style="width: 90%" class="text-xs text-text-grey">
                   <span v-for="(item, index) in props.activities" :key="index"
                     >{{ item }} {{ index == props.activities.length - 1 ? '' : ', ' }}</span
                   >
@@ -58,7 +64,7 @@ const props = defineProps({
             </VCol>
             <VCol cols="12" class="mt-4">
               <span class="text-text-orange text-caption font-weight-black">
-                Rp {{ props.amount }}
+                Rp {{ formatNumber(props.amount) }}
               </span>
             </VCol>
           </VRow>

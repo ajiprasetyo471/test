@@ -49,9 +49,11 @@ const filterItems = (query) => {
       activityStores.filterActivityCards(query)
       break
     case 'Venue':
-    case 'Homepage':
-      venueStores.filterVenueCards(query)
+      venueStores.getVenueCards({ maxPrice: query ? parseInt(query) : null })
       break
+    case 'Homepage':
+    // venueStores.filterVenueCards(query)
+    // break
     default:
       break
   }

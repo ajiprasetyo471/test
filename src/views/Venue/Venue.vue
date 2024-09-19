@@ -1,12 +1,15 @@
 <script setup>
+import VenueItem from './VenueItem.vue'
+import PageSpinLoader from '@/@core/components/PageSpinLoader.vue'
+
 import moment from 'moment'
 import { useVenueStore } from '@/stores/venue.store.js'
-import { useHomeStore } from '@/stores/home.store'
-import VenueItem from './VenueItem.vue'
+import { useSnackbarStore } from '@/stores/snackbar'
+
+const stores = useVenueStore()
+const snackStores = useSnackbarStore()
 
 const router = useRouter()
-const stores = useVenueStore()
-const homeStores = useHomeStore()
 
 const showDatePicker = ref(false)
 const showTimePicker = ref(false)
@@ -68,8 +71,22 @@ const goToDetail = (id) => {
   router.push(`/venue/${id}`)
 }
 
+const getVenueList = async () => {
+  try {
+    const response = await stores.getVenueCards()
+    if (response.success) {
+      stores.setVenueCards(response.data.venueList)
+    } else {
+      stores.setVenueCards([])
+    }
+  } catch (err) {
+    console.log(err)
+    snackStores.openSnackbar(err?.message, 'error')
+  }
+}
+
 onMounted(() => {
-  stores.getVenueCards()
+  getVenueList()
   const todayIndex = dates.value.findIndex((date) => date.selected)
   if (todayIndex !== -1) {
     selectDate(todayIndex)
@@ -118,14 +135,15 @@ onMounted(() => {
     </VRow>
 
     <VenueItem
+      v-if="!stores.loading"
       class="mb-4"
-      v-for="item in stores.filteredCards"
+      v-for="item in stores.venueCards"
       :key="item.id"
-      :title="item.title"
-      :location="item.location"
-      :activities="item.activities"
-      :amount="item.amount"
-      :img="item.image"
+      :title="item.name"
+      :location="item.address"
+      :activities="item.sportTypes"
+      :amount="item.maxPriceRange"
+      :img="item.coverPictureUrl"
       @click="goToDetail(item.id)"
     />
 
@@ -157,4 +175,5 @@ onMounted(() => {
       </VCard>
     </VDialog>
   </VContainer>
+  <PageSpinLoader v-model:is-loading="stores.loading" />
 </template>
