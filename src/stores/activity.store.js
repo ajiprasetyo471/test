@@ -13,7 +13,7 @@ export const useActivityStore = defineStore('activityStore', {
         this.activityCards = []
         const response = await activityService.list(data)
         const resData = response.data
-        if (resData.status) {
+        if (resData.success) {
           this.activityCards = resData?.data?.activitySessions
         } else {
           this.activityCards = []
@@ -28,7 +28,7 @@ export const useActivityStore = defineStore('activityStore', {
       return activityService.detail(id).then(
         (response) => {
           var resData = response.data
-          if (resData.status) {
+          if (resData.success) {
             this.activityDetail = resData?.data
           } else {
             this.activityDetail = null
@@ -45,7 +45,7 @@ export const useActivityStore = defineStore('activityStore', {
       return activityService.gallery(id).then(
         (response) => {
           var resData = response.data
-          if (resData.status) {
+          if (resData.success) {
             this.activityGallery = resData?.data?.activityGallery
           } else {
             this.activityGallery = []

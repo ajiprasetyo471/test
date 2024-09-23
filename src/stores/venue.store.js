@@ -22,7 +22,7 @@ export const useVenueStore = defineStore('venueStore', {
         this.venueCards = []
         const response = await venueService.list(data)
         const resData = response.data
-        console.log(resData)
+        // console.log(resData)
         if (resData.success) {
           this.venueCards = resData?.data?.venueList
         } else {
@@ -42,7 +42,7 @@ export const useVenueStore = defineStore('venueStore', {
         this.venueCardsHome = null
         const response = await venueService.list(data)
         const resData = response.data
-        console.log(resData)
+        // console.log(resData)
         if (resData.success) {
           this.venueCardsHome = resData?.data?.venueList
         } else {
@@ -87,7 +87,7 @@ export const useVenueStore = defineStore('venueStore', {
           (response) => {
             var resData = response.data
             if (resData.success) {
-              this.venueGallery = resData?.data?.venueGallery
+              this.venueGallery = resData?.data?.venueGallery.map((item) => item.venuePicture)
             } else {
               this.venueGallery = []
             }
@@ -102,6 +102,26 @@ export const useVenueStore = defineStore('venueStore', {
           this.loading = false
         })
     },
+    async getFieldCards(id) {
+      this.loading = true
+      try {
+        this.fieldCards = []
+        const response = await venueService.field(id)
+        const resData = response.data
+        if (resData.success) {
+          console.log(resData?.data?.fieldList)
+          this.fieldCards = resData?.data?.fieldList
+        } else {
+          this.fieldCards = []
+        }
+        return resData
+      } catch (error) {
+        this.fieldCards = []
+        throw error
+      } finally {
+        this.loading = false
+      }
+    },
     setVenueCards(cards) {
       this.venueCards = cards
     },
@@ -109,10 +129,6 @@ export const useVenueStore = defineStore('venueStore', {
       this.venueCardsHome = cards
     },
 
-    getFieldCards() {
-      this.fieldCards = venueFieldData
-      return venueFieldData
-    },
     getFieldHourCards() {
       this.fieldHourCards = venueFieldHourData
       return venueFieldHourData

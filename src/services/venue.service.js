@@ -8,6 +8,9 @@ class VenueService {
   gallery(id) {
     return $axios.get(`/venues/${id}/gallery`)
   }
+  field(id) {
+    return $axios.get(`/venues/${id}/fields`)
+  }
 }
 
 export default new VenueService()
