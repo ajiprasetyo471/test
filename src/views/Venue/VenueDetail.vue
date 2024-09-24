@@ -1,10 +1,4 @@
 <script setup>
-import logo from '@/assets/images/detail-venue-logo.jpg'
-import activityImg1 from '@/assets/images/image-venue-dashboard.jpg'
-import activityImg2 from '@/assets/images/image-activity-detail.jpg'
-import activityImg3 from '@/assets/images/image-activity-dashboard-1.jpg'
-import activityImg4 from '@/assets/images/image-activity-dashboard-2.jpg'
-
 import PageSpinLoader from '@/@core/components/PageSpinLoader.vue'
 import VenueBanner from './VenueBanner.vue'
 import { useVenueStore } from '@/stores/venue.store.js'
@@ -17,11 +11,11 @@ const route = useRoute()
 const router = useRouter()
 
 const goToDetail = (id) => {
-  // appStores.setCurrentActivityId(id)
+  // stores.setVenueId(id)
   router.push(`/venue/field/${id}`)
 }
 
-const getVenueDetailData = async (id) => {
+const getVenueDetailData = (id) => {
   stores
     .getDetailVenue(id)
     .then((res) => {
@@ -33,7 +27,7 @@ const getVenueDetailData = async (id) => {
     })
 }
 
-const getVenueGalleryData = async (id) => {
+const getVenueGalleryData = (id) => {
   stores
     .getDetailGallery(id)
     .then((res) => {
@@ -46,15 +40,13 @@ const getVenueGalleryData = async (id) => {
 }
 
 const getFieldData = async (id) => {
-  stores
-    .getFieldCards(id)
-    .then((res) => {
-      console.log(res)
-    })
-    .catch((err) => {
-      console.log(err)
-      snackStores.openSnackbar(err?.message, 'error')
-    })
+  try {
+    const res = await stores.getFieldCards(id)
+    console.log(res)
+  } catch (err) {
+    console.log(err)
+    snackStores.openSnackbar(err?.message, 'error')
+  }
 }
 
 onMounted(() => {

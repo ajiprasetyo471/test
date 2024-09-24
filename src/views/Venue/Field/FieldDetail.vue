@@ -1,11 +1,15 @@
 <script setup>
-import moment from 'moment'
 import activityImg2 from '@/assets/images/image-activity-dashboard-2.jpg'
+import moment from 'moment'
+import FieldHourCont from './FieldHourCont.vue'
 import FieldDetailBanner from './FieldDetailBanner.vue'
 import { useVenueStore } from '@/stores/venue.store.js'
-import FieldHourCont from './FieldHourCont.vue'
+import { useSnackbarStore } from '@/stores/snackbar'
 
 const stores = useVenueStore()
+const snackStores = useSnackbarStore()
+
+const route = useRoute()
 
 const tab = ref('daily')
 const selectedMonth = ref(moment(new Date(), 'YYYY-MM'))
@@ -13,6 +17,16 @@ const selectedDates = ref([])
 const dates = ref(getDates())
 const hourCards = ref([])
 const reviewCards = ref([])
+
+const venueId = computed(() => {
+  return JSON.parse(localStorage.getItem('venueId'))
+})
+
+watch(tab, () => {
+  stores.setDatesMember([])
+  stores.setBookingHour('')
+  stores.setBookingDate('')
+})
 
 const formattedMonth = (month) => {
   return moment(month, 'YYYY-MM').format('MMMM, YYYY')
@@ -69,13 +83,20 @@ const onDateSelected = (dates) => {
   stores.setDatesMember(dates)
 }
 
-watch(tab, () => {
-  stores.setDatesMember([])
-  stores.setBookingHour('')
-  stores.setBookingDate('')
-})
+const getFieldDetailData = (id, venueId) => {
+  stores
+    .getDetailField(id, venueId)
+    .then((res) => {
+      console.log(res)
+    })
+    .catch((err) => {
+      console.log(err)
+      snackStores.openSnackbar(err?.message, 'error')
+    })
+}
 
 onMounted(() => {
+  getFieldDetailData(route.params.id, stores.venueId ?? venueId)
   hourCards.value = stores.getFieldHourCards()
   reviewCards.value = stores.getFieldReviewCards()
 })
@@ -84,12 +105,12 @@ onMounted(() => {
 <template>
   <VContainer>
     <FieldDetailBanner
-      :logo="activityImg2"
-      :title="'Basket Ball Venue'"
-      :activity="'Bola Basket'"
-      :field="'21 x 11 m'"
-      :field-type="'Outdoor'"
-      :floor-type="'Vinyl'"
+      :logo="stores.fieldDetail?.coverPictureUrl"
+      :title="stores.fieldDetail?.name"
+      :activity="stores.fieldDetail?.sportNamesId[0]"
+      :field="`${stores.fieldDetail?.length} x ${stores.fieldDetail?.width} m`"
+      :field-type="stores.fieldDetail?.fieldType"
+      :floor-type="stores.fieldDetail?.floorType"
     />
     <VRow v-if="tab == 'member'" no-gutters class="mt-4">
       <VCol cols="12" class="border-b-thin pb-2">

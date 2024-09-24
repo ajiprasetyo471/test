@@ -1,4 +1,6 @@
 <script setup>
+import { formatNumber } from '@/helpers/helpers'
+
 const props = defineProps({
   img: {
     type: String,
@@ -60,7 +62,9 @@ const props = defineProps({
         </div>
       </VCol>
       <VCol cols="12" class="mt-2">
-        <span class="text-text-orange text-caption font-weight-black"> Rp {{ props.amount }} </span>
+        <span class="text-text-orange text-caption font-weight-black">
+          Rp {{ formatNumber(props.amount) }}
+        </span>
       </VCol>
     </VRow>
   </VCard>

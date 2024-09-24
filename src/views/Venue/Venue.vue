@@ -67,7 +67,7 @@ const selectDate = (index) => {
 }
 
 const goToDetail = (id) => {
-  // appStores.setCurrentActivityId(id)
+  stores.setVenueId(id)
   router.push(`/venue/${id}`)
 }
 

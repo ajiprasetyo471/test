@@ -6,9 +6,11 @@ export const useVenueStore = defineStore('venueStore', {
     loading: false,
     venueCards: [],
     venueCardsHome: [],
+    venueId: null,
     venueDetail: null,
     venueGallery: [],
     fieldCards: [],
+    fieldDetail: null,
     fieldHourCards: [],
     fieldReviewCards: [],
     bookingDate: null,
@@ -122,8 +124,36 @@ export const useVenueStore = defineStore('venueStore', {
         this.loading = false
       }
     },
+    getDetailField(id, venueId) {
+      console.log(id, venueId)
+      this.loading = true
+      return venueService
+        .fieldDetail(id, venueId)
+        .then(
+          (response) => {
+            var resData = response.data
+            if (resData.success) {
+              this.fieldDetail = resData?.data?.fieldVM
+            } else {
+              this.fieldDetail = null
+            }
+            return Promise.resolve(resData)
+          },
+          (error) => {
+            this.fieldDetail = null
+            return Promise.reject(error)
+          }
+        )
+        .finally(() => {
+          this.loading = false
+        })
+    },
     setVenueCards(cards) {
       this.venueCards = cards
+    },
+    setVenueId(id) {
+      this.venueId = id
+      localStorage.setItem('venueId', JSON.stringify(id))
     },
     setVenueCardsHome(cards) {
       this.venueCardsHome = cards
