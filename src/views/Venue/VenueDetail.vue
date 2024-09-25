@@ -1,14 +1,18 @@
 <script setup>
 import PageSpinLoader from '@/@core/components/PageSpinLoader.vue'
 import VenueBanner from './VenueBanner.vue'
+import moment from 'moment'
 import { useVenueStore } from '@/stores/venue.store.js'
 import { useSnackbarStore } from '@/stores/snackbar'
+import { todaySchedule } from '@/helpers/helpers'
 
 const stores = useVenueStore()
 const snackStores = useSnackbarStore()
 
 const route = useRoute()
 const router = useRouter()
+
+const currentDay = ref(moment().format('dddd').toLowerCase())
 
 const goToDetail = (id) => {
   // stores.setVenueId(id)
@@ -65,11 +69,11 @@ onMounted(() => {
       :location="stores.venueDetail?.address"
       :amount="'150.000'"
       :activities="stores.venueDetail?.sportsType"
-      :hours="'09:00 - 24:00'"
+      :hours="todaySchedule(currentDay, stores.venueDetail)"
     />
     <VRow no-gutters class="mt-4">
       <VCol cols="12" class="d-flex align-center justify-space-between">
-        <h2 class="font-weight-black text-body-1">Pilih Lapangan</h2>
+        <h2 class="font-weight-black text-body-1">Select Field</h2>
       </VCol>
       <VCol cols="12" class="pt-1 justify-space-between d-flex flex-wrap">
         <CardComponent
@@ -87,12 +91,12 @@ onMounted(() => {
     </VRow>
     <VRow no-gutters class="mt-4">
       <VCol cols="12" class="d-flex align-center justify-space-between">
-        <h2 class="font-weight-black text-body-1">Tentang Venue</h2>
+        <h2 class="font-weight-black text-body-1">About Venue</h2>
         <VBtn
           class="text-xxs text-none text-text-blue"
           append-icon="mdi-chevron-right"
           variant="text"
-          >Selengkapnya Tentang Venue</VBtn
+          >More About Venue</VBtn
         >
       </VCol>
       <VCol cols="12">

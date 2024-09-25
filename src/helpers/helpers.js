@@ -21,6 +21,27 @@ export function formatNumber(value) {
   return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
 }
 
+export const todaySchedule = (currentDay, venue) => {
+  switch (currentDay) {
+    case 'monday':
+      return venue?.monday
+    case 'tuesday':
+      return venue?.tuesday
+    case 'wednesday':
+      return venue?.wednesday
+    case 'thursday':
+      return venue?.thursday
+    case 'friday':
+      return venue?.friday
+    case 'saturday':
+      return venue?.saturday
+    case 'sunday':
+      return venue?.sunday
+    default:
+      return 'Closed'
+  }
+}
+
 export const statusItems = [
   { value: null, label: 'All' },
   { value: '1', label: 'Active' },

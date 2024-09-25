@@ -68,7 +68,7 @@ const props = defineProps({
         <div class="d-flex justify-start mt-1">
           <Icon icon="solar:clock-circle-outline" class="mr-2 text-text-grey" />
           <p class="text-xs text-text-grey">
-            Jam Operasional:
+            Operational time:
             <span class="text-text-orange font-weight-bold">{{ props.hours }}</span>
           </p>
         </div>
