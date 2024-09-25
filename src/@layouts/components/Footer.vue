@@ -7,7 +7,7 @@ const router = useRouter()
 
 const active = ref(route.path || '')
 const menuItems = ref([
-  { name: 'home', title: 'Home', icon: 'material-symbols-light:home-outline-rounded', route: '/' },
+  // { name: 'home', title: 'Home', icon: 'material-symbols-light:home-outline-rounded', route: '/' },
   {
     name: 'venue',
     title: 'Venue',
@@ -20,13 +20,13 @@ const menuItems = ref([
     icon: 'fluent-emoji-high-contrast:basketball',
     route: '/activity'
   },
-  { name: 'booking', title: 'Booking', icon: 'ph:calendar-check-light', route: '/booking' },
-  {
-    name: 'account',
-    title: 'Account',
-    icon: 'material-symbols-light:account-circle-outline',
-    route: '/account'
-  }
+  { name: 'booking', title: 'Booking', icon: 'ph:calendar-check-light', route: '/booking' }
+  // {
+  //   name: 'account',
+  //   title: 'Account',
+  //   icon: 'material-symbols-light:account-circle-outline',
+  //   route: '/account'
+  // }
 ])
 
 const pageMeta = computed({
@@ -154,6 +154,7 @@ onMounted(() => {
       :value="item.route"
       replace
       icon
+      class="w-33"
       @click="setActive(item.route)"
     >
       <div class="position-relative d-flex flex-column align-center">

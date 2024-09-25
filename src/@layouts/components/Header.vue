@@ -1,5 +1,4 @@
 <script setup>
-import userImage from '@/assets/images/user-image.jpg'
 import { useHomeStore } from '@/stores/home.store.js'
 import { useVenueStore } from '@/stores/venue.store.js'
 import { useActivityStore } from '@/stores/activity.store'
@@ -43,6 +42,15 @@ const headerHeight = computed({
   }
 })
 
+const goToFilter = () => {
+  console.log(route.meta.title)
+  if (route.meta.title == 'Venue') {
+    router.push('/venue/filter')
+  } else if (route.meta.title == 'Activity') {
+    router.push('/activity/filter')
+  }
+}
+
 const filterItems = (query) => {
   switch (route.meta.title) {
     case 'Activity':
@@ -51,9 +59,6 @@ const filterItems = (query) => {
     case 'Venue':
       venueStores.getVenueCards({ maxPrice: query ? parseInt(query) : null })
       break
-    case 'Homepage':
-    // venueStores.filterVenueCards(query)
-    // break
     default:
       break
   }
@@ -111,33 +116,20 @@ onMounted(() => {
       </VRow>
     </VContainer>
     <VContainer v-else class="d-flex flex-column">
-      <div
-        class="d-flex align-center"
-        :class="pagePath == '/' ? 'justify-space-between' : 'justify-start'"
-      >
-        <VAvatar size="32">
+      <div class="d-flex align-center justify-space-between">
+        <!-- <VAvatar size="32">
           <VImg :src="userImage" alt="Profile" />
-        </VAvatar>
-        <div
-          class="d-flex flex-column"
-          :class="pagePath == '/' ? 'align-center' : 'align-start ml-4'"
-        >
-          <span class="text-text-grey text-xs">Hallo, Norman</span>
+        </VAvatar> -->
+        <div class="d-flex flex-column align-start ml-4">
+          <!-- <span class="text-text-grey text-xs">Hallo, Norman</span> -->
           <div class="d-flex align-center">
             <Icon icon="solar:map-point-linear" class="mr-2" />
             <span class="font-weight-medium text-caption">Ciputat, Tangerang Selatan</span>
           </div>
         </div>
-        <div v-if="pagePath == '/'" class="d-flex align-center">
-          <VBtn size="35" icon>
-            <VBadge dot color="#FF4141">
-              <Icon style="font-size: 28px" icon="uiw:bell" />
-            </VBadge>
-          </VBtn>
-          <VBtn size="35" class="ml-1" icon>
-            <Icon style="font-size: 28px" icon="mage:message-dots" />
-          </VBtn>
-        </div>
+        <VBtn size="35" class="ml-1" icon>
+          <Icon style="font-size: 25px" icon="solar:bag-check-outline" />
+        </VBtn>
       </div>
       <div v-if="pagePath != '/booking'" class="pt-4">
         <VTextField
@@ -150,13 +142,28 @@ onMounted(() => {
           rounded="xl"
         >
           <template #append-inner>
-            <Icon style="font-size: 20px; color: #666666" icon="mage:filter" />
+            <Icon
+              @click="goToFilter()"
+              style="font-size: 20px; color: #666666"
+              icon="mage:filter"
+            />
           </template>
         </VTextField>
       </div>
       <div v-if="pageMeta.isActivityItems == true">
         <VSheet class="mx-auto mt-4">
           <VSlideGroup>
+            <VSlideGroupItem v-slot="{ isSelected, toggle }">
+              <VBtn
+                :class="isSelected ? 'bg-bg-blue text-white' : undefined"
+                class="mx-1 border-thin text-none text-xxs"
+                rounded="lg"
+                density="comfortable"
+                @click="toggle"
+              >
+                All
+              </VBtn>
+            </VSlideGroupItem>
             <VSlideGroupItem
               v-for="item in stores.sportItems"
               :key="item.id"

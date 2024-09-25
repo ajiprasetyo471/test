@@ -14,13 +14,15 @@ const router = useRouter()
 const showDatePicker = ref(false)
 const showTimePicker = ref(false)
 
-const selectedDate = ref(new Date())
-const startTime = ref('18:00')
-const endTime = ref('21:00')
+const selectedDate = ref()
+const startTime = ref('00:00')
+const endTime = ref('00:00')
 const dates = ref(getDates())
 
 const formattedDate = computed(() => {
-  return moment(selectedDate.value, 'YYYY-MM-DD').format('MMMM D, YYYY')
+  return selectedDate.value
+    ? moment(selectedDate.value, 'YYYY-MM-DD').format('MMMM D, YYYY')
+    : 'Select Date'
 })
 
 const formattedTimeRange = computed(() => {
@@ -43,7 +45,7 @@ function getDates() {
       date: currentDate.format('DD'), // Tanggal
       day: currentDate.format('ddd'), // Hari
       disabled: currentDate.isBefore(today, 'day'), // Tanggal sebelum hari ini
-      selected: currentDate.isSame(today, 'day') // Tanggal hari ini otomatis terpilih
+      selected: false // Tanggal hari ini otomatis terpilih
     })
     currentDate = currentDate.add(1, 'day')
   }
@@ -99,19 +101,19 @@ onMounted(() => {
     <VRow no-gutters>
       <VCol cols="12" class="d-flex align-center justify-space-between">
         <VBtn @click="showDatePicker = true" class="d-flex align-center" variant="text">
-          <Icon icon="solar:calendar-outline" />
+          <Icon icon="solar:calendar-outline" class="text-h6" />
           <span class="text-caption mx-2">{{ formattedDate }}</span>
           <Icon icon="mdi-chevron-down" />
         </VBtn>
         <VBtn @click="showTimePicker = true" class="d-flex align-center" variant="text">
-          <Icon icon="solar:clock-circle-outline" />
+          <Icon icon="solar:clock-circle-outline" class="text-h6" />
           <span class="text-caption mx-2">{{ formattedTimeRange }}</span>
           <Icon icon="mdi-chevron-down" />
         </VBtn>
       </VCol>
     </VRow>
 
-    <VRow class="mb-4">
+    <VRow class="mb-4 mt-0">
       <VCol v-for="(date, index) in dates" :key="index" class="px-2" cols="2">
         <VCard
           class="border-thin rounded-lg"

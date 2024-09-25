@@ -1,4 +1,4 @@
-import { venueCardData, venueFieldData, venueFieldHourData, venueFieldReviewData } from '@/db/db'
+import { venueFieldHourData, venueFieldReviewData } from '@/db/db'
 import venueService from '@/services/venue.service'
 
 export const useVenueStore = defineStore('venueStore', {

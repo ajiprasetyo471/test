@@ -24,6 +24,7 @@ declare module 'vue-router/auto-routes' {
     'account-setting-security': RouteRecordInfo<'account-setting-security', '/account/setting-security', Record<never, never>, Record<never, never>>,
     'activity': RouteRecordInfo<'activity', '/activity', Record<never, never>, Record<never, never>>,
     'activity-id': RouteRecordInfo<'activity-id', '/activity/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
+    'activity-filter': RouteRecordInfo<'activity-filter', '/activity/filter', Record<never, never>, Record<never, never>>,
     'booking': RouteRecordInfo<'booking', '/booking', Record<never, never>, Record<never, never>>,
     'booking-id': RouteRecordInfo<'booking-id', '/booking/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
     'privacy-policy': RouteRecordInfo<'privacy-policy', '/privacy-policy', Record<never, never>, Record<never, never>>,
@@ -32,6 +33,7 @@ declare module 'vue-router/auto-routes' {
     'venue': RouteRecordInfo<'venue', '/venue', Record<never, never>, Record<never, never>>,
     'venue-id': RouteRecordInfo<'venue-id', '/venue/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
     'venue-field-id': RouteRecordInfo<'venue-field-id', '/venue/field/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
+    'venue-filter': RouteRecordInfo<'venue-filter', '/venue/filter', Record<never, never>, Record<never, never>>,
     'venue-payment': RouteRecordInfo<'venue-payment', '/venue/payment', Record<never, never>, Record<never, never>>,
   }
 }

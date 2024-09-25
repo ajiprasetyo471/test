@@ -45,15 +45,15 @@ const props = defineProps({
               <h3 class="font-weight-black text-body-2">{{ props.title }}</h3>
             </VCol>
             <VCol cols="12" class="mt-1">
-              <div class="d-flex justify-start">
+              <div class="d-flex justify-start align-center">
                 <div style="width: 10%">
-                  <Icon icon="solar:map-point-linear" class="mr-2 text-text-grey" />
+                  <Icon icon="solar:map-point-linear" class="mr-2 text-text-grey text-caption" />
                 </div>
                 <p style="width: 90%" class="text-xxs text-text-grey">{{ props.location }}</p>
               </div>
-              <div class="d-flex justify-start mt-1">
+              <div class="d-flex justify-start align-center">
                 <div style="width: 10%">
-                  <Icon icon="iconoir:basketball-field" class="mr-4 text-text-grey" />
+                  <Icon icon="iconoir:basketball-field" class="mr-4 text-text-grey text-caption" />
                 </div>
                 <p style="width: 90%" class="text-xs text-text-grey">
                   <span v-for="(item, index) in props.activities" :key="index"
@@ -62,7 +62,7 @@ const props = defineProps({
                 </p>
               </div>
             </VCol>
-            <VCol cols="12" class="mt-4">
+            <VCol cols="12" class="mt-2">
               <span class="text-text-orange text-caption font-weight-black">
                 Rp {{ formatNumber(props.amount) }}
               </span>

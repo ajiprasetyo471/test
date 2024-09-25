@@ -1,14 +1,16 @@
-import { venueRecommendationCardData, activityCardData, bannerImage } from '@/db/db'
+import { bannerImage } from '@/db/db'
 import appService from '@/services/app.service'
 
 export const useHomeStore = defineStore('homeStore', {
   state: () => ({
+    loading: false,
     sportItems: [],
     cityItems: [],
     bannerImageData: []
   }),
   actions: {
     getSportItems(data) {
+      this.loading = true
       return appService
         .sports(data)
         .then((response) => {
@@ -30,8 +32,12 @@ export const useHomeStore = defineStore('homeStore', {
           this.sportItems = []
           return Promise.reject(error)
         })
+        .finally(() => {
+          this.loading = false
+        })
     },
     getCityItems(data) {
+      this.loading = true
       return appService
         .cities(data)
         .then((response) => {
@@ -47,6 +53,9 @@ export const useHomeStore = defineStore('homeStore', {
           console.log(error)
           this.cityItems = []
           return Promise.reject(error)
+        })
+        .finally(() => {
+          this.loading = false
         })
     },
     getBannerImageData() {
