@@ -4,10 +4,12 @@ import VenueBanner from './VenueBanner.vue'
 import moment from 'moment'
 import { useVenueStore } from '@/stores/venue.store.js'
 import { useSnackbarStore } from '@/stores/snackbar'
+import { useModalStore } from '@/stores/modal'
 import { todaySchedule } from '@/helpers/helpers'
 
 const stores = useVenueStore()
 const snackStores = useSnackbarStore()
+const modalStore = useModalStore()
 
 const route = useRoute()
 const router = useRouter()
@@ -134,5 +136,11 @@ onMounted(() => {
       </VCol>
     </VRow>
   </VContainer>
+  <ShareModal
+    v-if="!stores.loading"
+    v-model="modalStore.isModalOpen"
+    :title="'Venue'"
+    :share-url="stores.venueDetail?.shareLinkUrl"
+  />
   <PageSpinLoader v-model:is-loading="stores.loading" />
 </template>

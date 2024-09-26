@@ -32,7 +32,7 @@ const props = defineProps({
             </div>
           </div>
           <p class="text-text-grey text-xxxs mr-2">
-            <span>{{ props.count }}</span> Jadwal Tersedia
+            <span>{{ props.count }}</span> Schedule available
           </p>
         </VCol>
       </VRow>

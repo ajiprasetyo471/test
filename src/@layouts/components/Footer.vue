@@ -86,7 +86,7 @@ onMounted(() => {
         class="rounded-lg w-100 d-flex justify-space-between pa-4 align-center"
         :class="isBooking ? 'bg-bg-blue' : 'bg-bg-grey-3'"
       >
-        <span v-if="!isBooking" class="text-xxs text-white">Silahkan pilih jadwal booking</span>
+        <span v-if="!isBooking" class="text-xxs text-white">Select time would you prefer</span>
         <div v-else class="">
           <p class="text-xxs text-white">Basket Ball Venue</p>
           <p
@@ -109,10 +109,8 @@ onMounted(() => {
           size="small"
           @click="isBooking ? goToPayment() : undefined"
         >
-          <span v-if="!isBooking" class="text-text-grey-3 text-caption font-weight-bold"
-            >BELUM PILIH</span
-          >
-          <span v-else class="text-black text-caption font-weight-bold">LANJUT</span>
+          <span v-if="!isBooking" class="text-text-grey-3 text-caption font-weight-bold">NEXT</span>
+          <span v-else class="text-black text-caption font-weight-bold">NEXT</span>
           <template #append>
             <VIcon
               size="25"

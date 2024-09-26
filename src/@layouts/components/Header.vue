@@ -3,11 +3,13 @@ import { useHomeStore } from '@/stores/home.store.js'
 import { useVenueStore } from '@/stores/venue.store.js'
 import { useActivityStore } from '@/stores/activity.store'
 import { useSnackbarStore } from '@/stores/snackbar'
+import { useModalStore } from '@/stores/modal'
 
 const stores = useHomeStore()
 const activityStores = useActivityStore()
 const venueStores = useVenueStore()
 const snackbarStores = useSnackbarStore()
+const modalStore = useModalStore()
 
 const route = useRoute()
 const router = useRouter()
@@ -102,6 +104,7 @@ onMounted(() => {
             v-if="pageMeta.isShareHeader == true"
             class="border-thin rounded-lg text-h5"
             size="32"
+            @click="modalStore.openModal()"
           >
             <Icon icon="material-symbols:share-outline" />
           </VBtn>

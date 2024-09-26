@@ -26,7 +26,9 @@ declare module 'vue' {
     DetailActivityItem: typeof import('./src/components/card/DetailActivityItem.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     PageSpinLoader: typeof import('./src/@core/components/PageSpinLoader.vue')['default']
+    ReusableModal: typeof import('./src/components/modal/ReusableModal.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    ShareModal: typeof import('./src/components/modal/ShareModal.vue')['default']
   }
 }

@@ -61,11 +61,11 @@ const props = defineProps({
       style="border-bottom-left-radius: 15px; border-bottom-right-radius: 15px"
     >
       <div class="w-50 d-flex flex-column align-center justify-center border-e-sm py-2">
-        <span class="text-text-grey text-xxxs">Tipe Lapangan </span>
+        <span class="text-text-grey text-xxxs">Field Type </span>
         <span class="text-text-orange text-xxs">{{ props.fieldType }} </span>
       </div>
       <div class="w-50 d-flex flex-column align-center justify-center py-2">
-        <span class="text-text-grey text-xxxs">Tipe Lantai </span>
+        <span class="text-text-grey text-xxxs">Floor Type </span>
         <span class="text-text-orange text-xxs">{{ props.floorType }} </span>
       </div>
     </div>
