@@ -14,6 +14,7 @@ const modalStore = useModalStore()
 const route = useRoute()
 
 const selectedMonth = ref(moment(new Date(), 'YYYY-MM'))
+const selectedDateIndex = ref(0)
 const dates = ref(getDates())
 const hourCards = ref([])
 const reviewCards = ref([])
@@ -22,38 +23,68 @@ const formattedMonth = (month) => {
   return moment(month, 'YYYY-MM').format('MMMM, YYYY')
 }
 
-function getDates() {
-  const dates = []
-  const today = moment() // Tanggal hari ini
-  const startOfRange = today.clone().subtract(2, 'days') // 2 hari sebelum hari ini
-  const endOfRange = today.clone().add(3, 'days') // 3 hari setelah hari ini
+const onMonthSelected = (newMonth) => {
+  selectedMonth.value = newMonth
+  dates.value = getDates(newMonth.month, newMonth.year)
+}
 
-  let currentDate = startOfRange
-  while (currentDate.isSameOrBefore(endOfRange)) {
+function getDates(month, year) {
+  const dates = []
+  const today = moment()
+  const currentMonth = today.month()
+  const currentYear = today.year()
+
+  const startOfMonth =
+    year && month
+      ? moment(`${year}-${month + 1}`, 'YYYY-MM')
+          .clone()
+          .startOf('month')
+      : today.clone().startOf('month')
+  const endOfMonth =
+    year && month
+      ? moment(`${year}-${month + 1}`, 'YYYY-MM')
+          .clone()
+          .endOf('month')
+      : today.clone().endOf('month')
+
+  let currentDate = startOfMonth
+  while (currentDate.isSameOrBefore(endOfMonth)) {
     dates.push({
       date: currentDate.format('DD'), // Tanggal
       day: currentDate.format('ddd'), // Hari
-      disabled: currentDate.isBefore(today, 'day'), // Tanggal sebelum hari ini
-      selected: false
+      disabled:
+        !year && !month
+          ? currentDate.isBefore(today, 'day')
+          : year === currentYear && month === currentMonth
+            ? currentDate.isBefore(today, 'day')
+            : (year === currentYear && month < currentMonth) || (year < currentYear && month)
+              ? true
+              : false, // Tanggal sebelum hari ini dinonaktifkan
+      selected: false // Tanggal hari ini otomatis terpilih
     })
     currentDate = currentDate.add(1, 'day')
   }
 
-  // Temukan tanggal hari ini dan letakkan di urutan ke-3
-  const todayIndex = dates.findIndex((date) => date.date === today.format('DD'))
-  if (todayIndex !== -1 && todayIndex !== 2) {
-    const [todayCard] = dates.splice(todayIndex, 1)
-    dates.splice(2, 0, todayCard)
+  // Otomatis memilih tanggal hari ini
+  if ((month === currentMonth && year === currentYear) || (!year && !month)) {
+    const todayIndex = dates.findIndex((date) => date.date === today.format('DD'))
+    if (todayIndex !== -1) {
+      selectedDateIndex.value = todayIndex // Fokus ke tanggal hari ini
+    }
+  } else {
+    selectedDateIndex.value = 0
   }
 
   return dates
 }
 
+// Fungsi untuk memilih tanggal
 const selectDate = (date, index) => {
   if (!dates.value[index].disabled) {
     dates.value.forEach((date, i) => {
       date.selected = i === index
     })
+    selectedDateIndex.value = index // Perbarui indeks yang dipilih
 
     stores.setBookingDate(date)
   }
@@ -139,8 +170,9 @@ onMounted(() => {
           style="width: 45%; font-size: 12px !important"
           class="text-caption"
           :format="formattedMonth"
+          @update:model-value="onMonthSelected"
           month-picker
-          v-model="selectedMonth"
+          :model-value="selectedMonth"
         >
           <template #input-icon>
             <Icon style="font-size: 20px" class="mt-1 text-black" icon="solar:calendar-outline" />
@@ -151,28 +183,30 @@ onMounted(() => {
         </VueDatePicker>
       </VCol>
     </VRow>
-    <VRow class="">
-      <VCol v-for="(date, index) in dates" :key="index" class="px-2 pt-0" cols="2">
-        <VCard
-          class="border-thin rounded-lg"
-          :class="{
-            'bg-bg-grey-2 text-text-grey-3': date.disabled,
-            'bg-text-orange text-white': date.selected,
-            'bg-white text-black': !date.disabled
-          }"
-          elevation="0"
-          @click="selectDate(date.date, index)"
-          :disabled="date.disabled"
-        >
-          <v-card-title class="d-flex flex-column align-center">
-            <div class="text-body-1 font-weight-black">{{ date.date }}</div>
-            <div class="text-xxs" :class="{ 'text-text-grey': !date.disabled && !date.selected }">
-              {{ date.day }}
-            </div>
-          </v-card-title>
-        </VCard>
-      </VCol>
-    </VRow>
+    <VSlideGroup v-model="selectedDateIndex" class="mb-6 mt-2">
+      <template v-for="(date, index) in dates" :key="index" :value="index">
+        <VSlideGroupItem :value="index">
+          <VCard
+            class="border-thin rounded-lg mx-2"
+            :class="{
+              'bg-bg-grey-2 text-text-grey-3': date.disabled,
+              'bg-text-orange text-white': date.selected,
+              'bg-white text-black': !date.disabled && !date.selected
+            }"
+            elevation="0"
+            @click="selectDate(date, index)"
+            :disabled="date.disabled"
+          >
+            <VCardTitle class="d-flex flex-column align-center">
+              <div class="text-body-1 font-weight-black">{{ date.date }}</div>
+              <div class="text-xxs" :class="{ 'text-text-grey': !date.disabled && !date.selected }">
+                {{ date.day }}
+              </div>
+            </VCardTitle>
+          </VCard>
+        </VSlideGroupItem>
+      </template>
+    </VSlideGroup>
     <VRow no-gutters class="mt-6">
       <VCol cols="12" class="d-flex align-center justify-space-between">
         <p class="text-body-2 font-weight-bold">Which time would you prefer?</p>

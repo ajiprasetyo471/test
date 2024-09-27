@@ -2,6 +2,7 @@
 import PageSpinLoader from '@/@core/components/PageSpinLoader.vue'
 import VenueBanner from './VenueBanner.vue'
 import moment from 'moment'
+import QrcodeVue from 'qrcode.vue'
 import { useVenueStore } from '@/stores/venue.store.js'
 import { useSnackbarStore } from '@/stores/snackbar'
 import { useModalStore } from '@/stores/modal'
@@ -14,6 +15,7 @@ const modalStore = useModalStore()
 const route = useRoute()
 const router = useRouter()
 
+const showModal = ref(false)
 const currentDay = ref(moment().format('dddd').toLowerCase())
 
 const goToDetail = (id) => {
@@ -127,6 +129,7 @@ onMounted(() => {
               class="border-thin rounded-lg text-xxxs text-none px-3"
               variant="text"
               density="compact"
+              @click="showModal = true"
             >
               <Icon icon="heroicons:qr-code-solid" style="font-size: 17px" class="mr-1" />
               <span>QR Code</span>
@@ -136,6 +139,34 @@ onMounted(() => {
       </VCol>
     </VRow>
   </VContainer>
+  <VNavigationDrawer
+    v-model="showModal"
+    app
+    persistent
+    location="bottom"
+    class="rounded-ts-xl rounded-te-xl"
+  >
+    <VCard class="pa-4">
+      <VCardTitle class="text-h6 text-black border-b-thin">Venue QR Code</VCardTitle>
+      <VCardText class="d-flex justify-center mt-8">
+        <qrcode-vue
+          :value="stores.venueDetail?.shareLinkUrl"
+          :size="200"
+          level="H"
+          render-as="svg"
+        />
+      </VCardText>
+      <VCardActions>
+        <VBtn
+          class="bg-text-orange rounded-lg py-6 text-none"
+          @click="showModal = false"
+          block
+          density="compact"
+          >Oke, Kembali</VBtn
+        >
+      </VCardActions>
+    </VCard>
+  </VNavigationDrawer>
   <ShareModal
     v-if="!stores.loading"
     v-model="modalStore.isModalOpen"
@@ -144,3 +175,14 @@ onMounted(() => {
   />
   <PageSpinLoader v-model:is-loading="stores.loading" />
 </template>
+
+<style scoped>
+.modal-bottom .v-navigation-drawer {
+  position: fixed;
+  bottom: 0; /* Set to bottom */
+  width: 100%; /* Full width */
+  max-height: 70%; /* Optional: Control height */
+  overflow-y: auto; /* Allow vertical scrolling if content is too long */
+  transition: transform 0.3s ease; /* Optional: smooth transition */
+}
+</style>

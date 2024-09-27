@@ -10,7 +10,7 @@ definePage({
     isDetail: true,
     isFooter: true,
     isPaymentFooter: true,
-    title: 'Detail Pembayaran'
+    title: 'Payment Detail'
   }
 })
 </script>

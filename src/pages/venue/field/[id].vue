@@ -11,7 +11,7 @@ definePage({
     isShareHeader: true,
     isFooter: true,
     isFieldFooter: true,
-    title: 'Detail Lapangan'
+    title: 'Detail Field'
   }
 })
 </script>

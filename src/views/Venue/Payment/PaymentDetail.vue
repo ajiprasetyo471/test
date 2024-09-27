@@ -47,37 +47,37 @@ const form = ref({
     </VCard>
     <VRow no-gutters class="mt-4">
       <VCol cols="12">
-        <h2 class="font-weight-black text-body-2">Detail Pemesanan Lapangan</h2>
+        <h2 class="font-weight-black text-body-2">Booking Details</h2>
         <p class="text-xxs text-text-grey-4 mt-1">
-          Pastikan detail pemesanan sudah sesuai dan benar.
+          It is important to confirm that all order information is correct.
         </p>
       </VCol>
       <VCol cols="12">
-        <VCard class="pa-4 border-thin rounded-lg mt-2" elevation="0">
+        <VCard class="py-4 px-3 border-thin rounded-lg mt-2" elevation="0">
           <VRow no-gutters>
             <VCol cols="6">
               <CardCategoryItem
                 :icon="'solar:bag-check-outline'"
-                :category="'Tipe Pesanan'"
+                :category="'Order Type'"
                 :title="'Venue'"
               />
               <CardCategoryItem
                 class="mt-3"
                 :icon="'solar:calendar-outline'"
-                :category="'Hari dan Tanggal'"
-                :title="'Selasa, 26 Agustus 2024'"
+                :category="'Date and Time'"
+                :title="'Sunday, 26 Agustus 2024'"
               />
             </VCol>
             <VCol cols="6">
               <CardCategoryItem
                 :icon="'fluent-emoji-high-contrast:basketball'"
-                :category="'Tipe Lapangan'"
+                :category="'Field Type'"
                 :title="'Bola Basket'"
               />
               <CardCategoryItem
                 class="mt-3"
                 :icon="'solar:clock-circle-outline'"
-                :category="'Jam Booking'"
+                :category="'Booking Hour'"
                 :title="'23:00 - 24:00'"
               />
             </VCol>
@@ -87,10 +87,11 @@ const form = ref({
     </VRow>
     <VRow no-gutters class="mt-4">
       <VCol cols="12">
-        <h2 class="font-weight-black text-body-2">Informasi Pemesan</h2>
+        <h2 class="font-weight-black text-body-2">Booking info</h2>
         <p class="text-xxs text-text-grey-4 mt-1">
-          Harap isi data dengan benar dan sesuai dengan identitas asli Anda. Informasi digunakan
-          untuk memverifikasi identitas dan mencegah pemesanan yang tidak sah.
+          Please ensure that all information provided is accurate and matches your official
+          identification. This information is used to verify your identity and prevent unauthorized
+          bookings.
         </p>
       </VCol>
       <VCol cols="12" class="mt-2">
@@ -98,7 +99,7 @@ const form = ref({
           label-required
           type="text"
           placeholder="Nama Pemesan"
-          label="Nama Pemesan"
+          label="Name"
           v-model="form.name"
           :rules="[requiredValidator(form.name, 'Nama Pemesan')]"
         ></AppTextField>
@@ -108,7 +109,7 @@ const form = ref({
           label-required
           type="text"
           placeholder="Nomor Telepon"
-          label="Nomor Telepon"
+          label="Phone Number"
           v-model="form.name"
           :rules="[requiredValidator(form.phoneNumber, 'Nomor Telepon'), phoneValidator]"
         >
@@ -135,28 +136,28 @@ const form = ref({
       <VCol cols="12" class="mt-n1">
         <AppTextField
           type="text"
-          placeholder="Nama Komunitas/Grup"
-          label="Nama Komunitas/Grup"
+          placeholder="Comunity Name/Group"
+          label="Comunity Name"
           v-model="form.communityGroup"
         ></AppTextField>
       </VCol>
       <VCol cols="12" class="mt-n1">
         <AppTextArea
           type="text"
-          placeholder="Tulis Keterangan"
-          label="Catatan"
+          placeholder="Write description"
+          label="Notes"
           v-model="form.note"
         ></AppTextArea>
       </VCol>
     </VRow>
     <VRow no-gutters class="mt-2">
       <VCol cols="12">
-        <h2 class="font-weight-black text-body-2">Metode Pembayaran</h2>
+        <h2 class="font-weight-black text-body-2">Payment</h2>
         <p class="text-xxs text-text-grey-4 mt-1">
-          Semua transaksi yang dilakukan aman dan terenkripsi.
+          Your transactions are safeguarded with the latest security measures.
         </p>
       </VCol>
-      <VCol cols="12" class="mt-2">
+      <!-- <VCol cols="12" class="mt-2">
         <VCard
           class="pa-4 border-thin rounded-lg mt-2 d-flex align-center justify-space-between w-100"
           elevation="0"
@@ -170,8 +171,8 @@ const form = ref({
           </div>
           <Icon icon="material-symbols:chevron-right" />
         </VCard>
-      </VCol>
-      <VCol cols="12" class="mt-4">
+      </VCol> -->
+      <VCol cols="12" class="mt-6">
         <VCard
           class="bg-bg-orange pa-4"
           style="border: 1px solid #f2c94c"
@@ -180,10 +181,10 @@ const form = ref({
         >
           <div class="d-flex">
             <Icon icon="ion:warning-outline" class="text-text-orange" />
-            <span class="text-caption font-weight-bold ml-2">Kebijakan Pembatalan</span>
+            <span class="text-caption font-weight-bold ml-2">Booking Cancellation Policy</span>
           </div>
           <p class="text-text-grey-4 mt-2 text-xxs">
-            Kebijakan pembatalan berdasarkan aturan dari setiap venue.
+            Cancellation policy depends on each venue's rules.
           </p>
         </VCard>
       </VCol>
@@ -192,13 +193,13 @@ const form = ref({
   <VContainer class="bg-bg-grey pb-0">
     <VRow no-gutters class="mt-2">
       <VCol cols="12">
-        <h2 class="font-weight-black text-body-2">Detail Transaksi</h2>
+        <h2 class="font-weight-black text-body-2">Detail Transaction</h2>
       </VCol>
       <VCol cols="12" class="mt-2">
         <VCard class="pa-4 border-thin rounded-lg" elevation="0">
           <VRow no-gutters class="mb-1">
             <VCol cols="6">
-              <p class="text-caption">Harga Lapangan</p>
+              <p class="text-caption">Field Price</p>
             </VCol>
             <VCol cols="6">
               <p class="text-caption text-right font-weight-bold">Rp 150.000</p>
@@ -206,7 +207,7 @@ const form = ref({
           </VRow>
           <VRow no-gutters class="mb-1">
             <VCol cols="6">
-              <p class="text-caption">Biaya Layanan</p>
+              <p class="text-caption">Service Price</p>
             </VCol>
             <VCol cols="6">
               <p class="text-caption text-right font-weight-bold">Rp 5.000</p>
@@ -217,7 +218,7 @@ const form = ref({
             class="mb-4 pb-4 border-b-thin border-e-0 border-s-0 border-t-0 border-dashed"
           >
             <VCol cols="6">
-              <p class="text-caption">Asuransi</p>
+              <p class="text-caption">Insurance</p>
             </VCol>
             <VCol cols="6">
               <p class="text-caption text-right font-weight-bold">Rp 0</p>
@@ -225,7 +226,7 @@ const form = ref({
           </VRow>
           <VRow no-gutters>
             <VCol cols="6">
-              <p class="text-caption font-weight-bold">Total Pembayaran</p>
+              <p class="text-caption font-weight-bold">Total Payment</p>
             </VCol>
             <VCol cols="6">
               <p class="text-body-2 text-right font-weight-black">Rp 150.000</p>
@@ -234,20 +235,19 @@ const form = ref({
         </VCard>
       </VCol>
       <VCol cols="12" class="mt-4">
-        <VCheckbox>
+        <VCheckbox color="#00549B" class="rounded-xl">
           <!-- v-model="isAgree" :disabled="!!errorMessage" -->
           <template v-slot:label>
             <p class="text-xxs">
-              Saya setuju dengan
-              <RouterLink to="#" class="text-decoration-none font-weight-bold text-text-blue">
+              I fully agree to and accept all
+              <RouterLink
+                to="/term-conditions"
+                class="text-decoration-none font-weight-bold text-text-blue"
+              >
                 <!-- @click.prevent="isOpenUa = true" -->
-                Syarat dan Ketentuan milik Gelora </RouterLink
-              >, serta
-              <RouterLink to="#" class="text-decoration-none font-weight-bold text-text-blue">
-                <!-- @click.prevent="isOpenUa = true" -->
-                Syarat dan Ketentuan Asuransi
+                terms and conditions
               </RouterLink>
-              yang disediakan.
+              set forth by Gelora, including the insurance terms
             </p>
           </template>
         </VCheckbox>

@@ -5,66 +5,91 @@ import PageSpinLoader from '@/@core/components/PageSpinLoader.vue'
 import moment from 'moment'
 import { useVenueStore } from '@/stores/venue.store.js'
 import { useSnackbarStore } from '@/stores/snackbar'
+import { VSlideGroupItem } from 'vuetify/lib/components/index.mjs'
 
 const stores = useVenueStore()
 const snackStores = useSnackbarStore()
 
 const router = useRouter()
 
-const showDatePicker = ref(false)
 const showTimePicker = ref(false)
 
-const selectedDate = ref()
+const selectedMonth = ref(moment().format('YYYY-MM'))
 const startTime = ref('00:00')
 const endTime = ref('00:00')
+const selectedDateIndex = ref(0)
 const dates = ref(getDates())
 
-const formattedDate = computed(() => {
-  return selectedDate.value
-    ? moment(selectedDate.value, 'YYYY-MM-DD').format('MMMM D, YYYY')
-    : 'Select Date'
-})
+const formattedMonth = (month) => {
+  return moment(month, 'YYYY-MM').format('MMMM, YYYY')
+}
 
 const formattedTimeRange = computed(() => {
   return `${moment(startTime.value, 'HH:mm').format('HH:mm')} - ${moment(endTime.value, 'HH:mm').format('HH:mm')}`
 })
 
-const onDateSelected = (newDate) => {
-  selectedDate.value = newDate
+const onMonthSelected = (newMonth) => {
+  selectedMonth.value = newMonth
+  dates.value = getDates(newMonth.month, newMonth.year)
 }
 
-function getDates() {
+function getDates(month, year) {
   const dates = []
-  const today = moment() // Tanggal hari ini
-  const startOfRange = today.clone().subtract(2, 'days') // 2 hari sebelum hari ini
-  const endOfRange = today.clone().add(3, 'days') // 3 hari setelah hari ini
+  const today = moment()
+  const currentMonth = today.month()
+  const currentYear = today.year()
 
-  let currentDate = startOfRange
-  while (currentDate.isSameOrBefore(endOfRange)) {
+  const startOfMonth =
+    year && month
+      ? moment(`${year}-${month + 1}`, 'YYYY-MM')
+          .clone()
+          .startOf('month')
+      : today.clone().startOf('month')
+  const endOfMonth =
+    year && month
+      ? moment(`${year}-${month + 1}`, 'YYYY-MM')
+          .clone()
+          .endOf('month')
+      : today.clone().endOf('month')
+
+  let currentDate = startOfMonth
+  while (currentDate.isSameOrBefore(endOfMonth)) {
     dates.push({
       date: currentDate.format('DD'), // Tanggal
       day: currentDate.format('ddd'), // Hari
-      disabled: currentDate.isBefore(today, 'day'), // Tanggal sebelum hari ini
+      disabled:
+        !year && !month
+          ? currentDate.isBefore(today, 'day')
+          : year === currentYear && month === currentMonth
+            ? currentDate.isBefore(today, 'day')
+            : (year === currentYear && month < currentMonth) || (year < currentYear && month)
+              ? true
+              : false, // Tanggal sebelum hari ini dinonaktifkan
       selected: false // Tanggal hari ini otomatis terpilih
     })
     currentDate = currentDate.add(1, 'day')
   }
 
-  // Temukan tanggal hari ini dan letakkan di urutan ke-3
-  const todayIndex = dates.findIndex((date) => date.date === today.format('DD'))
-  if (todayIndex !== -1 && todayIndex !== 2) {
-    const [todayCard] = dates.splice(todayIndex, 1)
-    dates.splice(2, 0, todayCard)
+  // Otomatis memilih tanggal hari ini
+  if ((month === currentMonth && year === currentYear) || (!year && !month)) {
+    const todayIndex = dates.findIndex((date) => date.date === today.format('DD'))
+    if (todayIndex !== -1) {
+      selectedDateIndex.value = todayIndex // Fokus ke tanggal hari ini
+    }
+  } else {
+    selectedDateIndex.value = 0
   }
 
   return dates
 }
 
+// Fungsi untuk memilih tanggal
 const selectDate = (index) => {
   if (!dates.value[index].disabled) {
     dates.value.forEach((date, i) => {
       date.selected = i === index
     })
+    selectedDateIndex.value = index // Perbarui indeks yang dipilih
   }
 }
 
@@ -89,10 +114,6 @@ const getVenueList = async () => {
 
 onMounted(() => {
   getVenueList()
-  const todayIndex = dates.value.findIndex((date) => date.selected)
-  if (todayIndex !== -1) {
-    selectDate(todayIndex)
-  }
 })
 </script>
 
@@ -100,11 +121,21 @@ onMounted(() => {
   <VContainer class="pt-0">
     <VRow no-gutters>
       <VCol cols="12" class="d-flex align-center justify-space-between">
-        <VBtn @click="showDatePicker = true" class="d-flex align-center" variant="text">
-          <Icon icon="solar:calendar-outline" class="text-h6" />
-          <span class="text-caption mx-2">{{ formattedDate }}</span>
-          <Icon icon="mdi-chevron-down" />
-        </VBtn>
+        <VueDatePicker
+          style="width: 45%; font-size: 12px !important"
+          class="text-caption"
+          :format="formattedMonth"
+          @update:model-value="onMonthSelected"
+          month-picker
+          :model-value="selectedMonth"
+        >
+          <template #input-icon>
+            <Icon style="font-size: 20px" class="mt-1 text-black" icon="solar:calendar-outline" />
+          </template>
+          <template #clear-icon>
+            <Icon style="font-size: 18px" class="text-black" icon="mdi:chevron-down" />
+          </template>
+        </VueDatePicker>
         <VBtn @click="showTimePicker = true" class="d-flex align-center" variant="text">
           <Icon icon="solar:clock-circle-outline" class="text-h6" />
           <span class="text-caption mx-2">{{ formattedTimeRange }}</span>
@@ -113,28 +144,30 @@ onMounted(() => {
       </VCol>
     </VRow>
 
-    <VRow class="mb-4 mt-0">
-      <VCol v-for="(date, index) in dates" :key="index" class="px-2" cols="2">
-        <VCard
-          class="border-thin rounded-lg"
-          :class="{
-            'bg-bg-grey-2 text-text-grey-3': date.disabled,
-            'bg-text-orange text-white': date.selected,
-            'bg-white text-black': !date.disabled
-          }"
-          elevation="0"
-          @click="selectDate(index)"
-          :disabled="date.disabled"
-        >
-          <v-card-title class="d-flex flex-column align-center">
-            <div class="text-body-1 font-weight-black">{{ date.date }}</div>
-            <div class="text-xxs" :class="{ 'text-text-grey': !date.disabled && !date.selected }">
-              {{ date.day }}
-            </div>
-          </v-card-title>
-        </VCard>
-      </VCol>
-    </VRow>
+    <VSlideGroup v-model="selectedDateIndex" class="mb-6 mt-2">
+      <template v-for="(date, index) in dates" :key="index" :value="index">
+        <VSlideGroupItem :value="index">
+          <VCard
+            class="border-thin rounded-lg mx-2"
+            :class="{
+              'bg-bg-grey-2 text-text-grey-3': date.disabled,
+              'bg-text-orange text-white': date.selected,
+              'bg-white text-black': !date.disabled && !date.selected
+            }"
+            elevation="0"
+            @click="selectDate(index)"
+            :disabled="date.disabled"
+          >
+            <VCardTitle class="d-flex flex-column align-center">
+              <div class="text-body-1 font-weight-black">{{ date.date }}</div>
+              <div class="text-xxs" :class="{ 'text-text-grey': !date.disabled && !date.selected }">
+                {{ date.day }}
+              </div>
+            </VCardTitle>
+          </VCard>
+        </VSlideGroupItem>
+      </template>
+    </VSlideGroup>
 
     <VenueItem
       v-if="!stores.loading"
@@ -148,20 +181,6 @@ onMounted(() => {
       :img="item.coverPictureUrl"
       @click="goToDetail(item.id)"
     />
-
-    <VDialog v-model="showDatePicker">
-      <VCard>
-        <VDatePicker
-          v-model="selectedDate"
-          @update:model-value="onDateSelected"
-          @click:cancel="showDatePicker = false"
-        />
-        <VCardActions class="position-fixed bottom-0 bg-white w-100">
-          <VBtn @click="showDatePicker = false" text>Cancel</VBtn>
-          <VBtn @click="showDatePicker = false" color="primary">OK</VBtn>
-        </VCardActions>
-      </VCard>
-    </VDialog>
 
     <VDialog v-model="showTimePicker">
       <VCard>
@@ -179,3 +198,13 @@ onMounted(() => {
   </VContainer>
   <PageSpinLoader v-model:is-loading="stores.loading" />
 </template>
+
+<style>
+.dp__theme_light {
+  --dp-border-color: none;
+}
+
+.dp__input {
+  font-size: 12px;
+}
+</style>
