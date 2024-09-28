@@ -43,6 +43,7 @@ onMounted(() => {
             :date="item.date"
             :time="item.time"
             :amount="item.amount"
+            :status="item.status"
           />
         </div>
       </VTabsWindowItem>
@@ -55,6 +56,7 @@ onMounted(() => {
             :date="item.date"
             :time="item.time"
             :amount="item.amount"
+            :status="item.status"
           />
         </div>
       </VTabsWindowItem>

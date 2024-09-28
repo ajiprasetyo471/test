@@ -23,6 +23,21 @@ const props = defineProps({
   amount: {
     type: String,
     required: true
+  },
+  status: {
+    type: String,
+    required: true
+  }
+})
+
+const dynamicStyle = computed(() => {
+  return {
+    border:
+      props.status === 'paid'
+        ? '1px solid #B2DDFF;'
+        : props.status === 'pending'
+          ? '1px solid #ffe5b2'
+          : ''
   }
 })
 </script>
@@ -45,18 +60,36 @@ const props = defineProps({
       </VCol>
     </VRow>
   </div>
-  <div class="cardBottom pa-4 d-flex align-center justify-space-between">
-    <div class="d-flex align-center">
-      <Icon icon="solar:calendar-outline" />
-      <span class="text-xxs ml-2">{{ props.date }}</span>
+  <div class="cardBottom pa-4">
+    <div class="d-flex align-center justify-space-between">
+      <div class="d-flex align-center">
+        <Icon icon="solar:calendar-outline" />
+        <span class="text-xxs ml-2">{{ props.date }}</span>
+      </div>
+      <div class="d-flex align-center">
+        <Icon icon="solar:clock-circle-outline" />
+        <span class="text-xxs ml-2">{{ props.time }}</span>
+      </div>
+      <v-chip color="orange">
+        <span class="text-text-orange text-caption font-weight-black">Rp {{ props.amount }}</span>
+      </v-chip>
     </div>
-    <div class="d-flex align-center">
-      <Icon icon="solar:clock-circle-outline" />
-      <span class="text-xxs ml-2">{{ props.time }}</span>
-    </div>
-    <v-chip color="orange">
-      <span class="text-text-orange text-caption font-weight-black">Rp {{ props.amount }}</span>
-    </v-chip>
+    <VCard
+      class="pa-4 mt-4"
+      :class="{
+        'bg-bg-blue-light-2 border-paid': props.status == 'paid',
+        'bg-bg-yellow border-pending': props.status == 'pending',
+        'bg-text-red-2': props.status == 'failed'
+      }"
+      :style="dynamicStyle"
+      elevation="0"
+      rounded="lg"
+    >
+      <div class="d-flex align-center justify-space-between">
+        <span class="text-caption">Payment Status</span>
+        <span class="text-caption font-weight-bold">{{ props.status.toUpperCase() }}</span>
+      </div>
+    </VCard>
   </div>
 </template>
 

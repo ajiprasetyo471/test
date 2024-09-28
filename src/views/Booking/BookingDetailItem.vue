@@ -23,6 +23,10 @@ const props = defineProps({
   amount: {
     type: String,
     required: true
+  },
+  status: {
+    type: String,
+    required: true
   }
 })
 </script>
@@ -59,31 +63,57 @@ const props = defineProps({
   </div>
   <div class="cardBottom pt-0">
     <div
-      class="bg-bg-grey d-flex align-center justify-space-between px-4 pb-2 pt-3 ma-1"
+      class="px-4 pb-2 pt-3 ma-1"
+      :class="{
+        'bg-bg-grey': status == 'paid',
+        'bg-bg-yellow': status == 'pending',
+        'bg-text-red-2': status == 'failed'
+      }"
       style="border-bottom-left-radius: 15px; border-bottom-right-radius: 15px"
     >
-      <div class="d-flex align-center">
-        <VBtn class="bg-white" size="27" variant="text">
-          <Icon class="text-text-orange" icon="solar:calendar-outline" />
-        </VBtn>
-        <div class="ml-2">
-          <p class="text-xxxs text-text-grey">Hari dan Tanggal</p>
-          <p class="text-xxs">{{ props.date }}</p>
-          <p class="text-xxs">Selasa, 26 Agustus 2024</p>
-        </div>
-      </div>
-      <div class="d-flex align-center">
-        <VBtn class="bg-white" size="27" variant="text">
-          <Icon class="text-text-orange" icon="solar:clock-circle-outline" />
-        </VBtn>
-        <div class="ml-2">
-          <p class="text-xxxs text-text-grey">Jam Booking</p>
-          <p class="text-xxs">{{ props.time }}</p>
-          <p class="text-xxs">23:00 - 24:00</p>
-        </div>
-      </div>
+      <p class="text-caption">
+        <span
+          :class="{
+            'text-text-grey': status == 'paid',
+            'text-text-grey': status == 'pending',
+            'text-white': status == 'failed'
+          }"
+          >Booking ID: </span
+        ><span
+          class="font-weight-black"
+          :class="{
+            'text-white': status == 'failed'
+          }"
+          >{{ status == 'paid' ? 'DUMMY 800K1N9' : '-' }}</span
+        >
+      </p>
     </div>
   </div>
+  <VCard
+    class="d-flex align-center justify-space-between pa-2 pr-4 border-thin rounded-lg mt-3"
+    elevation="0"
+  >
+    <div class="d-flex align-center">
+      <VBtn class="bg-white" size="27" variant="text">
+        <Icon class="text-text-orange" icon="solar:calendar-outline" />
+      </VBtn>
+      <div class="ml-2">
+        <p class="text-xxs text-text-grey">Date and Day</p>
+        <p class="text-xxs">{{ props.date }}</p>
+        <p class="text-xxs">Selasa, 26 Agustus 2024</p>
+      </div>
+    </div>
+    <div class="d-flex align-center">
+      <VBtn class="bg-white" size="27" variant="text">
+        <Icon class="text-text-orange" icon="solar:clock-circle-outline" />
+      </VBtn>
+      <div class="ml-2">
+        <p class="text-xxs text-text-grey">Booking Time</p>
+        <p class="text-xxs">{{ props.time }}</p>
+        <p class="text-xxs">23:00 - 24:00</p>
+      </div>
+    </div>
+  </VCard>
 </template>
 
 <style scoped lang="scss">

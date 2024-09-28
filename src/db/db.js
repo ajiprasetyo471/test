@@ -285,7 +285,8 @@ export const bookingListData = [
     img: venueImg,
     date: 'August 26, 2024',
     time: '18:00-21:00',
-    amount: '150.000'
+    amount: '150.000',
+    status: 'paid'
   },
   {
     id: 2,
@@ -295,7 +296,8 @@ export const bookingListData = [
     img: venueImg,
     date: 'August 26, 2024',
     time: '18:00-21:00',
-    amount: '150.000'
+    amount: '150.000',
+    status: 'pending'
   },
   {
     id: 3,
@@ -305,7 +307,8 @@ export const bookingListData = [
     img: venueImg,
     date: 'August 26, 2024',
     time: '18:00-21:00',
-    amount: '150.000'
+    amount: '150.000',
+    status: 'failed'
   }
 ]
 

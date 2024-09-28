@@ -1,35 +1,78 @@
 <script setup>
 import BookingDetailItem from './BookingDetailItem.vue'
+
+const route = useRoute()
+
+const status = ref(null)
+
+const title = (status) => {
+  return status == 'paid' ? 'Success' : status == 'pending' ? 'Pending' : 'Failed'
+}
+
+const desc = (status) => {
+  return status == 'paid'
+    ? 'Your booking for British Footbal has been successfully'
+    : status == 'pending'
+      ? "We're waiting for your payment to confirm your London Football booking"
+      : 'Payment failed. Your booking has not been confirmed.'
+}
+
+onMounted(() => {
+  status.value =
+    route.params.id == 1
+      ? 'paid'
+      : route.params.id == 2
+        ? 'pending'
+        : route.params.id == 3
+          ? 'failed'
+          : ''
+})
 </script>
 
 <template>
-  <div class="cardCont cardTop px-4 py-10 mt-6">
+  <div class="cardCont cardTop px-4 py-6 mt-6">
     <VRow no-gutters>
       <VCol cols="12">
-        <h2 class="text-h6 font-weight-black text-center">Booking Success</h2>
+        <h2
+          class="text-h6 font-weight-black text-center"
+          :class="{
+            'text-black': status == 'paid',
+            'text-text-orange': status == 'pending',
+            'text-text-red-2': status == 'failed'
+          }"
+        >
+          Booking {{ title(status) }}
+        </h2>
       </VCol>
       <VCol cols="12" class="mt-1">
-        <p class="text-caption text-text-grey text-center px-8">
-          Your booking for British Footbal has been successfully done
+        <p class="text-caption text-text-grey text-center px-14">
+          {{ desc(status) }}
         </p>
       </VCol>
     </VRow>
-    <VRow no-gutters class="mt-10">
+    <VRow no-gutters class="mt-5">
       <VCol cols="12">
-        <BookingDetailItem />
+        <BookingDetailItem :status="status" />
       </VCol>
     </VRow>
   </div>
-  <div class="cardCont cardBottom px-4 py-10">
+  <div class="cardCont cardBottom px-4 pt-6 pb-10">
     <VRow no-gutters>
       <VCol cols="12" class="mb-2">
-        <h6 class="text-body-2 font-weight-bold">Detail Pembayaran</h6>
+        <h6 class="text-body-2 font-weight-bold">Payment Detail</h6>
       </VCol>
       <VCol cols="12">
-        <VCard class="pa-4 border-thin rounded-lg" elevation="0">
+        <VCard
+          class="pa-4 rounded-lg"
+          elevation="0"
+          :class="{ 'border-thin': status != 'pending' }"
+          :style="{
+            border: status === 'pending' ? '1px solid #ffe5b2' : undefined
+          }"
+        >
           <VRow no-gutters class="mb-1">
             <VCol cols="6">
-              <p class="text-caption">Harga Lapangan</p>
+              <p class="text-caption">Field Price</p>
             </VCol>
             <VCol cols="6">
               <p class="text-caption text-right font-weight-bold">Rp 145.000</p>
@@ -37,7 +80,7 @@ import BookingDetailItem from './BookingDetailItem.vue'
           </VRow>
           <VRow no-gutters class="mb-1">
             <VCol cols="6">
-              <p class="text-caption">Biaya Layanan</p>
+              <p class="text-caption">Service Price</p>
             </VCol>
             <VCol cols="6">
               <p class="text-caption text-right font-weight-bold">Rp 5.000</p>
@@ -45,10 +88,16 @@ import BookingDetailItem from './BookingDetailItem.vue'
           </VRow>
           <VRow
             no-gutters
-            class="mb-4 pb-4 border-b-thin border-e-0 border-s-0 border-t-0 border-dashed"
+            class="mb-4 pb-4"
+            :class="{
+              'border-b-thin border-e-0 border-s-0 border-t-0 border-dashed': status != 'pending'
+            }"
+            :style="{
+              borderBottom: status === 'pending' ? '1px dashed #ffe5b2' : undefined
+            }"
           >
             <VCol cols="6">
-              <p class="text-caption">Asuransi</p>
+              <p class="text-caption">Insurance</p>
             </VCol>
             <VCol cols="6">
               <p class="text-caption text-right font-weight-bold">Rp 0</p>
@@ -56,12 +105,39 @@ import BookingDetailItem from './BookingDetailItem.vue'
           </VRow>
           <VRow no-gutters>
             <VCol cols="6">
-              <p class="text-caption font-weight-bold">Total Pembayaran</p>
+              <p class="text-caption font-weight-bold">Total Payment</p>
             </VCol>
             <VCol cols="6">
               <p class="text-body-2 text-right font-weight-black">Rp 150.000</p>
             </VCol>
           </VRow>
+        </VCard>
+      </VCol>
+      <VCol cols="12">
+        <VCard
+          class="pa-4 mt-4"
+          :class="{
+            'bg-bg-blue-light-2 border-paid': status == 'paid',
+            'bg-bg-yellow border-pending': status == 'pending',
+            'bg-text-red-2': status == 'failed'
+          }"
+          :style="{
+            border:
+              status === 'paid'
+                ? '1px solid #B2DDFF;'
+                : status === 'pending'
+                  ? '1px solid #ffe5b2'
+                  : ''
+          }"
+          elevation="0"
+          rounded="lg"
+        >
+          <div class="d-flex align-center justify-space-between">
+            <span class="text-caption">Payment Status</span>
+            <span class="text-caption font-weight-bold">{{
+              status ? status.toUpperCase() : ''
+            }}</span>
+          </div>
         </VCard>
       </VCol>
     </VRow>

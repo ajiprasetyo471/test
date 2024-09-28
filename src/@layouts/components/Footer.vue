@@ -56,6 +56,10 @@ const goToPayment = () => {
   router.push('/venue/payment')
 }
 
+const goToReport = () => {
+  router.push('/report')
+}
+
 // Watch the current route to update the active state
 watch(route, (newRoute) => {
   active.value = newRoute.path || ''
@@ -80,6 +84,9 @@ onMounted(() => {
     </VContainer>
     <VContainer v-if="pageMeta.isSaveFooter == true">
       <VBtn class="bg-bg-blue rounded-lg" block density="compact">Simpan</VBtn>
+    </VContainer>
+    <VContainer v-if="pageMeta.isReportFooter == true">
+      <VBtn class="bg-bg-blue rounded-lg" block density="compact">DONE</VBtn>
     </VContainer>
     <VContainer v-if="pageMeta.isFieldFooter == true">
       <div
@@ -127,11 +134,16 @@ onMounted(() => {
     <VContainer v-if="pageMeta.isPaymentFooter == true">
       <div class="rounded-lg w-100 d-flex justify-space-between pa-4 align-center bg-bg-blue">
         <div class="">
-          <p class="text-xxs text-white">Total Pembayaran</p>
+          <p class="text-xxs text-white">Total Payment</p>
           <p class="text-body-1 font-weight-bold text-white">Rp 155.000</p>
         </div>
-        <VBtn class="bg-white rounded-lg d-flex align-center" density="compact" size="small">
-          <span class="text-black text-caption font-weight-bold">BAYAR</span>
+        <VBtn
+          class="bg-white rounded-lg d-flex align-center"
+          density="compact"
+          size="small"
+          @click="goToReport()"
+        >
+          <span class="text-black text-caption font-weight-bold">PAYMENT</span>
           <template #append>
             <VIcon
               size="25"
@@ -147,7 +159,7 @@ onMounted(() => {
     <VContainer v-if="pageMeta.isCartFooter == true">
       <div class="rounded-lg w-100 d-flex justify-space-between pa-4 align-center bg-bg-blue">
         <div class="">
-          <p class="text-xxs text-white">Total Pembayaran</p>
+          <p class="text-xxs text-white">Total Payment</p>
           <p class="text-body-1 font-weight-bold text-white">Rp 155.000</p>
         </div>
         <VBtn
@@ -156,7 +168,7 @@ onMounted(() => {
           size="small"
           @click="goToPayment()"
         >
-          <span class="text-black text-caption font-weight-bold">BAYAR</span>
+          <span class="text-black text-caption font-weight-bold">PAYMENT</span>
           <template #append>
             <VIcon
               size="25"
