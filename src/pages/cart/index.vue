@@ -1,5 +1,5 @@
 <script setup>
-import Venue from '@/views/Venue/Venue.vue'
+import Cart from '@/views/Cart/Cart.vue'
 
 definePage({
   meta: {
@@ -7,15 +7,14 @@ definePage({
     // topTitle: "Authorize (Merchant Name)",
     // topLogo: true,
     public: false,
-    isActivityItems: true,
-    isCart: true,
+    isDetail: true,
     isFooter: true,
-    isMenuFooter: true,
-    title: 'Venue'
+    isCartFooter: true,
+    title: 'Keranjang booking'
   }
 })
 </script>
 
 <template>
-  <Venue />
+  <Cart />
 </template>

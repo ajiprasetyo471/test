@@ -40,9 +40,12 @@ export default createVuetify({
           'text-orange': '#F87304',
           'text-orange-2': '#FDD5B4',
           'bg-blue': '#00549B',
+          'bg-blue-2': '#1950AC',
           'bg-blue-light': '#DDEFFC',
           'text-blue': '#1078CA',
-          'text-red': '#FF4141'
+          'text-blue-2': '#06377A',
+          'text-red': '#FF4141',
+          'text-red-2': '#E84040'
         }
       }
     }

@@ -21,6 +21,7 @@ declare module 'vue' {
     ButtonSecondary: typeof import('./src/@core/components/ButtonSecondary.vue')['default']
     CardCategoryItem: typeof import('./src/components/card/CardCategoryItem.vue')['default']
     CardComponent: typeof import('./src/components/card/CardComponent.vue')['default']
+    ConfirmationModal: typeof import('./src/components/modal/ConfirmationModal.vue')['default']
     copy: typeof import('./src/@core/components/forms/AppTextField copy.vue')['default']
     DateSlider: typeof import('./src/components/DateSlider.vue')['default']
     DetailActivityItem: typeof import('./src/components/card/DetailActivityItem.vue')['default']

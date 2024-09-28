@@ -130,7 +130,7 @@ onMounted(() => {
             <span class="font-weight-medium text-caption">Ciputat, Tangerang Selatan</span>
           </div>
         </div>
-        <VBtn size="35" class="ml-1" icon>
+        <VBtn to="/cart" v-if="pageMeta.isCart" size="35" class="ml-1" icon>
           <Icon style="font-size: 25px" icon="solar:bag-check-outline" />
         </VBtn>
       </div>

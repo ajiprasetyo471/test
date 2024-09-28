@@ -36,7 +36,7 @@ const pageMeta = computed({
 
 const footerHeight = computed({
   get: () => {
-    if (route.meta.isFieldFooter || route.meta.isPaymentFooter) {
+    if (route.meta.isFieldFooter || route.meta.isPaymentFooter || route.meta.isCartFooter) {
       return 100
     } else {
       return 80
@@ -131,6 +131,31 @@ onMounted(() => {
           <p class="text-body-1 font-weight-bold text-white">Rp 155.000</p>
         </div>
         <VBtn class="bg-white rounded-lg d-flex align-center" density="compact" size="small">
+          <span class="text-black text-caption font-weight-bold">BAYAR</span>
+          <template #append>
+            <VIcon
+              size="25"
+              class="rounded-circle text-body-1 pa-2 mt-n1 ml-2 bg-text-orange"
+              style="color: white !important"
+            >
+              mdi-arrow-right
+            </VIcon>
+          </template>
+        </VBtn>
+      </div>
+    </VContainer>
+    <VContainer v-if="pageMeta.isCartFooter == true">
+      <div class="rounded-lg w-100 d-flex justify-space-between pa-4 align-center bg-bg-blue">
+        <div class="">
+          <p class="text-xxs text-white">Total Pembayaran</p>
+          <p class="text-body-1 font-weight-bold text-white">Rp 155.000</p>
+        </div>
+        <VBtn
+          class="bg-white rounded-lg d-flex align-center"
+          density="compact"
+          size="small"
+          @click="goToPayment()"
+        >
           <span class="text-black text-caption font-weight-bold">BAYAR</span>
           <template #append>
             <VIcon
