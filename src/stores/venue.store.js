@@ -4,6 +4,20 @@ import venueService from '@/services/venue.service'
 export const useVenueStore = defineStore('venueStore', {
   state: () => ({
     loading: false,
+    filters: {
+      latitude: null,
+      longitude: null,
+      sportId: null,
+      cityId: null,
+      maxPrice: null,
+      minPrice: null,
+      page: null,
+      sort: null,
+      keyword: null,
+      date: null,
+      startTime: null,
+      endTime: null
+    },
     venueCards: [],
     venueCardsHome: [],
     venueId: null,
@@ -37,6 +51,15 @@ export const useVenueStore = defineStore('venueStore', {
       } finally {
         this.loading = false
       }
+    },
+    setFilter(key, value) {
+      this.filters[key] = value
+      this.applyFilters()
+    },
+
+    async applyFilters() {
+      const filterData = { ...this.filters }
+      await this.getVenueCards(filterData)
     },
     async getVenueCardsHome(data) {
       this.loading = true

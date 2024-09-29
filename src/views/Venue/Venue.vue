@@ -91,6 +91,25 @@ const selectDate = (index) => {
     })
     selectedDateIndex.value = index // Perbarui indeks yang dipilih
   }
+
+  const date = index + 1
+  const month = selectedMonth.value?.month
+    ? selectedMonth.value.month + 1
+    : parseInt(selectedMonth.value.split('-')[1])
+  const year = selectedMonth.value?.year
+    ? selectedMonth.value.year
+    : selectedMonth.value.split('-')[0]
+
+  const selectedDate = `${year}-${month}-${date}`
+
+  stores.setFilter('date', selectedDate)
+}
+
+const handleTimeSelection = () => {
+  showTimePicker.value = false
+
+  stores.setFilter('startTime', startTime.value)
+  stores.setFilter('endTime', endTime.value)
 }
 
 const goToDetail = (id) => {
@@ -191,7 +210,7 @@ onMounted(() => {
         </VCardText>
         <VCardActions class="position-fixed bottom-0 bg-white w-100" style="z-index: 1000">
           <VBtn @click="showTimePicker = false" text>Cancel</VBtn>
-          <VBtn @click="showTimePicker = false" color="primary">OK</VBtn>
+          <VBtn @click="handleTimeSelection" color="primary">OK</VBtn>
         </VCardActions>
       </VCard>
     </VDialog>

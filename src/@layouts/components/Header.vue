@@ -15,6 +15,7 @@ const route = useRoute()
 const router = useRouter()
 
 const searchQuery = ref('')
+const selectedItemId = ref('all')
 
 const pagePath = computed({
   get: () => route.path,
@@ -59,10 +60,20 @@ const filterItems = (query) => {
       activityStores.filterActivityCards(query)
       break
     case 'Venue':
-      venueStores.getVenueCards({ maxPrice: query ? parseInt(query) : null })
+      venueStores.setFilter('keyword', query ? query : null)
       break
     default:
       break
+  }
+}
+
+const selectItem = (itemId) => {
+  selectedItemId.value = itemId
+
+  if (itemId != 'all') {
+    venueStores.setFilter('sportId', itemId)
+  } else {
+    venueStores.getVenueCards()
   }
 }
 
@@ -155,29 +166,25 @@ onMounted(() => {
       </div>
       <div v-if="pageMeta.isActivityItems == true">
         <VSheet class="mx-auto mt-4">
-          <VSlideGroup>
-            <VSlideGroupItem v-slot="{ isSelected, toggle }">
+          <VSlideGroup v-model="selectedItemId">
+            <VSlideGroupItem>
               <VBtn
-                :class="isSelected ? 'bg-bg-blue text-white' : undefined"
+                :class="selectedItemId === 'all' ? 'bg-bg-blue text-white' : undefined"
                 class="mx-1 border-thin text-none text-xxs"
                 rounded="lg"
                 density="comfortable"
-                @click="toggle"
+                @click="selectItem('all')"
               >
                 All
               </VBtn>
             </VSlideGroupItem>
-            <VSlideGroupItem
-              v-for="item in stores.sportItems"
-              :key="item.id"
-              v-slot="{ isSelected, toggle }"
-            >
+            <VSlideGroupItem v-for="item in stores.sportItems" :key="item.id">
               <VBtn
-                :class="isSelected ? 'bg-bg-blue text-white' : undefined"
+                :class="selectedItemId === item.id ? 'bg-bg-blue text-white' : undefined"
                 class="mx-1 border-thin text-none text-xxs"
                 rounded="lg"
                 density="comfortable"
-                @click="toggle"
+                @click="selectItem(item.id)"
               >
                 {{ item.title }}
               </VBtn>
