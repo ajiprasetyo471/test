@@ -4,9 +4,7 @@ import success from '@/assets/images/payment-success.svg'
 import pending from '@/assets/images/payment-pending.svg'
 import failed from '@/assets/images/payment-failed.svg'
 
-const route = useRoute()
-
-const status = ref('failed')
+const status = ref('pending')
 
 const title = (status) => {
   return status == 'paid' ? 'Success' : status == 'pending' ? 'Pending' : 'Failed'

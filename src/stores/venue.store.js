@@ -111,7 +111,7 @@ export const useVenueStore = defineStore('venueStore', {
         const response = await venueService.field(id)
         const resData = response.data
         if (resData.success) {
-          console.log(resData?.data?.fieldList)
+          // console.log(resData?.data?.fieldList)
           this.fieldCards = resData?.data?.fieldList
         } else {
           this.fieldCards = []
@@ -125,7 +125,7 @@ export const useVenueStore = defineStore('venueStore', {
       }
     },
     getDetailField(id, venueId) {
-      console.log(id, venueId)
+      // console.log(id, venueId)
       this.loading = true
       return venueService
         .fieldDetail(id, venueId)

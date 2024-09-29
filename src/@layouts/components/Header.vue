@@ -45,7 +45,7 @@ const headerHeight = computed({
 })
 
 const goToFilter = () => {
-  console.log(route.meta.title)
+  // console.log(route.meta.title)
   if (route.meta.title == 'Venue') {
     router.push('/venue/filter')
   } else if (route.meta.title == 'Activity') {

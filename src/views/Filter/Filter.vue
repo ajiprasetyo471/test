@@ -131,13 +131,11 @@ const toggleCity = (city) => {
 }
 
 const applyFilters = () => {
-  // Logika untuk mengaplikasikan filter
-  console.log('Filters applied')
+  // console.log('Filters applied')
 }
 
 const resetFilters = () => {
-  // Logika untuk mereset filter
-  console.log('Filters reset')
+  // console.log('Filters reset')
 }
 
 onMounted(() => {})
@@ -379,5 +377,13 @@ onMounted(() => {})
   right: 0;
   padding: 16px;
   z-index: 10;
+}
+
+.dp__theme_light {
+  --dp-border-color: none;
+}
+
+.dp__input {
+  font-size: 12px;
 }
 </style>

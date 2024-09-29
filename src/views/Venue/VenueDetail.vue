@@ -27,7 +27,7 @@ const getVenueDetailData = (id) => {
   stores
     .getDetailVenue(id)
     .then((res) => {
-      console.log(res)
+      // console.log(res)
     })
     .catch((err) => {
       console.log(err)
@@ -39,7 +39,7 @@ const getVenueGalleryData = (id) => {
   stores
     .getDetailGallery(id)
     .then((res) => {
-      console.log(res)
+      // console.log(res)
     })
     .catch((err) => {
       console.log(err)
@@ -50,7 +50,7 @@ const getVenueGalleryData = (id) => {
 const getFieldData = async (id) => {
   try {
     const res = await stores.getFieldCards(id)
-    console.log(res)
+    // console.log(res)
   } catch (err) {
     console.log(err)
     snackStores.openSnackbar(err?.message, 'error')

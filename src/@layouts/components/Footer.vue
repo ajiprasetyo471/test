@@ -73,7 +73,7 @@ const setActive = (routePath) => {
 }
 
 onMounted(() => {
-  console.log('rendered footer')
+  // console.log('rendered footer')
 })
 </script>
 
@@ -86,7 +86,7 @@ onMounted(() => {
       <VBtn class="bg-bg-blue rounded-lg" block density="compact">Simpan</VBtn>
     </VContainer>
     <VContainer v-if="pageMeta.isReportFooter == true">
-      <VBtn class="bg-bg-blue rounded-lg" block density="compact">DONE</VBtn>
+      <VBtn to="/venue" class="bg-bg-blue rounded-lg" block density="compact">DONE</VBtn>
     </VContainer>
     <VContainer v-if="pageMeta.isFieldFooter == true">
       <div

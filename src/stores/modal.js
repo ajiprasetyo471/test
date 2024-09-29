@@ -6,7 +6,7 @@ export const useModalStore = defineStore('modal', () => {
 
   function openModal() {
     isModalOpen.value = true
-    console.log('open modal')
+    // console.log('open modal')
   }
 
   function closeModal() {
