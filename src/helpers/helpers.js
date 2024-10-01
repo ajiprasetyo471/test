@@ -21,6 +21,21 @@ export function formatNumber(value) {
   return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
 }
 
+export const reverseFormatTime = (formattedTime) => {
+  const [hours, minutes] = formattedTime.split(':').map(Number) // Memisahkan jam dan menit, lalu mengubahnya menjadi angka
+  return {
+    hours: hours,
+    minutes: minutes,
+    seconds: 0
+  }
+}
+
+export const formatTime = (time) => {
+  const hours = String(time.hours).padStart(2, '0')
+  const minutes = String(time.minutes).padStart(2, '0')
+  return `${hours}:${minutes}`
+}
+
 export const todaySchedule = (currentDay, venue) => {
   switch (currentDay) {
     case 'monday':

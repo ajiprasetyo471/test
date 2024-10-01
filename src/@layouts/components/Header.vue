@@ -14,8 +14,8 @@ const modalStore = useModalStore()
 const route = useRoute()
 const router = useRouter()
 
-const searchQuery = ref('')
-const selectedItemId = ref('all')
+const searchQuery = ref(venueStores.filters.keyword || '')
+const selectedItemId = ref(venueStores.filters.sportId || 'all')
 
 const pagePath = computed({
   get: () => route.path,
@@ -73,16 +73,12 @@ const selectItem = (itemId) => {
   if (itemId != 'all') {
     venueStores.setFilter('sportId', itemId)
   } else {
-    venueStores.getVenueCards()
+    venueStores.setFilter('sportId', null)
   }
 }
 
 watch(searchQuery, (newQuery) => {
   filterItems(newQuery)
-})
-
-watch(route, () => {
-  searchQuery.value = ''
 })
 
 onMounted(() => {

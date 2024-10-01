@@ -18,6 +18,8 @@ export const useVenueStore = defineStore('venueStore', {
       startTime: null,
       endTime: null
     },
+    page: 1,
+    hasMoreData: true,
     venueCards: [],
     venueCardsHome: [],
     venueId: null,
@@ -53,6 +55,11 @@ export const useVenueStore = defineStore('venueStore', {
       }
     },
     setFilter(key, value) {
+      // if (key === 'keyword') {
+      this.page = 1
+      this.filters.page = 1
+      this.hasMoreData = true
+      // }
       this.filters[key] = value
       this.applyFilters()
     },
@@ -60,6 +67,19 @@ export const useVenueStore = defineStore('venueStore', {
     async applyFilters() {
       const filterData = { ...this.filters }
       await this.getVenueCards(filterData)
+    },
+    async getVenueCardsScroll(key, value) {
+      this.filters[key] = value
+      if (key == 'page') {
+        const filterData = { ...this.filters }
+        try {
+          const response = await venueService.list(filterData)
+          const resData = response.data
+          return resData
+        } catch (error) {
+          throw error
+        }
+      }
     },
     async getVenueCardsHome(data) {
       this.loading = true
@@ -173,6 +193,12 @@ export const useVenueStore = defineStore('venueStore', {
     },
     setVenueCards(cards) {
       this.venueCards = cards
+    },
+    setPage(val) {
+      this.page = val
+    },
+    setHasMoreData(val) {
+      this.hasMoreData = val
     },
     setVenueId(id) {
       this.venueId = id
