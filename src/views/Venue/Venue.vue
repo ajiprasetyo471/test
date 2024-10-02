@@ -157,13 +157,13 @@ const loadMoreVenues = async () => {
   if (loadingItem.value || stores.hasMoreData == false) return
 
   loadingItem.value = true
+  stores.setPage(stores.page + 1)
   try {
     const response = await stores.getVenueCardsScroll('page', stores.page)
     if (response.success && response.data.venueList.length > 0) {
       const result = [...stores.venueCards, ...response.data.venueList]
       // const result = response.data.venueList
       stores.setVenueCards(result)
-      stores.setPage(response.data.currentPage + 1)
     } else {
       stores.setHasMoreData(false)
     }
