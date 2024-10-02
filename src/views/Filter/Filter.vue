@@ -1,37 +1,65 @@
 <script setup>
-import { formatNumber } from '@/helpers/helpers'
 import moment from 'moment'
+import { formatNumber, reverseFormatTime, formatTime } from '@/helpers/helpers'
 import { useHomeStore } from '@/stores/home.store.js'
+import { useVenueStore } from '@/stores/venue.store.js'
 
-const stores = useHomeStore()
+const router = useRouter()
+const stores = useVenueStore()
+const homeStores = useHomeStore()
 
 const showTimePicker = ref(false)
-
-const selectedMonth = ref(moment().format('YYYY-MM'))
-const startTime = ref('00:00')
-const endTime = ref('00:00')
-const selectedDateIndex = ref(0)
+const selectedMonth = ref({ month: 0, year: 0 })
+const startTime = ref(
+  stores.filters.startTime
+    ? reverseFormatTime(stores.filters.startTime)
+    : {
+        hours: 0,
+        minutes: 0,
+        seconds: 0
+      }
+)
+const endTime = ref(
+  stores.filters.endTime
+    ? reverseFormatTime(stores.filters.endTime)
+    : {
+        hours: 0,
+        minutes: 0,
+        seconds: 0
+      }
+)
+const selectedDateIndex = ref(stores.filters.date ? stores.filters.date.split('-')[2] - 1 : 0)
+const selectedDate = ref('')
 const dates = ref(getDates())
 const minPrice = 0 // Minimum price for the slider
 const maxPrice = 5000000 // Maximum price for the slider
 const step = 50000 // Step interval for the slider
-const priceRange = ref([minPrice, maxPrice]) // Default price range [start, end]
+const priceRange = ref([
+  stores.filters.minPrice ? stores.filters.minPrice : minPrice,
+  stores.filters.maxPrice ? stores.filters.maxPrice : maxPrice
+]) // Default price range [start, end]
 const selectedCategories = ref([])
 const selectedCities = ref([])
 
-const formattedMonth = (month) => {
-  return moment(month, 'YYYY-MM').format('MMMM, YYYY')
-}
+const formattedMonth = computed(() => {
+  if (selectedMonth.value.year && selectedMonth.value.month) {
+    return moment(
+      `${selectedMonth.value.year}-${String(selectedMonth.value.month + 1).padStart(2, '0')}`,
+      'YYYY-MM'
+    ).format('MMMM, YYYY')
+  }
+  return moment().format('MMMM, YYYY') // Default jika selectedMonth kosong
+})
 
 const formattedStartTime = computed(() => {
-  return `${moment(startTime.value, 'HH:mm').format('HH:mm')}`
+  return `${formatTime(startTime.value)}`
 })
 const formattedEndTime = computed(() => {
-  return `${moment(endTime.value, 'HH:mm').format('HH:mm')}`
+  return `${formatTime(endTime.value)}`
 })
 
 const onMonthSelected = (newMonth) => {
-  selectedMonth.value = newMonth
+  selectedMonth.value = { month: newMonth.month, year: newMonth.year }
   dates.value = getDates(newMonth.month, newMonth.year)
 }
 
@@ -74,12 +102,24 @@ function getDates(month, year) {
 
   // Otomatis memilih tanggal hari ini
   if ((month === currentMonth && year === currentYear) || (!year && !month)) {
-    const todayIndex = dates.findIndex((date) => date.date === today.format('DD'))
-    if (todayIndex !== -1) {
-      selectedDateIndex.value = todayIndex // Fokus ke tanggal hari ini
+    if (stores.filters.date) {
+      const [year, month, day] = stores.filters.date.split('-')
+
+      selectedDateIndex.value = day - 1
+    } else {
+      const todayIndex = dates.findIndex((date) => date.date === today.format('DD'))
+      if (todayIndex !== -1) {
+        selectedDateIndex.value = todayIndex // Fokus ke tanggal hari ini
+      }
     }
   } else {
-    selectedDateIndex.value = 0
+    if (stores.filters.date) {
+      const [year, month, day] = stores.filters.date.split('-')
+
+      selectedDateIndex.value = day - 1
+    } else {
+      selectedDateIndex.value = 0
+    }
   }
 
   return dates
@@ -93,6 +133,20 @@ const selectDate = (index) => {
     })
     selectedDateIndex.value = index // Perbarui indeks yang dipilih
   }
+
+  const date = index + 1
+  const month = selectedMonth.value?.month
+    ? selectedMonth.value.month + 1
+    : parseInt(selectedMonth.value.split('-')[1])
+  const year = selectedMonth.value?.year
+    ? selectedMonth.value.year
+    : selectedMonth.value.split('-')[0]
+
+  selectedDate.value = `${year}-${month}-${date}`
+}
+
+const handleTimeSelection = () => {
+  showTimePicker.value = false
 }
 
 // Function to check if a category is selected
@@ -131,24 +185,71 @@ const toggleCity = (city) => {
 }
 
 const applyFilters = () => {
-  // console.log('Filters applied')
+  // console.log(priceRange.value[0])
+  stores.setFilterData('date', selectedDate.value ? selectedDate.value : null)
+  stores.setFilterData(
+    'startTime',
+    startTime.value.hours == 0 && startTime.value.minutes == 0 ? null : formatTime(startTime.value)
+  )
+  stores.setFilterData(
+    'endTime',
+    endTime.value.hours == 0 && endTime.value.minutes == 0 ? null : formatTime(endTime.value)
+  )
+  stores.setFilterData('minPrice', priceRange.value[0] == 0 ? null : priceRange.value[0])
+  stores.setFilterData('maxPrice', priceRange.value[1] == 5000000 ? null : priceRange.value[1])
+  router.go(-1)
 }
 
 const resetFilters = () => {
-  // console.log('Filters reset')
+  stores.setFilterData('date', null)
+  selectedMonth.value = { month: 0, year: 0 }
+  selectedDateIndex.value = 0
+  selectedDate.value = ''
+  dates.value = getDates()
+  stores.setFilterData('startTime', null)
+  startTime.value = {
+    hours: 0,
+    minutes: 0,
+    seconds: 0
+  }
+  stores.setFilterData('endTime', null)
+  endTime.value = {
+    hours: 0,
+    minutes: 0,
+    seconds: 0
+  }
+  priceRange.value = [minPrice, maxPrice]
 }
 
-onMounted(() => {})
+onMounted(() => {
+  if (stores.filters.date) {
+    const [year, month, day] = stores.filters.date.split('-')
+    selectedMonth.value = {
+      month: parseInt(month - 1), // Pastikan bulan dalam format angka
+      year: parseInt(year) // Pastikan tahun dalam format angka
+    }
+    selectedDateIndex.value = day - 1 // Set default selected date index
+    dates.value = getDates(selectedMonth.value.month, selectedMonth.value.year)
+    dates.value[day - 1].selected = true
+    selectedDate.value = stores.filters.date
+  } else {
+    const currentMonth = moment().month() // Bulan saat ini dalam angka (1-12)
+    const currentYear = moment().year() // Tahun saat ini
+    selectedMonth.value = { month: currentMonth, year: currentYear }
+    selectedDateIndex.value = moment().date() - 1 // Default ke tanggal hari ini
+    dates.value = getDates(currentMonth, currentYear) // Set tanggal untuk bulan saat ini
+  }
+})
 </script>
 
 <template>
-  <VContainer v-if="!stores.loading" style="padding-bottom: 150px">
+  <VContainer v-if="!homeStores.loading" style="padding-bottom: 150px">
     <VRow no-gutters>
       <VCol cols="12" class="d-flex align-center justify-space-between">
         <VueDatePicker
-          style="width: 45%; font-size: 12px !important"
+          style="width: 50%; font-size: 12px !important"
           class="text-caption"
-          :format="formattedMonth"
+          :format="() => formattedMonth"
           @update:model-value="onMonthSelected"
           month-picker
           :model-value="selectedMonth"
@@ -288,7 +389,7 @@ onMounted(() => {})
           All
         </VBtn>
         <VBtn
-          v-for="item in stores.sportItems"
+          v-for="item in homeStores.sportItems"
           :key="item.id"
           :class="isCategorySelected(item.title) ? 'bg-text-orange text-white' : 'text-text-grey-3'"
           class="mx-1 border-thin text-none text-xxs mb-3"
@@ -309,7 +410,7 @@ onMounted(() => {})
       </VCol>
       <VCol cols="12" class="d-flex flex-wrap mt-4">
         <VBtn
-          v-for="item in stores.cityItems"
+          v-for="item in homeStores.cityItems"
           :key="item.id"
           :class="isCitySelected(item.name) ? 'bg-text-orange text-white' : 'text-text-grey-3'"
           class="mx-1 border-thin text-none text-xxs mb-3"
@@ -326,13 +427,21 @@ onMounted(() => {})
     <VDialog v-model="showTimePicker">
       <VCard>
         <VCardTitle>Pick a Time Range</VCardTitle>
-        <VCardText>
-          <VTimePicker v-model="startTime" format="24hr" title="Select Start Time" landscape />
-          <VTimePicker v-model="endTime" format="24hr" title="Select End Time" landscape />
+        <VCardText style="height: 50vh">
+          <VRow no-gutters>
+            <VCol cols="6">
+              <VueDatePicker v-model="startTime" time-picker />
+            </VCol>
+            <VCol cols="6">
+              <VueDatePicker v-model="endTime" time-picker />
+            </VCol>
+          </VRow>
+          <!-- <VTimePicker v-model="startTime" format="24hr" landscape />
+          <VTimePicker v-model="endTime" format="24hr" landscape /> -->
         </VCardText>
         <VCardActions class="position-fixed bottom-0 bg-white w-100" style="z-index: 1000">
           <VBtn @click="showTimePicker = false" text>Cancel</VBtn>
-          <VBtn @click="showTimePicker = false" color="primary">OK</VBtn>
+          <VBtn @click="handleTimeSelection" color="primary">OK</VBtn>
         </VCardActions>
       </VCard>
     </VDialog>
@@ -361,7 +470,7 @@ onMounted(() => {})
       </VCol>
     </VRow>
   </VContainer>
-  <PageSpinLoader v-model:is-loading="stores.loading" />
+  <PageSpinLoader v-model:is-loading="homeStores.loading" />
 </template>
 
 <style scoped>
@@ -384,6 +493,6 @@ onMounted(() => {})
 }
 
 .dp__input {
-  font-size: 12px;
+  font-size: 12px !important;
 }
 </style>

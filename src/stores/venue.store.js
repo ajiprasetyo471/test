@@ -54,6 +54,9 @@ export const useVenueStore = defineStore('venueStore', {
         this.loading = false
       }
     },
+    setFilterData(key, value) {
+      this.filters[key] = value
+    },
     setFilter(key, value) {
       // if (key === 'keyword') {
       this.page = 1

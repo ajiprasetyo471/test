@@ -14,8 +14,6 @@ const router = useRouter()
 
 const scrollComponent = ref(null)
 const showTimePicker = ref(false)
-const loadingItem = ref(false)
-
 const selectedMonth = ref({ month: 0, year: 0 })
 const startTime = ref(
   stores.filters.startTime
@@ -37,6 +35,7 @@ const endTime = ref(
 )
 const selectedDateIndex = ref(stores.filters.date ? stores.filters.date.split('-')[2] - 1 : 0)
 const dates = ref(getDates())
+const loadingItem = ref(false)
 
 const formattedMonth = computed(() => {
   if (selectedMonth.value.year && selectedMonth.value.month) {
@@ -53,8 +52,8 @@ const formattedTimeRange = computed(() => {
 })
 
 const onMonthSelected = (newMonth) => {
-  selectedMonth.value = { month: newMonth.month, year: newMonth.year } // Atur month dan year
-  dates.value = getDates(newMonth.month, newMonth.year) // Update array dates berdasarkan bulan baru
+  selectedMonth.value = { month: newMonth.month, year: newMonth.year }
+  dates.value = getDates(newMonth.month, newMonth.year)
 }
 
 function getDates(month, year) {
