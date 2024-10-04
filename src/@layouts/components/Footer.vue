@@ -1,5 +1,6 @@
 <script setup>
 import { useVenueStore } from '@/stores/venue.store.js'
+import { calculateTotalPrice } from '@/helpers/helpers'
 
 const venueStores = useVenueStore()
 const route = useRoute()
@@ -46,9 +47,7 @@ const footerHeight = computed({
 
 const isBooking = computed({
   get: () => {
-    return (
-      venueStores.datesMember.length > 0 || (venueStores.bookingDate && venueStores.bookingHour)
-    )
+    return venueStores.bookingHour.length > 0
   }
 })
 
@@ -95,18 +94,9 @@ onMounted(() => {
       >
         <span v-if="!isBooking" class="text-xxs text-white">Select time would you prefer</span>
         <div v-else class="">
-          <p class="text-xxs text-white">Basket Ball Venue</p>
-          <p
-            v-if="venueStores.datesMember.length == 0"
-            class="text-body-1 font-weight-bold text-white"
-          >
-            Rp 150.000
-          </p>
-          <p
-            v-if="venueStores.datesMember.length > 0"
-            class="text-body-1 font-weight-bold text-white"
-          >
-            Rp {{ 150000 * venueStores.datesMember.length }}
+          <p class="text-xxs text-white">{{ venueStores.fieldDetail?.name }}</p>
+          <p class="text-body-1 font-weight-bold text-white">
+            {{ calculateTotalPrice(venueStores.bookingHour) }}
           </p>
         </div>
         <VBtn

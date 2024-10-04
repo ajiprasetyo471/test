@@ -19,7 +19,6 @@ const showModal = ref(false)
 const currentDay = ref(moment().format('dddd').toLowerCase())
 
 const goToDetail = (id) => {
-  // stores.setVenueId(id)
   router.push(`/venue/field/${id}`)
 }
 

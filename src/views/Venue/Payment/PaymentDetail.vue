@@ -1,7 +1,6 @@
 <script setup>
 import AppTextArea from '@/@core/components/forms/AppTextArea.vue'
 import activityImg2 from '@/assets/images/image-activity-dashboard-2.jpg'
-import { RouterLink } from 'vue-router'
 
 const form = ref({
   name: '',
@@ -10,6 +9,8 @@ const form = ref({
   communityGroup: '',
   note: ''
 })
+
+onMounted(() => {})
 </script>
 
 <template>

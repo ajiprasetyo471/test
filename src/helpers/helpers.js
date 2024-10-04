@@ -21,6 +21,13 @@ export function formatNumber(value) {
   return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
 }
 
+export const calculateTotalPrice = (items) => {
+  const result = items.reduce((total, item) => {
+    return item.selected ? total + item.price : total
+  }, 0)
+  return formatNumber(result)
+}
+
 export const reverseFormatTime = (formattedTime) => {
   const [hours, minutes] = formattedTime.split(':').map(Number) // Memisahkan jam dan menit, lalu mengubahnya menjadi angka
   return {
@@ -33,6 +40,14 @@ export const reverseFormatTime = (formattedTime) => {
 export const formatTime = (time) => {
   const hours = String(time.hours).padStart(2, '0')
   const minutes = String(time.minutes).padStart(2, '0')
+  return `${hours}:${minutes}`
+}
+
+export function formatTimeWithoutSeconds(timeString) {
+  // Split the string by colon
+  const [hours, minutes] = timeString.split(':')
+
+  // Return the time in 'HH:MM' format
   return `${hours}:${minutes}`
 }
 

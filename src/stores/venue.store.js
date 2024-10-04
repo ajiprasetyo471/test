@@ -4,6 +4,7 @@ import venueService from '@/services/venue.service'
 export const useVenueStore = defineStore('venueStore', {
   state: () => ({
     loading: false,
+    loadingTime: false,
     filters: {
       latitude: null,
       longitude: null,
@@ -18,6 +19,7 @@ export const useVenueStore = defineStore('venueStore', {
       startTime: null,
       endTime: null
     },
+    dateTime: null,
     page: 1,
     hasMoreData: true,
     venueCards: [],
@@ -27,10 +29,14 @@ export const useVenueStore = defineStore('venueStore', {
     venueGallery: [],
     fieldCards: [],
     fieldDetail: null,
+    fieldId: null,
+    fieldTimeMorning: [],
+    fieldTimeAfternoon: [],
+    fieldTimeEvening: [],
     fieldHourCards: [],
     fieldReviewCards: [],
     bookingDate: null,
-    bookingHour: null,
+    bookingHour: [],
     datesMember: []
   }),
   actions: {
@@ -194,6 +200,53 @@ export const useVenueStore = defineStore('venueStore', {
           this.loading = false
         })
     },
+    getTimeField(id, venueId, data) {
+      // console.log(id, venueId)
+      this.loadingTime = true
+      return venueService
+        .fieldTime(id, venueId, data)
+        .then(
+          (response) => {
+            var resData = response.data
+            if (resData.success) {
+              this.fieldTimeMorning = resData?.data?.morningSlots.map((i) => {
+                return {
+                  ...i,
+                  selected: false
+                }
+              })
+              this.fieldTimeAfternoon = resData?.data?.afternoonSlots.map((i) => {
+                return {
+                  ...i,
+                  selected: false
+                }
+              })
+              this.fieldTimeEvening = resData?.data?.eveningSlots.map((i) => {
+                return {
+                  ...i,
+                  selected: false
+                }
+              })
+            } else {
+              this.fieldTimeMorning = []
+              this.fieldTimeAfternoon = []
+              this.fieldTimeEvening = []
+            }
+            return Promise.resolve(resData)
+          },
+          (error) => {
+            this.fieldDetail = null
+            return Promise.reject(error)
+          }
+        )
+        .finally(() => {
+          this.loadingTime = false
+        })
+    },
+    setDateTime(id, venueId, value) {
+      this.dateTime = value
+      this.getTimeField(id, venueId, { date: value })
+    },
     setVenueCards(cards) {
       this.venueCards = cards
     },
@@ -206,6 +259,10 @@ export const useVenueStore = defineStore('venueStore', {
     setVenueId(id) {
       this.venueId = id
       localStorage.setItem('venueId', JSON.stringify(id))
+    },
+    setFieldId(id) {
+      this.fieldId = id
+      localStorage.setItem('fieldId', JSON.stringify(id))
     },
     setVenueCardsHome(cards) {
       this.venueCardsHome = cards
@@ -222,8 +279,14 @@ export const useVenueStore = defineStore('venueStore', {
     setBookingDate(date) {
       this.bookingDate = date
     },
-    setBookingHour(hour) {
-      this.bookingHour = hour
+    addBookingHour(items) {
+      this.bookingHour.push(items)
+    },
+    removeBookingHour(id) {
+      this.bookingHour = this.bookingHour.filter((h) => h.id !== id)
+    },
+    emptyBookingHour() {
+      this.bookingHour = []
     },
     setDatesMember(dates) {
       this.datesMember = dates

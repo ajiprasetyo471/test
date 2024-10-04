@@ -3,6 +3,7 @@ import PageSpinLoader from '@/@core/components/PageSpinLoader.vue'
 import FieldHourCont from './FieldHourCont.vue'
 import FieldDetailBanner from './FieldDetailBanner.vue'
 import moment from 'moment'
+import { formatTimeWithoutSeconds, formatNumber } from '@/helpers/helpers'
 import { useVenueStore } from '@/stores/venue.store.js'
 import { useSnackbarStore } from '@/stores/snackbar'
 import { useModalStore } from '@/stores/modal'
@@ -13,18 +14,26 @@ const modalStore = useModalStore()
 
 const route = useRoute()
 
-const selectedMonth = ref(moment(new Date(), 'YYYY-MM'))
-const selectedDateIndex = ref(0)
+const selectedMonth = ref({ month: 0, year: 0 })
+const selectedDateIndex = ref(
+  stores.dateTime && stores.fieldId == route.params.id ? stores.dateTime.split('-')[2] - 1 : 0
+)
 const dates = ref(getDates())
-const hourCards = ref([])
+const selectedHours = ref([])
 const reviewCards = ref([])
 
-const formattedMonth = (month) => {
-  return moment(month, 'YYYY-MM').format('MMMM, YYYY')
-}
+const formattedMonth = computed(() => {
+  if (selectedMonth.value.year && selectedMonth.value.month) {
+    return moment(
+      `${selectedMonth.value.year}-${String(selectedMonth.value.month + 1).padStart(2, '0')}`,
+      'YYYY-MM'
+    ).format('MMMM, YYYY')
+  }
+  return moment().format('MMMM, YYYY') // Default jika selectedMonth kosong
+})
 
 const onMonthSelected = (newMonth) => {
-  selectedMonth.value = newMonth
+  selectedMonth.value = { month: newMonth.month, year: newMonth.year }
   dates.value = getDates(newMonth.month, newMonth.year)
 }
 
@@ -67,36 +76,103 @@ function getDates(month, year) {
 
   // Otomatis memilih tanggal hari ini
   if ((month === currentMonth && year === currentYear) || (!year && !month)) {
-    const todayIndex = dates.findIndex((date) => date.date === today.format('DD'))
-    if (todayIndex !== -1) {
-      selectedDateIndex.value = todayIndex // Fokus ke tanggal hari ini
+    if (stores.dateTime && stores.fieldId == route.params.id) {
+      const [year, month, day] = stores.dateTime.split('-')
+
+      selectedDateIndex.value = day - 1
+    } else {
+      const todayIndex = dates.findIndex((date) => date.date === today.format('DD'))
+      if (todayIndex !== -1) {
+        selectedDateIndex.value = todayIndex // Fokus ke tanggal hari ini
+      }
     }
   } else {
-    selectedDateIndex.value = 0
+    if (stores.dateTime && stores.fieldId == route.params.id) {
+      const [year, month, day] = stores.dateTime.split('-')
+
+      selectedDateIndex.value = day - 1
+    } else {
+      selectedDateIndex.value = 0
+    }
   }
 
   return dates
 }
 
 // Fungsi untuk memilih tanggal
-const selectDate = (date, index) => {
+const selectDate = (index) => {
   if (!dates.value[index].disabled) {
     dates.value.forEach((date, i) => {
       date.selected = i === index
     })
     selectedDateIndex.value = index // Perbarui indeks yang dipilih
+  }
 
-    stores.setBookingDate(date)
+  const date = index + 1
+  const month = selectedMonth.value?.month
+    ? selectedMonth.value.month + 1
+    : parseInt(selectedMonth.value.split('-')[1])
+  const year = selectedMonth.value?.year
+    ? selectedMonth.value.year
+    : selectedMonth.value.split('-')[0]
+
+  const selectedDate = `${year}-${month}-${date}`
+
+  stores.setDateTime(
+    route.params.id,
+    stores.venueId ? stores.venueId : JSON.parse(localStorage.getItem('venueId')),
+    selectedDate
+  )
+
+  stores.setFieldId(route.params.id)
+  stores.setBookingDate(selectedDate)
+}
+
+const selectHourMorning = (hour) => {
+  if (!hour.disabled) {
+    const selectedHour = stores.fieldTimeMorning.find((h) => h.id === hour.id)
+
+    if (selectedHour) {
+      selectedHour.selected = !selectedHour.selected // Toggle selected status
+
+      if (selectedHour.selected) {
+        stores.addBookingHour(hour) // Tambahkan jika dipilih
+      } else {
+        stores.removeBookingHour(hour.id) // Hapus jika tidak dipilih
+      }
+    }
   }
 }
 
-const selectHour = (hour, index) => {
-  if (!hourCards.value[index].disabled) {
-    hourCards.value.forEach((hour, i) => {
-      hour.selected = i === index
-    })
+const selectHourAfternoon = (hour) => {
+  if (!hour.disabled) {
+    const selectedHour = stores.fieldTimeAfternoon.find((h) => h.id === hour.id)
 
-    stores.setBookingHour(hour)
+    if (selectedHour) {
+      selectedHour.selected = !selectedHour.selected // Toggle selected status
+
+      if (selectedHour.selected) {
+        stores.addBookingHour(hour) // Tambahkan jika dipilih
+      } else {
+        stores.removeBookingHour(hour.id) // Hapus jika tidak dipilih
+      }
+    }
+  }
+}
+
+const selectHourEvening = (hour) => {
+  if (!hour.disabled) {
+    const selectedHour = stores.fieldTimeEvening.find((h) => h.id === hour.id)
+
+    if (selectedHour) {
+      selectedHour.selected = !selectedHour.selected // Toggle selected status
+
+      if (selectedHour.selected) {
+        stores.addBookingHour(hour) // Tambahkan jika dipilih
+      } else {
+        stores.removeBookingHour(hour.id) // Hapus jika tidak dipilih
+      }
+    }
   }
 }
 
@@ -111,14 +187,49 @@ const getFieldDetailData = (id, venueId) => {
       snackStores.openSnackbar(err?.message, 'error')
     })
 }
+const getFieldTimeData = (id, venueId) => {
+  const date =
+    stores.dateTime && stores.fieldId == route.params.id
+      ? stores.dateTime
+      : moment().format('YYYY-MM-DD')
+  stores
+    .getTimeField(id, venueId, { date: date })
+    .then((res) => {
+      // console.log(res)
+    })
+    .catch((err) => {
+      console.log(err)
+      snackStores.openSnackbar(err?.message, 'error')
+    })
+}
 
 onMounted(() => {
+  if (stores.dateTime && stores.fieldId == route.params.id) {
+    const [year, month, day] = stores.dateTime.split('-')
+    selectedMonth.value = {
+      month: parseInt(month - 1), // Pastikan bulan dalam format angka
+      year: parseInt(year) // Pastikan tahun dalam format angka
+    }
+    selectedDateIndex.value = day - 1 // Set default selected date index
+    dates.value = getDates(selectedMonth.value.month, selectedMonth.value.year)
+    dates.value[day - 1].selected = true
+  } else {
+    const currentMonth = moment().month() // Bulan saat ini dalam angka (1-12)
+    const currentYear = moment().year() // Tahun saat ini
+    selectedMonth.value = { month: currentMonth, year: currentYear }
+    selectedDateIndex.value = moment().date() - 1 // Default ke tanggal hari ini
+    dates.value = getDates(currentMonth, currentYear) // Set tanggal untuk bulan saat ini
+  }
   getFieldDetailData(
     route.params.id,
     stores.venueId ? stores.venueId : JSON.parse(localStorage.getItem('venueId'))
   )
-  hourCards.value = stores.getFieldHourCards()
+  getFieldTimeData(
+    route.params.id,
+    stores.venueId ? stores.venueId : JSON.parse(localStorage.getItem('venueId'))
+  )
   reviewCards.value = stores.getFieldReviewCards()
+  stores.emptyBookingHour()
 })
 </script>
 
@@ -169,7 +280,7 @@ onMounted(() => {
         <VueDatePicker
           style="width: 45%; font-size: 12px !important"
           class="text-caption"
-          :format="formattedMonth"
+          :format="() => formattedMonth"
           @update:model-value="onMonthSelected"
           month-picker
           :model-value="selectedMonth"
@@ -183,7 +294,7 @@ onMounted(() => {
         </VueDatePicker>
       </VCol>
     </VRow>
-    <VSlideGroup v-model="selectedDateIndex" class="mb-6 mt-2">
+    <VSlideGroup v-model="selectedDateIndex" class="pb-1 mt-2">
       <template v-for="(date, index) in dates" :key="index" :value="index">
         <VSlideGroupItem :value="index">
           <VCard
@@ -194,7 +305,7 @@ onMounted(() => {
               'bg-white text-black': !date.disabled && !date.selected
             }"
             elevation="0"
-            @click="selectDate(date, index)"
+            @click="selectDate(index)"
             :disabled="date.disabled"
           >
             <VCardTitle class="d-flex flex-column align-center">
@@ -207,7 +318,7 @@ onMounted(() => {
         </VSlideGroupItem>
       </template>
     </VSlideGroup>
-    <VRow no-gutters class="mt-6">
+    <VRow no-gutters class="mt-6" v-if="!stores.loadingTime">
       <VCol cols="12" class="d-flex align-center justify-space-between">
         <p class="text-body-2 font-weight-bold">Which time would you prefer?</p>
       </VCol>
@@ -218,12 +329,118 @@ onMounted(() => {
             :title="'Pagi ke Siang'"
             :desc="'06:00 - 10:00'"
             :count="2"
+          >
+            <div class="d-flex flex-wrap justify-space-between">
+              <VCard
+                v-for="(item, index) in stores.fieldTimeMorning"
+                :key="item.id"
+                :disabled="item.available == false"
+                class="py-2 border-thin rounded-lg mt-2 position-relative"
+                :class="{
+                  'bg-bg-grey-2': item.available == false,
+                  'bg-text-orange': item.selected == true
+                }"
+                style="width: 48%"
+                elevation="0"
+                @click="item.available == true ? selectHourMorning(item) : undefined"
+              >
+                <p
+                  class="text-center text-xxs"
+                  :class="
+                    item.available == false
+                      ? 'text-text-grey-3'
+                      : item.selected == true
+                        ? 'text-white'
+                        : 'text-text-grey'
+                  "
+                >
+                  {{
+                    `${formatTimeWithoutSeconds(item.startTime)} - ${formatTimeWithoutSeconds(item.endTime)}`
+                  }}
+                </p>
+                <p
+                  class="text-center text-caption font-weight-bold"
+                  :class="
+                    item.available == false
+                      ? 'text-text-grey-3'
+                      : item.selected == true
+                        ? 'text-white'
+                        : 'text-text-orange'
+                  "
+                >
+                  Rp{{ formatNumber(item.price) }}
+                </p>
+                <div
+                  v-if="item.selected == true"
+                  class="bg-text-blue position-absolute right-0 px-2"
+                  style="top: 30%; border-top-left-radius: 10px; border-bottom-left-radius: 10px"
+                  size="x-small"
+                >
+                  <Icon
+                    icon="fluent-emoji-high-contrast:check-mark"
+                    class="text-white text-caption"
+                  />
+                </div>
+              </VCard></div
           ></FieldHourCont>
           <FieldHourCont
             :icon="'fluent:weather-sunny-48-regular'"
             :title="'Siang ke Sore'"
             :desc="'10:00 - 16:00'"
             :count="4"
+          >
+            <div class="d-flex flex-wrap justify-space-between">
+              <VCard
+                v-for="(item, index) in stores.fieldTimeAfternoon"
+                :key="item.id"
+                :disabled="item.available == false"
+                class="py-2 border-thin rounded-lg mt-2 position-relative"
+                :class="{
+                  'bg-bg-grey-2': item.available == false,
+                  'bg-text-orange': item.selected == true
+                }"
+                style="width: 48%"
+                elevation="0"
+                @click="item.available == true ? selectHourAfternoon(item) : undefined"
+              >
+                <p
+                  class="text-center text-xxs"
+                  :class="
+                    item.available == false
+                      ? 'text-text-grey-3'
+                      : item.selected == true
+                        ? 'text-white'
+                        : 'text-text-grey'
+                  "
+                >
+                  {{
+                    `${formatTimeWithoutSeconds(item.startTime)} - ${formatTimeWithoutSeconds(item.endTime)}`
+                  }}
+                </p>
+                <p
+                  class="text-center text-caption font-weight-bold"
+                  :class="
+                    item.available == false
+                      ? 'text-text-grey-3'
+                      : item.selected == true
+                        ? 'text-white'
+                        : 'text-text-orange'
+                  "
+                >
+                  Rp{{ formatNumber(item.price) }}
+                </p>
+                <div
+                  v-if="item.selected == true"
+                  class="bg-text-blue position-absolute right-0 px-2"
+                  style="top: 30%; border-top-left-radius: 10px; border-bottom-left-radius: 10px"
+                  size="x-small"
+                >
+                  <Icon
+                    icon="fluent-emoji-high-contrast:check-mark"
+                    class="text-white text-caption"
+                  />
+                </div>
+              </VCard></div
           ></FieldHourCont>
           <FieldHourCont
             :icon="'ph:moon-stars-thin'"
@@ -233,41 +450,43 @@ onMounted(() => {
           >
             <div class="d-flex flex-wrap justify-space-between">
               <VCard
-                v-for="(item, index) in hourCards"
-                :key="index"
-                :disabled="item.isActive == false"
+                v-for="(item, index) in stores.fieldTimeEvening"
+                :key="item.id"
+                :disabled="item.available == false"
                 class="py-2 border-thin rounded-lg mt-2 position-relative"
                 :class="{
-                  'bg-bg-grey-2': item.isActive == false,
+                  'bg-bg-grey-2': item.available == false,
                   'bg-text-orange': item.selected == true
                 }"
                 style="width: 48%"
                 elevation="0"
-                @click="item.isActive == true ? selectHour(item, index) : undefined"
+                @click="item.available == true ? selectHourEvening(item) : undefined"
               >
                 <p
                   class="text-center text-xxs"
                   :class="
-                    item.isActive == false
+                    item.available == false
                       ? 'text-text-grey-3'
                       : item.selected == true
                         ? 'text-white'
                         : 'text-text-grey'
                   "
                 >
-                  {{ item.hour }}
+                  {{
+                    `${formatTimeWithoutSeconds(item.startTime)} - ${formatTimeWithoutSeconds(item.endTime)}`
+                  }}
                 </p>
                 <p
                   class="text-center text-caption font-weight-bold"
                   :class="
-                    item.isActive == false
+                    item.available == false
                       ? 'text-text-grey-3'
                       : item.selected == true
                         ? 'text-white'
                         : 'text-text-orange'
                   "
                 >
-                  Rp{{ item.price }}
+                  Rp{{ formatNumber(item.price) }}
                 </p>
                 <div
                   v-if="item.selected == true"
@@ -286,6 +505,7 @@ onMounted(() => {
         </VExpansionPanels>
       </VCol>
     </VRow>
+    <PageSpinLoader v-model:is-loading="stores.loadingTime" />
   </VContainer>
   <ShareModal
     v-if="!stores.loading"

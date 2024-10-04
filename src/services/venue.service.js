@@ -14,6 +14,9 @@ class VenueService {
   fieldDetail(id, venueId) {
     return $axios.get(`/venues/${venueId}/fields/${id}`)
   }
+  fieldTime(id, venueId, query) {
+    return $axios.get(`/venues/${venueId}/fields/${id}/timetable`, { params: query })
+  }
 }
 
 export default new VenueService()
