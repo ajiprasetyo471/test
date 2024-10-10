@@ -8,8 +8,8 @@ export const useVenueStore = defineStore('venueStore', {
     filters: {
       latitude: null,
       longitude: null,
-      sportId: null,
-      cityId: null,
+      sportId: [],
+      cityId: [],
       maxPrice: null,
       minPrice: null,
       page: null,
@@ -33,18 +33,47 @@ export const useVenueStore = defineStore('venueStore', {
     fieldTimeMorning: [],
     fieldTimeAfternoon: [],
     fieldTimeEvening: [],
+    fieldCommendations: [],
     fieldHourCards: [],
     fieldReviewCards: [],
     bookingDate: null,
     bookingHour: [],
-    datesMember: []
+    datesMember: [],
+    isSort: false,
+    queryData: null
   }),
   actions: {
-    async getVenueCards(data) {
+    async getVenueCards(filterData) {
+      const queryParams = new URLSearchParams()
+
+      if (filterData.sportId.length > 0) {
+        filterData.sportId.forEach((id) => {
+          queryParams.append('sportId', id)
+        })
+      }
+
+      if (filterData.cityId.length > 0) {
+        filterData.cityId.forEach((id) => {
+          queryParams.append('cityId', id)
+        })
+      }
+
+      for (const key in filterData) {
+        if (
+          key !== 'sportId' &&
+          key !== 'cityId' &&
+          filterData[key] !== null &&
+          filterData[key] !== ''
+        ) {
+          queryParams.append(key, filterData[key])
+        }
+      }
+      this.queryData = Object.fromEntries(queryParams.entries())
+      // console.log(this.queryData)
       this.loading = true
       try {
         this.venueCards = []
-        const response = await venueService.list(data)
+        const response = await venueService.list(queryParams)
         const resData = response.data
         // console.log(resData)
         if (resData.success) {
@@ -69,20 +98,69 @@ export const useVenueStore = defineStore('venueStore', {
       this.filters.page = 1
       this.hasMoreData = true
       // }
-      this.filters[key] = value
+      if (key === 'sportId') {
+        if (Array.isArray(value)) {
+          // Update sportId hanya jika nilai value adalah array
+          this.filters.sportId = value
+        } else {
+          // Jika value bukan array, reset sportId
+          this.filters.sportId = []
+        }
+      } else if (key === 'cityId') {
+        if (Array.isArray(value)) {
+          this.filters.cityId = value
+        } else {
+          this.filters.cityId = []
+        }
+      } else {
+        // Untuk key lainnya, update nilai seperti biasa
+        this.filters[key] = value
+      }
       this.applyFilters()
+    },
+
+    setLatLong(lat, long) {
+      this.filters['latitude'] = lat
+      this.filters['longitude'] = long
     },
 
     async applyFilters() {
       const filterData = { ...this.filters }
+
       await this.getVenueCards(filterData)
     },
     async getVenueCardsScroll(key, value) {
       this.filters[key] = value
       if (key == 'page') {
         const filterData = { ...this.filters }
+        const queryParams = new URLSearchParams()
+
+        if (filterData.sportId.length > 0) {
+          filterData.sportId.forEach((id) => {
+            queryParams.append('sportId', id)
+          })
+        }
+
+        if (filterData.cityId.length > 0) {
+          filterData.cityId.forEach((id) => {
+            queryParams.append('cityId', id)
+          })
+        }
+
+        for (const key in filterData) {
+          if (
+            key !== 'sportId' &&
+            key !== 'cityId' &&
+            filterData[key] !== null &&
+            filterData[key] !== ''
+          ) {
+            queryParams.append(key, filterData[key])
+          }
+        }
+        this.queryData = Object.fromEntries(queryParams.entries())
+        // console.log(this.queryData)
         try {
-          const response = await venueService.list(filterData)
+          const response = await venueService.list(queryParams)
           const resData = response.data
           return resData
         } catch (error) {
@@ -90,25 +168,14 @@ export const useVenueStore = defineStore('venueStore', {
         }
       }
     },
-    async getVenueCardsHome(data) {
-      this.loading = true
-      try {
-        this.venueCardsHome = null
-        const response = await venueService.list(data)
-        const resData = response.data
-        // console.log(resData)
-        if (resData.success) {
-          this.venueCardsHome = resData?.data?.venueList
-        } else {
-          this.venueCardsHome = null
-        }
-        return resData
-      } catch (error) {
-        this.venueCardsHome = null
-        throw error
-      } finally {
-        this.loading = false
+    setQueryData(key, value) {
+      if (typeof key === 'string' && key !== '') {
+        // Periksa jika 'key' valid dan bukan string kosong
+        this.queryData[key] = value
       }
+    },
+    resetQueryData() {
+      this.queryData = null
     },
     getDetailVenue(id) {
       this.loading = true
@@ -155,26 +222,6 @@ export const useVenueStore = defineStore('venueStore', {
         .finally(() => {
           this.loading = false
         })
-    },
-    async getFieldCards(id) {
-      this.loading = true
-      try {
-        this.fieldCards = []
-        const response = await venueService.field(id)
-        const resData = response.data
-        if (resData.success) {
-          // console.log(resData?.data?.fieldList)
-          this.fieldCards = resData?.data?.fieldList
-        } else {
-          this.fieldCards = []
-        }
-        return resData
-      } catch (error) {
-        this.fieldCards = []
-        throw error
-      } finally {
-        this.loading = false
-      }
     },
     getDetailField(id, venueId) {
       // console.log(id, venueId)
@@ -243,9 +290,63 @@ export const useVenueStore = defineStore('venueStore', {
           this.loadingTime = false
         })
     },
+
     setDateTime(id, venueId, value) {
       this.dateTime = value
       this.getTimeField(id, venueId, { date: value })
+    },
+
+    async getFieldCards(id) {
+      this.loading = true
+      try {
+        this.fieldCards = []
+        const response = await venueService.field(id)
+        const resData = response.data
+        if (resData.success) {
+          // console.log(resData?.data?.fieldList)
+          this.fieldCards = resData?.data?.fieldList
+        } else {
+          this.fieldCards = []
+        }
+        return resData
+      } catch (error) {
+        this.fieldCards = []
+        throw error
+      } finally {
+        this.loading = false
+      }
+    },
+    getFieldCommendations(id, venueId) {
+      // console.log(id, venueId)
+      this.loading = true
+      return venueService
+        .fieldCommendation(id, venueId)
+        .then(
+          (response) => {
+            var resData = response.data
+            if (resData.success) {
+              const data = resData?.data
+              this.fieldCommendations = [
+                { id: 1, review: 'Fasilitas Memadai', count: data.adequateFacilityCount },
+                { id: 2, review: 'Kebersihan Terjaga', count: data.maintainedHygieneCount },
+                { id: 3, review: 'Keamanan Baik', count: data.goodSecurityCount },
+                { id: 4, review: 'Toilet Bersih', count: data.cleanToiletCount },
+                { id: 5, review: 'Akses Mudah', count: data.easyAccessCount },
+                { id: 6, review: 'Staf Ramah', count: data.helpfulStaffCount }
+              ]
+            } else {
+              this.fieldCommendations = null
+            }
+            return Promise.resolve(resData)
+          },
+          (error) => {
+            this.fieldCommendations = null
+            return Promise.reject(error)
+          }
+        )
+        .finally(() => {
+          this.loading = false
+        })
     },
     setVenueCards(cards) {
       this.venueCards = cards
@@ -255,6 +356,12 @@ export const useVenueStore = defineStore('venueStore', {
     },
     setHasMoreData(val) {
       this.hasMoreData = val
+    },
+    openSort() {
+      this.isSort = true
+    },
+    closeSort() {
+      this.isSort = false
     },
     setVenueId(id) {
       this.venueId = id

@@ -15,7 +15,6 @@ const route = useRoute()
 const router = useRouter()
 
 const searchQuery = ref(venueStores.filters.keyword || '')
-const selectedItemId = ref(venueStores.filters.sportId || 'all')
 
 const pagePath = computed({
   get: () => route.path,
@@ -33,7 +32,7 @@ const headerHeight = computed({
       return 60
     } else {
       if (route.meta.isActivityItems) {
-        return 210
+        return 130
       } else {
         if (route.path === '/booking') {
           return 80
@@ -64,16 +63,6 @@ const filterItems = (query) => {
       break
     default:
       break
-  }
-}
-
-const selectItem = (itemId) => {
-  selectedItemId.value = itemId
-
-  if (itemId != 'all') {
-    venueStores.setFilter('sportId', itemId)
-  } else {
-    venueStores.setFilter('sportId', null)
   }
 }
 
@@ -127,11 +116,7 @@ onMounted(() => {
     </VContainer>
     <VContainer v-else class="d-flex flex-column">
       <div class="d-flex align-center justify-space-between">
-        <!-- <VAvatar size="32">
-          <VImg :src="userImage" alt="Profile" />
-        </VAvatar> -->
         <div class="d-flex flex-column align-start ml-4">
-          <!-- <span class="text-text-grey text-xs">Hallo, Norman</span> -->
           <div class="d-flex align-center">
             <Icon icon="solar:map-point-linear" class="mr-2" />
             <span class="font-weight-medium text-caption">Ciputat, Tangerang Selatan</span>
@@ -159,34 +144,6 @@ onMounted(() => {
             />
           </template>
         </VTextField>
-      </div>
-      <div v-if="pageMeta.isActivityItems == true">
-        <VSheet class="mx-auto mt-4">
-          <VSlideGroup v-model="selectedItemId">
-            <VSlideGroupItem>
-              <VBtn
-                :class="selectedItemId === 'all' ? 'bg-bg-blue text-white' : undefined"
-                class="mx-1 border-thin text-none text-xxs"
-                rounded="lg"
-                density="comfortable"
-                @click="selectItem('all')"
-              >
-                All
-              </VBtn>
-            </VSlideGroupItem>
-            <VSlideGroupItem v-for="item in stores.sportItems" :key="item.id">
-              <VBtn
-                :class="selectedItemId === item.id ? 'bg-bg-blue text-white' : undefined"
-                class="mx-1 border-thin text-none text-xxs"
-                rounded="lg"
-                density="comfortable"
-                @click="selectItem(item.id)"
-              >
-                {{ item.title }}
-              </VBtn>
-            </VSlideGroupItem>
-          </VSlideGroup>
-        </VSheet>
       </div>
     </VContainer>
   </VAppBar>

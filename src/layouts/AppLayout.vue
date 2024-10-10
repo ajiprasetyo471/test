@@ -1,36 +1,62 @@
 <script setup>
 import Header from '@/@layouts/components/Header.vue'
 import Footer from '@/@layouts/components/Footer.vue'
+import SortVenue from '@/views/Venue/SortVenue.vue'
+import { useAppStore } from '@/stores/app.store.js'
+import { useSnackbarStore } from '@/stores/snackbar'
 
-// const route = useRoute()
+const stores = useAppStore()
+const snackStores = useSnackbarStore()
 
-// const metaPage = computed({
-//   get: () => route.meta,
-//   set: () => route.meta
-// })
+const latitude = ref(null)
+const longitude = ref(null)
+
+function getLocationData() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        if (position) {
+          latitude.value = position.coords.latitude
+          longitude.value = position.coords.longitude
+          // console.log(latitude.value, longitude.value)
+          localStorage.setItem('latitude', latitude.value)
+          localStorage.setItem('longitude', longitude.value)
+
+          stores
+            .getLocationList(latitude.value, longitude.value)
+            .then((res) => {
+              const address = JSON.stringify(res.address)
+              localStorage.setItem('address', address)
+            })
+            .catch((err) => {
+              console.log(err)
+              snackStores.openSnackbar(err?.message, 'error')
+            })
+        }
+      },
+      (error) => {
+        console.log('Error getting location:', error.message)
+        snackStores.openSnackbar(error?.message, 'error')
+      }
+    )
+  } else {
+    console.log('Geolocation is not supported by this browser.')
+    snackStores.openSnackbar('Geolocation is not supported by this browser.', 'error')
+  }
+}
+
+onMounted(() => {
+  getLocationData()
+})
 </script>
 
 <template>
-  <!-- <VContainer>
-    <div class="pa-2 px-3">
-      <VRow>
-        <VCol cols="12" v-if="metaPage.topLogo">
-          <VImg :src="logo" :height="23.42" alt="" position="left" />
-        </VCol>
-        <VCol cols="12" v-else>
-          <p class="font-weight-bold">{{ metaPage.topTitle ?? "" }}</p>
-        </VCol>
-      </VRow>
-    </div>
-    <slot />
-  </VContainer> -->
   <VApp>
     <Header />
     <VMain class="bg-bg-main">
-      <!-- Tempatkan Router View di sini -->
       <slot />
     </VMain>
-    <!-- Tempatkan FooterMenu di layout -->
+    <SortVenue />
     <Footer />
   </VApp>
 </template>

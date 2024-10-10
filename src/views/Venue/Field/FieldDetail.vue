@@ -19,8 +19,6 @@ const selectedDateIndex = ref(
   stores.dateTime && stores.fieldId == route.params.id ? stores.dateTime.split('-')[2] - 1 : 0
 )
 const dates = ref(getDates())
-const selectedHours = ref([])
-const reviewCards = ref([])
 
 const formattedMonth = computed(() => {
   if (selectedMonth.value.year && selectedMonth.value.month) {
@@ -187,6 +185,15 @@ const getFieldDetailData = (id, venueId) => {
       snackStores.openSnackbar(err?.message, 'error')
     })
 }
+const getFieldCommendationData = (id, venueId) => {
+  stores
+    .getFieldCommendations(id, venueId)
+    .then((res) => {})
+    .catch((err) => {
+      console.log(err)
+      snackStores.openSnackbar(err?.message, 'error')
+    })
+}
 const getFieldTimeData = (id, venueId) => {
   const date =
     stores.dateTime && stores.fieldId == route.params.id
@@ -224,11 +231,14 @@ onMounted(() => {
     route.params.id,
     stores.venueId ? stores.venueId : JSON.parse(localStorage.getItem('venueId'))
   )
+  getFieldCommendationData(
+    route.params.id,
+    stores.venueId ? stores.venueId : JSON.parse(localStorage.getItem('venueId'))
+  )
   getFieldTimeData(
     route.params.id,
     stores.venueId ? stores.venueId : JSON.parse(localStorage.getItem('venueId'))
   )
-  reviewCards.value = stores.getFieldReviewCards()
   stores.emptyBookingHour()
 })
 </script>
@@ -251,8 +261,13 @@ onMounted(() => {
       <VCol cols="12">
         <VSheet class="mt-2">
           <VSlideGroup>
-            <VSlideGroupItem v-for="item in reviewCards" :key="item.id" v-slot="{ toggle }">
+            <VSlideGroupItem
+              v-for="item in stores.fieldCommendations"
+              :key="item.id"
+              v-slot="{ toggle }"
+            >
               <VBtn
+                v-if="item.count > 0"
                 class="mr-1 border-thin text-none text-xxs"
                 rounded="lg"
                 density="comfortable"
@@ -271,11 +286,6 @@ onMounted(() => {
     <VRow no-gutters class="mt-4">
       <VCol cols="12" class="d-flex align-center justify-space-between">
         <p class="text-body-2 font-weight-bold">Select booking schedule</p>
-        <!-- <VBtn @click="showDatePicker = true" class="d-flex align-center" variant="text">
-              <Icon icon="solar:calendar-outline" />
-              <span class="text-caption mx-2">{{ formattedMonth }}</span>
-              <Icon icon="mdi-chevron-down" />
-            </VBtn> -->
 
         <VueDatePicker
           style="width: 45%; font-size: 12px !important"
@@ -323,7 +333,7 @@ onMounted(() => {
         <p class="text-body-2 font-weight-bold">Which time would you prefer?</p>
       </VCol>
       <VCol cols="12">
-        <VExpansionPanels rounded="lg">
+        <VExpansionPanels rounded="lg" multiple>
           <FieldHourCont
             :icon="'fluent:weather-sunny-low-20-regular'"
             :title="'Pagi ke Siang'"
@@ -519,6 +529,7 @@ onMounted(() => {
 <style>
 .dp__theme_light {
   --dp-border-color: none;
+  --dp-background-color: #f9fafb;
 }
 
 .dp__input {

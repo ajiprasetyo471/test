@@ -32,14 +32,14 @@ const selectedDateIndex = ref(stores.filters.date ? stores.filters.date.split('-
 const selectedDate = ref('')
 const dates = ref(getDates())
 const minPrice = 0 // Minimum price for the slider
-const maxPrice = 5000000 // Maximum price for the slider
+const maxPrice = 7000000 // Maximum price for the slider
 const step = 50000 // Step interval for the slider
 const priceRange = ref([
   stores.filters.minPrice ? stores.filters.minPrice : minPrice,
   stores.filters.maxPrice ? stores.filters.maxPrice : maxPrice
 ]) // Default price range [start, end]
-const selectedCategories = ref([])
-const selectedCities = ref([])
+const selectedCategories = ref([...stores.filters.sportId])
+const selectedCities = ref([...stores.filters.cityId])
 
 const formattedMonth = computed(() => {
   if (selectedMonth.value.year && selectedMonth.value.month) {
@@ -149,12 +149,12 @@ const handleTimeSelection = () => {
   showTimePicker.value = false
 }
 
-// Function to check if a category is selected
+// Function to check if a category (sport) is selected
 const isCategorySelected = (category) => {
   return selectedCategories.value.includes(category)
 }
 
-// Function to toggle category selection
+// Function to toggle category (sport) selection
 const toggleCategory = (category) => {
   if (category === 'All') {
     selectedCategories.value = ['All']
@@ -185,7 +185,11 @@ const toggleCity = (city) => {
 }
 
 const applyFilters = () => {
-  // console.log(priceRange.value[0])
+  // Save selected sportId and cityId to the store
+  stores.setFilterData('sportId', selectedCategories.value)
+  stores.setFilterData('cityId', selectedCities.value)
+
+  // Apply other filters
   stores.setFilterData('date', selectedDate.value ? selectedDate.value : null)
   stores.setFilterData(
     'startTime',
@@ -196,8 +200,10 @@ const applyFilters = () => {
     endTime.value.hours == 0 && endTime.value.minutes == 0 ? null : formatTime(endTime.value)
   )
   stores.setFilterData('minPrice', priceRange.value[0] == 0 ? null : priceRange.value[0])
-  stores.setFilterData('maxPrice', priceRange.value[1] == 5000000 ? null : priceRange.value[1])
-  router.go(-1)
+  stores.setFilterData('maxPrice', priceRange.value[1] == 7000000 ? null : priceRange.value[1])
+
+  // Navigate or trigger re-fetch of venues
+  router.push({ path: '/venue', query: stores.queryData })
 }
 
 const resetFilters = () => {
@@ -206,19 +212,23 @@ const resetFilters = () => {
   selectedDateIndex.value = 0
   selectedDate.value = ''
   dates.value = getDates()
+
   stores.setFilterData('startTime', null)
-  startTime.value = {
-    hours: 0,
-    minutes: 0,
-    seconds: 0
-  }
+  startTime.value = { hours: 0, minutes: 0, seconds: 0 }
   stores.setFilterData('endTime', null)
-  endTime.value = {
-    hours: 0,
-    minutes: 0,
-    seconds: 0
-  }
+  endTime.value = { hours: 0, minutes: 0, seconds: 0 }
+
   priceRange.value = [minPrice, maxPrice]
+
+  stores.setFilterData('maxPrice', null)
+  stores.setFilterData('minPrice', null)
+
+  // Reset sportId and cityId filters
+  selectedCategories.value = []
+  selectedCities.value = []
+  stores.setFilterData('sportId', [])
+  stores.setFilterData('cityId', [])
+  stores.resetQueryData()
 }
 
 onMounted(() => {
@@ -391,12 +401,12 @@ onMounted(() => {
         <VBtn
           v-for="item in homeStores.sportItems"
           :key="item.id"
-          :class="isCategorySelected(item.title) ? 'bg-text-orange text-white' : 'text-text-grey-3'"
+          :class="isCategorySelected(item.id) ? 'bg-text-orange text-white' : 'text-text-grey-3'"
           class="mx-1 border-thin text-none text-xxs mb-3"
           rounded="lg"
           elevation="0"
           density="comfortable"
-          @click="toggleCategory(item.title)"
+          @click="toggleCategory(item.id)"
         >
           {{ item.title }}
         </VBtn>
@@ -412,12 +422,12 @@ onMounted(() => {
         <VBtn
           v-for="item in homeStores.cityItems"
           :key="item.id"
-          :class="isCitySelected(item.name) ? 'bg-text-orange text-white' : 'text-text-grey-3'"
+          :class="isCitySelected(item.id) ? 'bg-text-orange text-white' : 'text-text-grey-3'"
           class="mx-1 border-thin text-none text-xxs mb-3"
           rounded="lg"
           elevation="0"
           density="comfortable"
-          @click="toggleCity(item.name)"
+          @click="toggleCity(item.id)"
         >
           {{ item.name }}
         </VBtn>
@@ -429,10 +439,8 @@ onMounted(() => {
         <VCardTitle>Pick a Time Range</VCardTitle>
         <VCardText style="height: 50vh">
           <VRow no-gutters>
-            <VCol cols="6">
+            <VCol cols="12" class="d-flex justify-space-between align-center" style="gap: 10px">
               <VueDatePicker v-model="startTime" time-picker />
-            </VCol>
-            <VCol cols="6">
               <VueDatePicker v-model="endTime" time-picker />
             </VCol>
           </VRow>

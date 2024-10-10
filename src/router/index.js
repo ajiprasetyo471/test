@@ -18,7 +18,11 @@ const router = createRouter({
         behavior: 'smooth' // Bisa menggunakan 'smooth' untuk efek scroll halus
       }
     }
-    // Untuk navigasi biasa, scroll ke atas
+    // Jika navigasi masih di route yang sama (hanya param atau query yang berubah), jangan ubah posisi scroll
+    if (to.path === from.path) {
+      return false
+    }
+    // Jika berpindah route, scroll ke atas
     return { top: 0 }
   }
 })
