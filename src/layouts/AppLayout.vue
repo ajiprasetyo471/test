@@ -1,7 +1,6 @@
 <script setup>
 import Header from '@/@layouts/components/Header.vue'
 import Footer from '@/@layouts/components/Footer.vue'
-import SortVenue from '@/views/Venue/SortVenue.vue'
 import { useAppStore } from '@/stores/app.store.js'
 import { useSnackbarStore } from '@/stores/snackbar'
 
@@ -53,10 +52,9 @@ onMounted(() => {
 <template>
   <VApp>
     <Header />
-    <VMain class="bg-bg-main">
+    <VMain class="bg-bg-main half-width">
       <slot />
     </VMain>
-    <SortVenue />
     <Footer />
   </VApp>
 </template>

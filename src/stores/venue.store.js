@@ -36,11 +36,14 @@ export const useVenueStore = defineStore('venueStore', {
     fieldCommendations: [],
     fieldHourCards: [],
     fieldReviewCards: [],
+    fieldCheckoutData: null,
     bookingDate: null,
     bookingHour: [],
     datesMember: [],
     isSort: false,
-    queryData: null
+    queryData: null,
+    agreePayment: false,
+    triggerValidation: false
   }),
   actions: {
     async getVenueCards(filterData) {
@@ -233,6 +236,7 @@ export const useVenueStore = defineStore('venueStore', {
             var resData = response.data
             if (resData.success) {
               this.fieldDetail = resData?.data?.fieldVM
+              localStorage.setItem('fieldDetail', JSON.stringify(resData.data?.fieldVM))
             } else {
               this.fieldDetail = null
             }
@@ -348,6 +352,34 @@ export const useVenueStore = defineStore('venueStore', {
           this.loading = false
         })
     },
+    fieldCheckout(data) {
+      return venueService.checkout(data).then(
+        (res) => {
+          const data = res.data
+          if (data.success) {
+            this.fieldCheckoutData = data.data
+            localStorage.setItem('fieldCheckoutData', JSON.stringify(data.data))
+          }
+          return Promise.resolve(data)
+        },
+        (err) => {
+          return Promise.reject(err)
+        }
+      )
+    },
+    fieldReservation(data) {
+      return venueService.reservation(data).then(
+        (res) => {
+          const data = res.data
+          if (data.success) {
+            return Promise.resolve(data)
+          }
+        },
+        (err) => {
+          return Promise.reject(err)
+        }
+      )
+    },
     setVenueCards(cards) {
       this.venueCards = cards
     },
@@ -365,11 +397,11 @@ export const useVenueStore = defineStore('venueStore', {
     },
     setVenueId(id) {
       this.venueId = id
-      localStorage.setItem('venueId', JSON.stringify(id))
+      localStorage.setItem('venueId', id)
     },
     setFieldId(id) {
       this.fieldId = id
-      localStorage.setItem('fieldId', JSON.stringify(id))
+      localStorage.setItem('fieldId', id)
     },
     setVenueCardsHome(cards) {
       this.venueCardsHome = cards
@@ -397,6 +429,15 @@ export const useVenueStore = defineStore('venueStore', {
     },
     setDatesMember(dates) {
       this.datesMember = dates
+    },
+    setAgreePayment() {
+      this.agreePayment = !this.agreePayment
+    },
+    setTriggerValidation() {
+      this.triggerValidation = true
+    },
+    resetTriggerValidation() {
+      this.triggerValidation = false
     }
   }
 })

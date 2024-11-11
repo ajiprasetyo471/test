@@ -1,25 +1,40 @@
 <script setup>
-// import Homepage from '@/views/Homepage/Homepage.vue'
+import { useAuthStore } from '@/stores/auth.store'
 
-// definePage({
-//   meta: {
-//     // layout: "blank",
-//     // topTitle: "Authorize (Merchant Name)",
-//     // topLogo: true,
-//     public: false,
-//     isFooter: true,
-//     isMenuFooter: true,
-//     title: 'Homepage'
-//   }
-// })
+const store = useAuthStore()
 
 const router = useRouter()
+const route = useRoute()
 
-onBeforeMount(() => {
-  router.replace('/venue')
+const isNotValidated = ref(false)
+
+const sendValidateOTT = (data) => {
+  store
+    .validateOTT({
+      oneTimeToken: data
+    })
+    .then((r) => {
+      if (r.responseCode == '2000000') {
+        router.replace('/venue')
+      } else {
+      }
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+}
+
+onMounted(() => {
+  const param = route.query.param
+  sendValidateOTT(param)
 })
 </script>
 
 <template>
-  <!-- <Homepage /> -->
+  <PageSpinLoader v-model:is-loading="store.loading" />
+  <template v-if="isNotValidated == true">
+    <VContainer>
+      <h1>Token Not Valid</h1>
+    </VContainer>
+  </template>
 </template>

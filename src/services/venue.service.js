@@ -20,6 +20,12 @@ class VenueService {
   fieldCommendation(id, venueId) {
     return $axios.get(`/venues/${venueId}/fields/${id}/commendations`)
   }
+  checkout(query) {
+    return $axios.post('/xpayments/fieldbookingcheckout', query)
+  }
+  reservation(query) {
+    return $axios.post('/xpayments/fieldbookingreservation', query)
+  }
 }
 
 export default new VenueService()

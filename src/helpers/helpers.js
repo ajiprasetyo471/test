@@ -118,3 +118,7 @@ export const getMonthName = (monthNumber) => {
   }
   return monthNames[monthNumber - 1]
 }
+
+export function formatDateToIndo(dateString) {
+  return moment(dateString).locale('id').format('dddd, DD MMMM YYYY')
+}

@@ -15,11 +15,16 @@ const modalStore = useModalStore()
 const route = useRoute()
 const router = useRouter()
 
+const isExpanded = ref(false)
 const showModal = ref(false)
 const currentDay = ref(moment().format('dddd').toLowerCase())
 
 const goToDetail = (id) => {
   router.push(`/venue/field/${id}`)
+}
+
+const toggleDescription = () => {
+  isExpanded.value = !isExpanded.value
 }
 
 const getVenueDetailData = (id) => {
@@ -96,15 +101,27 @@ onMounted(() => {
       <VCol cols="12" class="d-flex align-center justify-space-between">
         <h2 class="font-weight-black text-body-1">About Venue</h2>
         <VBtn
+          v-if="stores.venueDetail?.venueDescription?.length > 140"
           class="text-xxs text-none text-text-blue"
           append-icon="mdi-chevron-right"
           variant="text"
-          >More About Venue</VBtn
+          @click="toggleDescription"
+        >
+          {{ isExpanded ? 'Less About Venue' : 'More About Venue' }}</VBtn
         >
       </VCol>
       <VCol cols="12">
         <VCard class="pa-4 border-thin rounded-lg" elevation="0">
-          <p v-html="stores.venueDetail?.venueDescription" class="text-xxs"></p>
+          <p
+            v-if="!isExpanded"
+            v-html="
+              stores.venueDetail?.venueDescription
+                ? stores.venueDetail?.venueDescription?.slice(0, 140) + '...'
+                : ''
+            "
+            class="text-xxs"
+          ></p>
+          <p v-else v-html="stores.venueDetail?.venueDescription" class="text-xxs"></p>
           <div class="d-flex justify-space-between align-center mt-4">
             <VBtn
               class="border-thin rounded-lg text-xxxs text-none px-3"

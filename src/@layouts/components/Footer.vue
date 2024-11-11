@@ -1,11 +1,16 @@
 <script setup>
+import moment from 'moment'
 import { useVenueStore } from '@/stores/venue.store.js'
-import { calculateTotalPrice } from '@/helpers/helpers'
+import { calculateTotalPrice, formatNumber } from '@/helpers/helpers'
 
 const venueStores = useVenueStore()
 const route = useRoute()
 const router = useRouter()
 
+const checkoutData = ref(
+  venueStores.fieldCheckoutData ?? JSON.parse(localStorage.getItem('fieldCheckoutData'))
+)
+const loading = ref(false)
 const active = ref(route.path || '')
 const menuItems = ref([
   // { name: 'home', title: 'Home', icon: 'material-symbols-light:home-outline-rounded', route: '/' },
@@ -51,12 +56,42 @@ const isBooking = computed({
   }
 })
 
+const fieldDataCheckout = () => {
+  const bodyData = {
+    FieldId: venueStores.fieldDetail.id,
+    SportId: venueStores.fieldDetail.sportIds[0],
+    FieldBookings: venueStores.bookingHour.map((i) => {
+      return {
+        FieldId: venueStores.fieldDetail.id,
+        Date: moment(i.date).format('YYYY-MM-DD'),
+        StartTime: i.startTime,
+        EndTime: i.endTime
+      }
+    })
+  }
+  loading.value = true
+  venueStores
+    .fieldCheckout(bodyData)
+    .then((r) => {
+      console.log(r)
+      if (r.success) {
+        goToPayment()
+      }
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+    .finally(() => {
+      loading.value = false
+    })
+}
+
 const goToPayment = () => {
   router.push('/venue/payment')
 }
 
-const goToReport = () => {
-  router.push('/report')
+const triggerValidation = () => {
+  venueStores.setTriggerValidation()
 }
 
 // Watch the current route to update the active state
@@ -104,7 +139,8 @@ onMounted(() => {
           class="bg-white rounded-lg d-flex align-center"
           density="compact"
           size="small"
-          @click="isBooking ? goToPayment() : undefined"
+          :loading="loading"
+          @click="isBooking ? fieldDataCheckout() : undefined"
         >
           <span v-if="!isBooking" class="text-text-grey-3 text-caption font-weight-bold">NEXT</span>
           <span v-else class="text-black text-caption font-weight-bold">NEXT</span>
@@ -122,22 +158,34 @@ onMounted(() => {
       </div>
     </VContainer>
     <VContainer v-if="pageMeta.isPaymentFooter == true">
-      <div class="rounded-lg w-100 d-flex justify-space-between pa-4 align-center bg-bg-blue">
+      <div
+        class="rounded-lg w-100 d-flex justify-space-between pa-4 align-center"
+        :class="venueStores.agreePayment == true ? 'bg-bg-blue' : 'bg-bg-grey-3'"
+      >
         <div class="">
           <p class="text-xxs text-white">Total Payment</p>
-          <p class="text-body-1 font-weight-bold text-white">Rp 155.000</p>
+          <p class="text-body-1 font-weight-bold text-white">
+            Rp {{ formatNumber(checkoutData?.totalPayment) }}
+          </p>
         </div>
         <VBtn
           class="bg-white rounded-lg d-flex align-center"
           density="compact"
           size="small"
-          @click="goToReport()"
+          :readonly="venueStores.agreePayment == false"
+          @click="venueStores.agreePayment == true ? triggerValidation() : undefined"
         >
-          <span class="text-black text-caption font-weight-bold">PAYMENT</span>
+          <span
+            v-if="venueStores.agreePayment == false"
+            class="text-text-grey-3 text-caption font-weight-bold"
+            >PAYMENT</span
+          >
+          <span v-else class="text-black text-caption font-weight-bold">PAYMENT</span>
           <template #append>
             <VIcon
               size="25"
-              class="rounded-circle text-body-1 pa-2 mt-n1 ml-2 bg-text-orange"
+              class="rounded-circle text-body-1 pa-2 mt-n1 ml-2"
+              :class="venueStores.agreePayment == true ? 'bg-text-orange' : 'bg-bg-grey-3'"
               style="color: white !important"
             >
               mdi-arrow-right

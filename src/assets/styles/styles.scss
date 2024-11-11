@@ -16,3 +16,10 @@
   line-height: 1.667;
   letter-spacing: 0.0333333333em;
 }
+
+@media (min-width: 768px) {
+  .half-width {
+    max-width: 500px !important;
+    margin: 0 auto !important;
+  }
+}

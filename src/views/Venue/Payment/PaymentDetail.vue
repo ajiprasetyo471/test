@@ -1,7 +1,15 @@
 <script setup>
 import AppTextArea from '@/@core/components/forms/AppTextArea.vue'
-import activityImg2 from '@/assets/images/image-activity-dashboard-2.jpg'
+import { useVenueStore } from '@/stores/venue.store.js'
+import { formatNumber, formatTimeWithoutSeconds, formatDateToIndo } from '@/helpers/helpers'
 
+const stores = useVenueStore()
+
+const fieldData = ref(stores.fieldDetail ?? JSON.parse(localStorage.getItem('fieldDetail')))
+const checkoutData = ref(
+  stores.fieldCheckoutData ?? JSON.parse(localStorage.getItem('fieldCheckoutData'))
+)
+const refVForm = ref()
 const form = ref({
   name: '',
   phoneNumber: '',
@@ -10,7 +18,61 @@ const form = ref({
   note: ''
 })
 
-onMounted(() => {})
+const onSubmit = () => {
+  refVForm.value?.validate().then(({ valid: isValid }) => {
+    if (isValid) {
+      submit()
+      // console.log('submit')
+    } else {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      })
+    }
+  })
+}
+
+const submit = async () => {
+  const bodyData = {
+    FieldId: fieldData.value?.id,
+    SportId: fieldData.value?.sportIds?.[0],
+    Email: form.value.email,
+    Phone: '+62' + parseInt(form.value.phoneNumber),
+    Fullname: form.value.name,
+    Description: form.value.note ?? null,
+    CustomerProfile: form.value.communityGroup ?? null,
+    FieldBookings: checkoutData.value?.fieldBookings?.map((item) => {
+      return {
+        FieldId: item.fieldId,
+        Date: item.date,
+        StartTime: item.startTime,
+        EndTime: item.endTime
+      }
+    })
+  }
+  console.log(bodyData)
+  // return false
+  stores
+    .fieldReservation(bodyData)
+    .then((r) => {
+      if (r) {
+        alert('success')
+      }
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+}
+
+watch(
+  () => stores.triggerValidation,
+  (newVal) => {
+    if (newVal) {
+      onSubmit()
+      stores.resetTriggerValidation() // Reset setelah validasi
+    }
+  }
+)
 </script>
 
 <template>
@@ -21,7 +83,7 @@ onMounted(() => {})
           <div style="width: 40%">
             <div class="" style="height: 64px; border-radius: 20px !important">
               <VImg
-                :src="activityImg2"
+                :src="fieldData?.coverPictureUrl"
                 cover
                 rounded="lg"
                 style="height: 64px; object-fit: cover; object-position: center"
@@ -31,14 +93,14 @@ onMounted(() => {})
           <div style="width: 73%">
             <VRow no-gutters class="px-2">
               <VCol cols="12">
-                <h3 class="font-weight-black text-body-2">British School Jakarta</h3>
+                <h3 class="font-weight-black text-body-2">{{ fieldData?.venueName }}</h3>
               </VCol>
               <VCol cols="12" class="mt-1">
-                <p class="text-xxs text-text-grey">Basket Ball Venue 1</p>
+                <p class="text-xxs text-text-grey">{{ fieldData?.name }}</p>
               </VCol>
               <VCol cols="12" class="mt-1">
                 <VChip size="small" class="text-text-orange text-caption font-weight-black">
-                  Rp150.000
+                  Rp{{ formatNumber(fieldData?.startingPrice) }}
                 </VChip>
               </VCol>
             </VRow>
@@ -56,7 +118,7 @@ onMounted(() => {})
       <VCol cols="12">
         <VCard class="py-4 px-3 border-thin rounded-lg mt-2" elevation="0">
           <VRow no-gutters>
-            <VCol cols="6">
+            <VCol cols="7">
               <CardCategoryItem
                 :icon="'solar:bag-check-outline'"
                 :category="'Order Type'"
@@ -66,91 +128,93 @@ onMounted(() => {})
                 class="mt-3"
                 :icon="'solar:calendar-outline'"
                 :category="'Date and Time'"
-                :title="'Sunday, 26 Agustus 2024'"
+                :title="formatDateToIndo(checkoutData?.fieldBookings?.[0]?.sportNamesId?.[0].date)"
               />
             </VCol>
-            <VCol cols="6">
+            <VCol cols="5">
               <CardCategoryItem
                 :icon="'fluent-emoji-high-contrast:basketball'"
                 :category="'Field Type'"
-                :title="'Bola Basket'"
+                :title="fieldData?.fieldType"
               />
               <CardCategoryItem
                 class="mt-3"
                 :icon="'solar:clock-circle-outline'"
                 :category="'Booking Hour'"
-                :title="'23:00 - 24:00'"
+                :title="`${formatTimeWithoutSeconds(checkoutData?.fieldBookings?.[0]?.startTime)} - ${formatTimeWithoutSeconds(checkoutData?.fieldBookings?.[0]?.endTime)}`"
               />
             </VCol>
           </VRow>
         </VCard>
       </VCol>
     </VRow>
-    <VRow no-gutters class="mt-4">
-      <VCol cols="12">
-        <h2 class="font-weight-black text-body-2">Booking info</h2>
-        <p class="text-xxs text-text-grey-4 mt-1">
-          Please ensure that all information provided is accurate and matches your official
-          identification. This information is used to verify your identity and prevent unauthorized
-          bookings.
-        </p>
-      </VCol>
-      <VCol cols="12" class="mt-2">
-        <AppTextField
-          label-required
-          type="text"
-          placeholder="Nama Pemesan"
-          label="Name"
-          v-model="form.name"
-          :rules="[requiredValidator(form.name, 'Nama Pemesan')]"
-        ></AppTextField>
-      </VCol>
-      <VCol cols="12" class="mt-n1">
-        <AppTextField
-          label-required
-          type="text"
-          placeholder="Nomor Telepon"
-          label="Phone Number"
-          v-model="form.name"
-          :rules="[requiredValidator(form.phoneNumber, 'Nomor Telepon'), phoneValidator]"
-        >
-          <template v-slot:prepend-inner>
-            <div class="border-e-thin bg-white pr-2">
-              <Icon
-                icon="emojione:flag-for-indonesia"
-                class="border-thin rounded-circle text-h6 mt-2"
-              />
-            </div>
-          </template>
-        </AppTextField>
-      </VCol>
-      <VCol cols="12" class="mt-n1">
-        <AppTextField
-          label-required
-          type="text"
-          placeholder="Email"
-          label="Email"
-          v-model="form.email"
-          :rules="[requiredValidator(form.email, 'Email'), emailValidator]"
-        ></AppTextField>
-      </VCol>
-      <VCol cols="12" class="mt-n1">
-        <AppTextField
-          type="text"
-          placeholder="Comunity Name/Group"
-          label="Comunity Name"
-          v-model="form.communityGroup"
-        ></AppTextField>
-      </VCol>
-      <VCol cols="12" class="mt-n1">
-        <AppTextArea
-          type="text"
-          placeholder="Write description"
-          label="Notes"
-          v-model="form.note"
-        ></AppTextArea>
-      </VCol>
-    </VRow>
+    <VForm ref="refVForm" @submit.prevent="onSubmit">
+      <VRow no-gutters class="mt-4">
+        <VCol cols="12">
+          <h2 class="font-weight-black text-body-2">Booking info</h2>
+          <p class="text-xxs text-text-grey-4 mt-1">
+            Please ensure that all information provided is accurate and matches your official
+            identification. This information is used to verify your identity and prevent
+            unauthorized bookings.
+          </p>
+        </VCol>
+        <VCol cols="12" class="mt-2">
+          <AppTextField
+            label-required
+            type="text"
+            placeholder="Nama Pemesan"
+            label="Name"
+            v-model="form.name"
+            :rules="[requiredValidator(form.name, 'Nama Pemesan')]"
+          ></AppTextField>
+        </VCol>
+        <VCol cols="12" class="mt-n1">
+          <AppTextField
+            label-required
+            type="text"
+            placeholder="Nomor Telepon"
+            label="Phone Number"
+            v-model="form.phoneNumber"
+            :rules="[requiredValidator(form.phoneNumber, 'Nomor Telepon'), phoneValidator]"
+          >
+            <template v-slot:prepend-inner>
+              <div class="border-e-thin bg-white pr-2">
+                <Icon
+                  icon="emojione:flag-for-indonesia"
+                  class="border-thin rounded-circle text-h6 mt-2"
+                />
+              </div>
+            </template>
+          </AppTextField>
+        </VCol>
+        <VCol cols="12" class="mt-n1">
+          <AppTextField
+            label-required
+            type="text"
+            placeholder="Email"
+            label="Email"
+            v-model="form.email"
+            :rules="[requiredValidator(form.email, 'Email'), emailValidator]"
+          ></AppTextField>
+        </VCol>
+        <VCol cols="12" class="mt-n1">
+          <AppTextField
+            type="text"
+            placeholder="Comunity Name/Group"
+            label="Comunity Name"
+            v-model="form.communityGroup"
+          ></AppTextField>
+        </VCol>
+        <VCol cols="12" class="mt-n1">
+          <AppTextArea
+            type="text"
+            placeholder="Write description"
+            label="Notes"
+            v-model="form.note"
+          ></AppTextArea>
+        </VCol>
+      </VRow>
+    </VForm>
     <VRow no-gutters class="mt-2">
       <VCol cols="12">
         <h2 class="font-weight-black text-body-2">Payment</h2>
@@ -203,7 +267,9 @@ onMounted(() => {})
               <p class="text-caption">Field Price</p>
             </VCol>
             <VCol cols="6">
-              <p class="text-caption text-right font-weight-bold">Rp 150.000</p>
+              <p class="text-caption text-right font-weight-bold">
+                Rp {{ formatNumber(checkoutData?.originalPrice) }}
+              </p>
             </VCol>
           </VRow>
           <VRow no-gutters class="mb-1">
@@ -211,7 +277,9 @@ onMounted(() => {})
               <p class="text-caption">Service Price</p>
             </VCol>
             <VCol cols="6">
-              <p class="text-caption text-right font-weight-bold">Rp 5.000</p>
+              <p class="text-caption text-right font-weight-bold">
+                Rp {{ formatNumber(checkoutData?.serviceFee) }}
+              </p>
             </VCol>
           </VRow>
           <VRow
@@ -230,13 +298,20 @@ onMounted(() => {})
               <p class="text-caption font-weight-bold">Total Payment</p>
             </VCol>
             <VCol cols="6">
-              <p class="text-body-2 text-right font-weight-black">Rp 150.000</p>
+              <p class="text-body-2 text-right font-weight-black">
+                Rp {{ formatNumber(checkoutData?.totalPayment) }}
+              </p>
             </VCol>
           </VRow>
         </VCard>
       </VCol>
       <VCol cols="12" class="mt-4">
-        <VCheckbox color="#00549B" class="rounded-xl">
+        <VCheckbox
+          :model-value="stores.agreePayment"
+          @change="stores.setAgreePayment()"
+          color="#00549B"
+          class="rounded-xl"
+        >
           <!-- v-model="isAgree" :disabled="!!errorMessage" -->
           <template v-slot:label>
             <p class="text-xxs">

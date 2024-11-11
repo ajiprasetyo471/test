@@ -12,12 +12,19 @@ const stores = useVenueStore()
 const snackStores = useSnackbarStore()
 const modalStore = useModalStore()
 
+const router = useRouter()
 const route = useRoute()
 
 const selectedMonth = ref({ month: 0, year: 0 })
 const selectedDateIndex = ref(
-  stores.dateTime && stores.fieldId == route.params.id ? stores.dateTime.split('-')[2] - 1 : 0
+  (stores.dateTime ?? route.query.date) &&
+    (stores.fieldId ?? localStorage.getItem('fieldId')) == route.params.id
+    ? (stores.dateTime ?? route.query.date).split('-')[2] - 1
+    : 0
 )
+const dateData = ref(stores.dateTime ?? route.query.date)
+const fieldId = ref(stores.fieldId ?? localStorage.getItem('fieldId'))
+const venueId = ref(stores.venueId ?? localStorage.getItem('venueId'))
 const dates = ref(getDates())
 
 const formattedMonth = computed(() => {
@@ -74,8 +81,8 @@ function getDates(month, year) {
 
   // Otomatis memilih tanggal hari ini
   if ((month === currentMonth && year === currentYear) || (!year && !month)) {
-    if (stores.dateTime && stores.fieldId == route.params.id) {
-      const [year, month, day] = stores.dateTime.split('-')
+    if (dateData.value && fieldId.value == route.params.id) {
+      const [year, month, day] = dateData.value.split('-')
 
       selectedDateIndex.value = day - 1
     } else {
@@ -85,8 +92,8 @@ function getDates(month, year) {
       }
     }
   } else {
-    if (stores.dateTime && stores.fieldId == route.params.id) {
-      const [year, month, day] = stores.dateTime.split('-')
+    if (dateData.value && fieldId.value == route.params.id) {
+      const [year, month, day] = dateData.value.split('-')
 
       selectedDateIndex.value = day - 1
     } else {
@@ -116,14 +123,11 @@ const selectDate = (index) => {
 
   const selectedDate = `${year}-${month}-${date}`
 
-  stores.setDateTime(
-    route.params.id,
-    stores.venueId ? stores.venueId : JSON.parse(localStorage.getItem('venueId')),
-    selectedDate
-  )
+  stores.setDateTime(route.params.id, venueId.value, selectedDate)
 
   stores.setFieldId(route.params.id)
   stores.setBookingDate(selectedDate)
+  router.push({ query: { date: selectedDate } })
 }
 
 const selectHourMorning = (hour) => {
@@ -196,8 +200,8 @@ const getFieldCommendationData = (id, venueId) => {
 }
 const getFieldTimeData = (id, venueId) => {
   const date =
-    stores.dateTime && stores.fieldId == route.params.id
-      ? stores.dateTime
+    dateData.value && fieldId.value == route.params.id
+      ? dateData.value
       : moment().format('YYYY-MM-DD')
   stores
     .getTimeField(id, venueId, { date: date })
@@ -211,8 +215,11 @@ const getFieldTimeData = (id, venueId) => {
 }
 
 onMounted(() => {
-  if (stores.dateTime && stores.fieldId == route.params.id) {
-    const [year, month, day] = stores.dateTime.split('-')
+  if (stores.dateTime && fieldId.value == route.params.id && !route.query.date) {
+    router.push({ query: { date: stores.dateTime } })
+  }
+  if (dateData.value && fieldId.value == route.params.id) {
+    const [year, month, day] = dateData.value.split('-')
     selectedMonth.value = {
       month: parseInt(month - 1), // Pastikan bulan dalam format angka
       year: parseInt(year) // Pastikan tahun dalam format angka
@@ -220,6 +227,8 @@ onMounted(() => {
     selectedDateIndex.value = day - 1 // Set default selected date index
     dates.value = getDates(selectedMonth.value.month, selectedMonth.value.year)
     dates.value[day - 1].selected = true
+
+    stores.setBookingDate(dateData.value)
   } else {
     const currentMonth = moment().month() // Bulan saat ini dalam angka (1-12)
     const currentYear = moment().year() // Tahun saat ini
@@ -227,18 +236,9 @@ onMounted(() => {
     selectedDateIndex.value = moment().date() - 1 // Default ke tanggal hari ini
     dates.value = getDates(currentMonth, currentYear) // Set tanggal untuk bulan saat ini
   }
-  getFieldDetailData(
-    route.params.id,
-    stores.venueId ? stores.venueId : JSON.parse(localStorage.getItem('venueId'))
-  )
-  getFieldCommendationData(
-    route.params.id,
-    stores.venueId ? stores.venueId : JSON.parse(localStorage.getItem('venueId'))
-  )
-  getFieldTimeData(
-    route.params.id,
-    stores.venueId ? stores.venueId : JSON.parse(localStorage.getItem('venueId'))
-  )
+  getFieldDetailData(route.params.id, venueId.value)
+  getFieldCommendationData(route.params.id, venueId.value)
+  getFieldTimeData(route.params.id, venueId.value)
   stores.emptyBookingHour()
 })
 </script>
@@ -338,7 +338,7 @@ onMounted(() => {
             :icon="'fluent:weather-sunny-low-20-regular'"
             :title="'Pagi ke Siang'"
             :desc="'06:00 - 10:00'"
-            :count="2"
+            :count="stores.fieldTimeMorning.filter((i) => i.available).length"
           >
             <div class="d-flex flex-wrap justify-space-between">
               <VCard
@@ -397,7 +397,7 @@ onMounted(() => {
             :icon="'fluent:weather-sunny-48-regular'"
             :title="'Siang ke Sore'"
             :desc="'10:00 - 16:00'"
-            :count="4"
+            :count="stores.fieldTimeAfternoon.filter((i) => i.available).length"
           >
             <div class="d-flex flex-wrap justify-space-between">
               <VCard
@@ -456,7 +456,7 @@ onMounted(() => {
             :icon="'ph:moon-stars-thin'"
             :title="'Sore ke Malam'"
             :desc="'16:00 - 00:00'"
-            :count="3"
+            :count="stores.fieldTimeEvening.filter((i) => i.available).length"
           >
             <div class="d-flex flex-wrap justify-space-between">
               <VCard
