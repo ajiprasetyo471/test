@@ -23,8 +23,9 @@ export const useAuthStore = defineStore('authStore', {
 
               console.log('access token hasil validate', data?.responseData?.accessToken)
               console.log('refresh token hasil validate', data?.responseData?.refreshToken)
+
+              return Promise.resolve(data)
             }
-            return Promise.resolve(data)
           },
           (err) => {
             return Promise.reject(err)

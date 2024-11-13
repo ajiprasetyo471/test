@@ -1,7 +1,9 @@
 <script setup>
 import { useAuthStore } from '@/stores/auth.store'
+import { useHomeStore } from '@/stores/home.store'
 
 const store = useAuthStore()
+const homeStore = useHomeStore()
 
 const router = useRouter()
 const route = useRoute()
@@ -16,7 +18,8 @@ const sendValidateOTT = (data) => {
     .then((r) => {
       if (r.responseCode == '2000000') {
         router.replace('/venue')
-      } else {
+        homeStore.getSportItems()
+        homeStore.getCityItems()
       }
     })
     .catch((err) => {

@@ -83,8 +83,10 @@ watch(searchQuery, (newQuery) => {
 })
 
 onMounted(() => {
-  stores.getSportItems()
-  stores.getCityItems()
+  if (stores.cityItems.length == 0 || stores.sportItems.length == 0) {
+    stores.getSportItems()
+    stores.getCityItems()
+  }
 })
 </script>
 
