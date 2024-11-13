@@ -15,8 +15,8 @@ export const useHomeStore = defineStore('homeStore', {
         .sports(data)
         .then((response) => {
           var resData = response.data
-          if (resData.success && resData?.data) {
-            this.sportItems = resData?.data?.sportList.map((item) => {
+          if (resData?.responseCode == '200') {
+            this.sportItems = resData?.responseData?.sportList.map((item) => {
               return {
                 ...item,
                 title: item.nameId
@@ -42,8 +42,8 @@ export const useHomeStore = defineStore('homeStore', {
         .cities(data)
         .then((response) => {
           var resData = response.data
-          if (resData.success && resData?.data) {
-            this.cityItems = resData?.data?.cityList
+          if (resData?.responseCode == '200') {
+            this.cityItems = resData?.responseData?.cityList
           } else {
             this.cityItems = []
           }

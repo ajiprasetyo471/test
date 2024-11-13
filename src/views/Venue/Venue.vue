@@ -191,8 +191,8 @@ const loadMoreVenues = async () => {
   stores.setPage(stores.page + 1)
   try {
     const response = await stores.getVenueCardsScroll('page', stores.page)
-    if (response.success && response.data.venueList.length > 0) {
-      const result = [...stores.venueCards, ...response.data.venueList]
+    if (response.responseCode == '200' && response.responseData.venueList.length > 0) {
+      const result = [...stores.venueCards, ...response.responseData.venueList]
       // const result = response.data.venueList
       stores.setVenueCards(result)
     } else {
@@ -215,8 +215,8 @@ const getVenueList = async () => {
     }
     stores.setLatLong(latitude.value, longitude.value)
     const response = await stores.getVenueCards(filterData)
-    if (response.success) {
-      stores.setVenueCards(response.data.venueList)
+    if (response.responseCode == '200') {
+      stores.setVenueCards(response.responseData.venueList)
     } else {
       stores.setVenueCards([])
     }

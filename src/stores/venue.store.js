@@ -78,9 +78,9 @@ export const useVenueStore = defineStore('venueStore', {
         this.venueCards = []
         const response = await venueService.list(queryParams)
         const resData = response.data
-        // console.log(resData)
-        if (resData.success) {
-          this.venueCards = resData?.data?.venueList
+        console.log(resData)
+        if (resData?.responseCode == '200') {
+          this.venueCards = resData?.responseData?.venueList
         } else {
           this.venueCards = []
         }
@@ -187,8 +187,8 @@ export const useVenueStore = defineStore('venueStore', {
         .then(
           (response) => {
             var resData = response.data
-            if (resData.success) {
-              this.venueDetail = resData?.data
+            if (resData.responseCode == '200') {
+              this.venueDetail = resData?.responseData
             } else {
               this.venueDetail = null
             }
@@ -210,8 +210,10 @@ export const useVenueStore = defineStore('venueStore', {
         .then(
           (response) => {
             var resData = response.data
-            if (resData.success) {
-              this.venueGallery = resData?.data?.venueGallery.map((item) => item.venuePicture)
+            if (resData.responseCode == '200') {
+              this.venueGallery = resData?.responseData?.venueGallery.map(
+                (item) => item.venuePicture
+              )
             } else {
               this.venueGallery = []
             }
@@ -234,9 +236,9 @@ export const useVenueStore = defineStore('venueStore', {
         .then(
           (response) => {
             var resData = response.data
-            if (resData.success) {
-              this.fieldDetail = resData?.data?.fieldVM
-              localStorage.setItem('fieldDetail', JSON.stringify(resData.data?.fieldVM))
+            if (resData.responseCode == '200') {
+              this.fieldDetail = resData?.responseData?.fieldVM
+              localStorage.setItem('fieldDetail', JSON.stringify(resData.responseData?.fieldVM))
             } else {
               this.fieldDetail = null
             }
@@ -259,20 +261,20 @@ export const useVenueStore = defineStore('venueStore', {
         .then(
           (response) => {
             var resData = response.data
-            if (resData.success) {
-              this.fieldTimeMorning = resData?.data?.morningSlots.map((i) => {
+            if (resData.responseCode == '200') {
+              this.fieldTimeMorning = resData?.responseData?.morningSlots.map((i) => {
                 return {
                   ...i,
                   selected: false
                 }
               })
-              this.fieldTimeAfternoon = resData?.data?.afternoonSlots.map((i) => {
+              this.fieldTimeAfternoon = resData?.responseData?.afternoonSlots.map((i) => {
                 return {
                   ...i,
                   selected: false
                 }
               })
-              this.fieldTimeEvening = resData?.data?.eveningSlots.map((i) => {
+              this.fieldTimeEvening = resData?.responseData?.eveningSlots.map((i) => {
                 return {
                   ...i,
                   selected: false
@@ -306,9 +308,9 @@ export const useVenueStore = defineStore('venueStore', {
         this.fieldCards = []
         const response = await venueService.field(id)
         const resData = response.data
-        if (resData.success) {
+        if (resData.responseCode == '200') {
           // console.log(resData?.data?.fieldList)
-          this.fieldCards = resData?.data?.fieldList
+          this.fieldCards = resData?.responseData?.fieldList
         } else {
           this.fieldCards = []
         }
@@ -328,8 +330,8 @@ export const useVenueStore = defineStore('venueStore', {
         .then(
           (response) => {
             var resData = response.data
-            if (resData.success) {
-              const data = resData?.data
+            if (resData.responseCode == '200') {
+              const data = resData?.responseData
               this.fieldCommendations = [
                 { id: 1, review: 'Fasilitas Memadai', count: data.adequateFacilityCount },
                 { id: 2, review: 'Kebersihan Terjaga', count: data.maintainedHygieneCount },
@@ -356,9 +358,9 @@ export const useVenueStore = defineStore('venueStore', {
       return venueService.checkout(data).then(
         (res) => {
           const data = res.data
-          if (data.success) {
-            this.fieldCheckoutData = data.data
-            localStorage.setItem('fieldCheckoutData', JSON.stringify(data.data))
+          if (data.responseCode == '200') {
+            this.fieldCheckoutData = data.responseData
+            localStorage.setItem('fieldCheckoutData', JSON.stringify(data.responseData))
           }
           return Promise.resolve(data)
         },
@@ -371,7 +373,7 @@ export const useVenueStore = defineStore('venueStore', {
       return venueService.reservation(data).then(
         (res) => {
           const data = res.data
-          if (data.success) {
+          if (data.responseCode == '200') {
             return Promise.resolve(data)
           }
         },

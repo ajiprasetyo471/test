@@ -74,7 +74,7 @@ const fieldDataCheckout = () => {
     .fieldCheckout(bodyData)
     .then((r) => {
       console.log(r)
-      if (r.success) {
+      if (r.responseCode == '200') {
         goToPayment()
       }
     })
