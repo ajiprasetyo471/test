@@ -47,7 +47,8 @@ export default createVuetify({
           'text-blue': '#1078CA',
           'text-blue-2': '#06377A',
           'text-red': '#FF4141',
-          'text-red-2': '#E84040'
+          'text-red-2': '#E84040',
+          'text-red-3': '#FF1919'
         }
       }
     }

@@ -25,6 +25,7 @@ declare module 'vue' {
     copy: typeof import('./src/@core/components/forms/AppTextField copy.vue')['default']
     DateSlider: typeof import('./src/components/DateSlider.vue')['default']
     DetailActivityItem: typeof import('./src/components/card/DetailActivityItem.vue')['default']
+    FieldItemCheckout: typeof import('./src/components/card/FieldItemCheckout.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     PageSpinLoader: typeof import('./src/@core/components/PageSpinLoader.vue')['default']
     ReusableModal: typeof import('./src/components/modal/ReusableModal.vue')['default']

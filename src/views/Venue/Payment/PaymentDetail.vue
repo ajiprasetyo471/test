@@ -1,10 +1,13 @@
 <script setup>
+import moment from 'moment'
 import AppTextArea from '@/@core/components/forms/AppTextArea.vue'
 import { useVenueStore } from '@/stores/venue.store.js'
 import { formatNumber, formatTimeWithoutSeconds, formatDateToIndo } from '@/helpers/helpers'
+import { onMounted } from 'vue'
 
 const stores = useVenueStore()
 
+const loading = ref(false)
 const fieldData = ref(stores.fieldDetail ?? JSON.parse(localStorage.getItem('fieldDetail')))
 const checkoutData = ref(
   stores.fieldCheckoutData ?? JSON.parse(localStorage.getItem('fieldCheckoutData'))
@@ -17,6 +20,39 @@ const form = ref({
   communityGroup: '',
   note: ''
 })
+
+const deleteItem = (index) => {
+  const deletedItem = checkoutData.value.fieldBookings.filter((i) => i.itemIndex != index)
+
+  const bodyData = {
+    FieldId: fieldData.value.id,
+    SportId: fieldData.value.sportIds[0],
+    FieldBookings: deletedItem.map((i) => {
+      return {
+        FieldId: fieldData.value.id,
+        Date: moment(i.date).format('YYYY-MM-DD'),
+        StartTime: i.startTime,
+        EndTime: i.endTime
+      }
+    })
+  }
+
+  loading.value = true
+  stores
+    .fieldCheckout(bodyData)
+    .then((r) => {
+      console.log(r)
+      if (r.responseCode == '200') {
+        checkoutData.value.fieldBookings = deletedItem
+      }
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+    .finally(() => {
+      loading.value = false
+    })
+}
 
 const onSubmit = () => {
   refVForm.value?.validate().then(({ valid: isValid }) => {
@@ -73,10 +109,14 @@ watch(
     }
   }
 )
+
+onMounted(() => {
+  console.log(checkoutData.value)
+})
 </script>
 
 <template>
-  <VContainer class="pb-8">
+  <VContainer v-if="!loading" class="pb-8">
     <VCard class="pa-4 border-thin rounded-lg" elevation="0">
       <VRow no-gutters>
         <VCol cols="12" class="d-flex align-center justify-start" style="gap: 10px">
@@ -124,12 +164,6 @@ watch(
                 :category="'Order Type'"
                 :title="'Venue'"
               />
-              <CardCategoryItem
-                class="mt-3"
-                :icon="'solar:calendar-outline'"
-                :category="'Date and Time'"
-                :title="formatDateToIndo(checkoutData?.fieldBookings?.[0]?.sportNamesId?.[0].date)"
-              />
             </VCol>
             <VCol cols="5">
               <CardCategoryItem
@@ -137,11 +171,34 @@ watch(
                 :category="'Field Type'"
                 :title="fieldData?.fieldType"
               />
-              <CardCategoryItem
+              <!-- <CardCategoryItem
                 class="mt-3"
                 :icon="'solar:clock-circle-outline'"
                 :category="'Booking Hour'"
                 :title="`${formatTimeWithoutSeconds(checkoutData?.fieldBookings?.[0]?.startTime)} - ${formatTimeWithoutSeconds(checkoutData?.fieldBookings?.[0]?.endTime)}`"
+              /> -->
+            </VCol>
+          </VRow>
+        </VCard>
+      </VCol>
+      <VCol cols="12">
+        <VCard class="py-4 px-3 border-thin rounded-lg mt-2" elevation="0">
+          <VRow no-gutters class="border-b-thin border-e-0 border-s-0 border-t-0 pb-3">
+            <VCol cols="12">
+              <CardCategoryItem
+                :icon="'solar:calendar-outline'"
+                :category="'Date and Time'"
+                :title="formatDateToIndo(checkoutData?.fieldBookings?.[0]?.sportNamesId?.[0].date)"
+              />
+            </VCol>
+          </VRow>
+          <VRow no-gutters>
+            <VCol v-for="item in checkoutData?.fieldBookings" class="mt-3 pl-2" cols="12">
+              <FieldItemCheckout
+                :index="item?.itemIndex"
+                :title="`${formatTimeWithoutSeconds(item?.startTime)} - ${formatTimeWithoutSeconds(item?.endTime)}`"
+                :price="`Rp ${formatNumber(item?.price)}`"
+                @delete="deleteItem(item?.itemIndex)"
               />
             </VCol>
           </VRow>
@@ -255,7 +312,7 @@ watch(
       </VCol>
     </VRow>
   </VContainer>
-  <VContainer class="bg-bg-grey pb-0">
+  <VContainer v-if="!loading" class="bg-bg-grey pb-0">
     <VRow no-gutters class="mt-2">
       <VCol cols="12">
         <h2 class="font-weight-black text-body-2">Detail Transaction</h2>
@@ -330,4 +387,6 @@ watch(
       </VCol>
     </VRow>
   </VContainer>
+
+  <PageSpinLoader v-model:is-loading="loading" />
 </template>

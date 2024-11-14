@@ -60,7 +60,7 @@ const shareOptions = [
   {
     name: 'Lainnya',
     icon: 'mdi-dots-horizontal',
-    link: '#' // Placeholder for more sharing options
+    link: '' // Placeholder for more sharing options
   }
 ]
 </script>

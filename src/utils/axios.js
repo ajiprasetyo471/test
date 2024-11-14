@@ -103,7 +103,6 @@ $axios.interceptors.response.use(
       }
     }
 
-    tokenService.removeAllToken()
     return Promise.reject(error)
   }
 )
