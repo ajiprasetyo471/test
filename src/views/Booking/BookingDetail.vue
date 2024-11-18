@@ -1,62 +1,68 @@
 <script setup>
+import { formatNumber, formatToCapitalized, removeTrailingZeros } from '@/helpers/helpers'
+import PageSpinLoader from '@/@core/components/PageSpinLoader.vue'
 import BookingDetailItem from './BookingDetailItem.vue'
+import { useBookingStore } from '@/stores/booking.store'
+import { useSnackbarStore } from '@/stores/snackbar'
+
+const stores = useBookingStore()
+const snackStores = useSnackbarStore()
 
 const route = useRoute()
 
-const status = ref(null)
-
-const title = (status) => {
-  return status == 'paid' ? 'Success' : status == 'pending' ? 'Pending' : 'Failed'
-}
-
-const desc = (status) => {
-  return status == 'paid'
-    ? 'Your booking for British Footbal has been successfully'
-    : status == 'pending'
-      ? "We're waiting for your payment to confirm your London Football booking"
+const desc = (status, name) => {
+  return status == 'PAID'
+    ? `Your booking for ${name} has been successfully`
+    : status == 'PENDING'
+      ? `We're waiting for your payment to confirm your ${name} booking`
       : 'Payment failed. Your booking has not been confirmed.'
 }
 
+const getBookingDetailData = (id) => {
+  stores
+    .getDetailBooking(id)
+    .then((res) => {
+      // console.log(res)
+    })
+    .catch((err) => {
+      console.log(err)
+      snackStores.openSnackbar(err?.message, 'error')
+    })
+}
+
 onMounted(() => {
-  status.value =
-    route.params.id == 1
-      ? 'paid'
-      : route.params.id == 2
-        ? 'pending'
-        : route.params.id == 3
-          ? 'failed'
-          : ''
+  getBookingDetailData(route.params.id)
 })
 </script>
 
 <template>
-  <div class="cardCont cardTop px-4 py-6 mt-6">
+  <div v-if="!stores.loading" class="cardCont cardTop px-4 py-6 mt-6">
     <VRow no-gutters>
       <VCol cols="12">
         <h2
           class="text-h6 font-weight-black text-center"
           :class="{
-            'text-black': status == 'paid',
-            'text-text-orange': status == 'pending',
-            'text-text-red-2': status == 'failed'
+            'text-black': stores.bookingDetail?.paymentStatus == 'PAID',
+            'text-text-orange': stores.bookingDetail?.paymentStatus == 'PENDING',
+            'text-text-red-2': stores.bookingDetail?.paymentStatus == 'FAILED'
           }"
         >
-          Booking {{ title(status) }}
+          Booking {{ formatToCapitalized(stores.bookingDetail?.paymentStatus) }}
         </h2>
       </VCol>
       <VCol cols="12" class="mt-1">
         <p class="text-caption text-text-grey text-center px-14">
-          {{ desc(status) }}
+          {{ desc(stores.bookingDetail?.paymentStatus, stores.bookingDetail?.fieldName) }}
         </p>
       </VCol>
     </VRow>
     <VRow no-gutters class="mt-5">
       <VCol cols="12">
-        <BookingDetailItem :status="status" />
+        <BookingDetailItem :detail="stores.bookingDetail" />
       </VCol>
     </VRow>
   </div>
-  <div class="cardCont cardBottom px-4 pt-6 pb-10">
+  <div v-if="!stores.loading" class="cardCont cardBottom px-4 pt-6 pb-10">
     <VRow no-gutters>
       <VCol cols="12" class="mb-2">
         <h6 class="text-body-2 font-weight-bold">Payment Detail</h6>
@@ -65,12 +71,13 @@ onMounted(() => {
         <VCard
           class="pa-4 rounded-lg"
           elevation="0"
-          :class="{ 'border-thin': status != 'pending' }"
+          :class="{ 'border-thin': stores.bookingDetail?.paymentStatus != 'PENDING' }"
           :style="{
-            border: status === 'pending' ? '1px solid #ffe5b2' : undefined
+            border:
+              stores.bookingDetail?.paymentStatus === 'PENDING' ? '1px solid #ffe5b2' : undefined
           }"
         >
-          <VRow no-gutters class="mb-1">
+          <!-- <VRow no-gutters class="mb-1">
             <VCol cols="6">
               <p class="text-caption">Field Price</p>
             </VCol>
@@ -90,10 +97,12 @@ onMounted(() => {
             no-gutters
             class="mb-4 pb-4"
             :class="{
-              'border-b-thin border-e-0 border-s-0 border-t-0 border-dashed': status != 'pending'
+              'border-b-thin border-e-0 border-s-0 border-t-0 border-dashed':
+                stores.bookingDetail?.paymentStatus != 'PENDING'
             }"
             :style="{
-              borderBottom: status === 'pending' ? '1px dashed #ffe5b2' : undefined
+              borderBottom:
+                stores.bookingDetail?.paymentStatus === 'PENDING' ? '1px dashed #ffe5b2' : undefined
             }"
           >
             <VCol cols="6">
@@ -102,13 +111,15 @@ onMounted(() => {
             <VCol cols="6">
               <p class="text-caption text-right font-weight-bold">Rp 0</p>
             </VCol>
-          </VRow>
+          </VRow> -->
           <VRow no-gutters>
             <VCol cols="6">
               <p class="text-caption font-weight-bold">Total Payment</p>
             </VCol>
             <VCol cols="6">
-              <p class="text-body-2 text-right font-weight-black">Rp 150.000</p>
+              <p class="text-body-2 text-right font-weight-black">
+                Rp {{ formatNumber(removeTrailingZeros(stores.bookingDetail?.paymentAmount)) }}
+              </p>
             </VCol>
           </VRow>
         </VCard>
@@ -117,15 +128,15 @@ onMounted(() => {
         <VCard
           class="pa-4 mt-4"
           :class="{
-            'bg-bg-blue-light-2 border-paid': status == 'paid',
-            'bg-bg-yellow border-pending': status == 'pending',
-            'bg-text-red-2': status == 'failed'
+            'bg-bg-blue-light-2 border-paid': stores.bookingDetail?.paymentStatus == 'PAID',
+            'bg-bg-yellow border-pending': stores.bookingDetail?.paymentStatus == 'PENDING',
+            'bg-text-red-2': stores.bookingDetail?.paymentStatus == 'FAILED'
           }"
           :style="{
             border:
-              status === 'paid'
+              stores.bookingDetail?.paymentStatus === 'PAID'
                 ? '1px solid #B2DDFF;'
-                : status === 'pending'
+                : stores.bookingDetail?.paymentStatus === 'PENDING'
                   ? '1px solid #ffe5b2'
                   : ''
           }"
@@ -135,7 +146,7 @@ onMounted(() => {
           <div class="d-flex align-center justify-space-between">
             <span class="text-caption">Payment Status</span>
             <span class="text-caption font-weight-bold">{{
-              status ? status.toUpperCase() : ''
+              stores.bookingDetail?.paymentStatus
             }}</span>
           </div>
         </VCard>
@@ -155,6 +166,7 @@ onMounted(() => {
       </span>
     </span>
   </div>
+  <PageSpinLoader v-model:is-loading="stores.loading" />
 </template>
 
 <style scoped lang="scss">

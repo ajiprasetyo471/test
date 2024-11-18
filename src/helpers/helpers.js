@@ -16,6 +16,12 @@ export function formatDateTime(date) {
   return moment(date).format('YYYY-DD-MM HH:mm:ss')
 }
 
+export function formatToCapitalized(text) {
+  if (!text) return '' // Jika input kosong atau null, kembalikan string kosong
+  const lowerText = text.toLowerCase() // Ubah semua huruf ke huruf kecil
+  return lowerText.charAt(0).toUpperCase() + lowerText.slice(1) // Ubah huruf pertama menjadi kapital
+}
+
 export function removeTrailingZeros(value) {
   // Pastikan nilai adalah angka atau string yang mewakili angka
   if (typeof value === 'number' || (typeof value === 'string' && !isNaN(value))) {
