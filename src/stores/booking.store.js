@@ -1,26 +1,58 @@
-import { bookingListData } from '@/db/db'
+import bookingService from '@/services/booking.service'
 
 export const useBookingStore = defineStore('bookingStore', {
   state: () => ({
+    loading: false,
     bookingListCard: [],
-    bookingHistoryCard: []
+    bookingId: null,
+    bookingDetail: null
   }),
   actions: {
-    // async fetchActivityItems() {
-    //   try {
-    //     const response = await axios.get('https://api.example.com/activities') // Ganti dengan endpoint API yang sesuai
-    //     this.activityItems = response.data  // Mengisi state dengan data dari API
-    //   } catch (error) {
-    //     console.error('Gagal mengambil data aktivitas:', error)
-    //   }
-    // }
-    getBookingListCard() {
-      this.bookingListCard = bookingListData
-      return bookingListData
+    async getBookingCards(filterData) {
+      this.loading = true
+      try {
+        this.bookingListCard = []
+        const response = await bookingService.list(filterData)
+        const resData = response.data
+        // console.log(resData)
+        if (resData?.responseCode == '200') {
+          this.bookingListCard = resData?.responseData
+        } else {
+          this.bookingListCard = []
+        }
+        return resData
+      } catch (error) {
+        this.bookingListCard = []
+        throw error
+      } finally {
+        this.loading = false
+      }
     },
-    getBookingHistoryCard() {
-      this.bookingHistoryCard = bookingListData
-      return bookingListData
+    setBookingCards(cards) {
+      this.bookingListCard = cards
+    },
+    getDetailBooking(id) {
+      this.loading = true
+      return bookingService
+        .detail(id)
+        .then(
+          (response) => {
+            var resData = response.data
+            if (resData.responseCode == '200') {
+              this.bookingDetail = resData?.responseData
+            } else {
+              this.bookingDetail = null
+            }
+            return Promise.resolve(resData)
+          },
+          (error) => {
+            this.bookingDetail = null
+            return Promise.reject(error)
+          }
+        )
+        .finally(() => {
+          this.loading = false
+        })
     }
   }
 })

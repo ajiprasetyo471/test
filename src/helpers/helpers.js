@@ -16,6 +16,18 @@ export function formatDateTime(date) {
   return moment(date).format('YYYY-DD-MM HH:mm:ss')
 }
 
+export function removeTrailingZeros(value) {
+  // Pastikan nilai adalah angka atau string yang mewakili angka
+  if (typeof value === 'number' || (typeof value === 'string' && !isNaN(value))) {
+    // Konversi ke string, lalu cek apakah ada ".00"
+    const strValue = value.toString()
+    return strValue.endsWith('.00') ? strValue.slice(0, -3) : strValue
+  }
+
+  // Jika nilai bukan angka valid, kembalikan nilai asli
+  return value
+}
+
 export function formatNumber(value) {
   if (!value) return '0'
   return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')

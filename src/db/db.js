@@ -309,6 +309,17 @@ export const bookingListData = [
     time: '18:00-21:00',
     amount: '150.000',
     status: 'failed'
+  },
+  {
+    id: 4,
+    title: 'France School Jakarta Football',
+    location: 'Jl. Jombang Raya, Parigi, Kec. Pd. Aren, Kota Tangerang Selatan, Banten 15227',
+    activities: ['Futsal', 'Bola Basket'],
+    img: venueImg,
+    date: 'August 26, 2024',
+    time: '18:00-21:00',
+    amount: '150.000',
+    status: 'failed'
   }
 ]
 

@@ -110,7 +110,7 @@ const submit = async () => {
     .fieldReservation(bodyData)
     .then((r) => {
       if (r) {
-        window.location.href = r.responseData?.paymentUrl
+        window.location.replace(r.responseData?.paymentUrl)
       }
     })
     .catch((err) => {

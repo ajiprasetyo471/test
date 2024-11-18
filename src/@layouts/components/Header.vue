@@ -48,7 +48,7 @@ const headerHeight = computed({
         return 130
       } else {
         if (route.path === '/booking') {
-          return 80
+          return 64
         } else {
           return 170
         }

@@ -1,4 +1,6 @@
 <script setup>
+import { formatNumber, removeTrailingZeros } from '@/helpers/helpers'
+
 const props = defineProps({
   img: {
     type: String,
@@ -33,9 +35,9 @@ const props = defineProps({
 const dynamicStyle = computed(() => {
   return {
     border:
-      props.status === 'paid'
+      props.status === 'PAID'
         ? '1px solid #B2DDFF;'
-        : props.status === 'pending'
+        : props.status === 'PENDING'
           ? '1px solid #ffe5b2'
           : ''
   }
@@ -71,15 +73,17 @@ const dynamicStyle = computed(() => {
         <span class="text-xxs ml-2">{{ props.time }}</span>
       </div>
       <v-chip color="orange">
-        <span class="text-text-orange text-caption font-weight-black">Rp {{ props.amount }}</span>
+        <span class="text-text-orange text-caption font-weight-black"
+          >Rp {{ formatNumber(removeTrailingZeros(props.amount)) }}</span
+        >
       </v-chip>
     </div>
     <VCard
       class="pa-4 mt-4"
       :class="{
-        'bg-bg-blue-light-2 border-paid': props.status == 'paid',
-        'bg-bg-yellow border-pending': props.status == 'pending',
-        'bg-text-red-2': props.status == 'failed'
+        'bg-bg-blue-light-2 border-paid': props.status == 'PAID',
+        'bg-bg-yellow border-pending': props.status == 'PENDING',
+        'bg-text-red-2': props.status == 'FAILED'
       }"
       :style="dynamicStyle"
       elevation="0"
