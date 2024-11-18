@@ -6,7 +6,9 @@ export const useHomeStore = defineStore('homeStore', {
     loading: false,
     sportItems: [],
     cityItems: [],
-    bannerImageData: []
+    bannerImageData: [],
+    bayarindFee: null,
+    merchantFee: null
   }),
   actions: {
     getSportItems(data) {
@@ -52,6 +54,43 @@ export const useHomeStore = defineStore('homeStore', {
         .catch((error) => {
           console.log(error)
           this.cityItems = []
+          return Promise.reject(error)
+        })
+        .finally(() => {
+          this.loading = false
+        })
+    },
+    getFees(data) {
+      this.loading = true
+      return appService
+        .fees(data)
+        .then((response) => {
+          var resData = response.data
+          if (resData?.responseCode == '200') {
+            this.bayarindFee = resData?.responseData?.bayarindFee
+            this.merchantFee = resData?.responseData?.merchantFee
+            localStorage.setItem(
+              'bayarindFee',
+              Math.round(parseFloat(resData?.responseData?.bayarindFee))
+            )
+            localStorage.setItem(
+              'merchantFee',
+              Math.round(parseFloat(resData?.responseData?.merchantFee))
+            )
+          } else {
+            this.bayarindFee = null
+            this.merchantFee = null
+            localStorage.removeItem('bayarindFee')
+            localStorage.removeItem('merchantFee')
+          }
+          return Promise.resolve(resData)
+        })
+        .catch((error) => {
+          console.log(error)
+          this.bayarindFee = null
+          this.merchantFee = null
+          localStorage.removeItem('bayarindFee')
+          localStorage.removeItem('merchantFee')
           return Promise.reject(error)
         })
         .finally(() => {

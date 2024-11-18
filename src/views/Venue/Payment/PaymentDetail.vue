@@ -2,11 +2,15 @@
 import moment from 'moment'
 import AppTextArea from '@/@core/components/forms/AppTextArea.vue'
 import { useVenueStore } from '@/stores/venue.store.js'
+import { useHomeStore } from '@/stores/home.store'
 import { formatNumber, formatTimeWithoutSeconds, formatDateToIndo } from '@/helpers/helpers'
-import { onMounted } from 'vue'
 
 const stores = useVenueStore()
+const homeStores = useHomeStore()
 
+const venueId = ref(stores.venueId ?? localStorage.getItem('venueId'))
+const merchantFee = ref(homeStores.merchantFee ?? localStorage.getItem('merchantFee'))
+const bayarindFee = ref(homeStores.bayarindFee ?? localStorage.getItem('bayarindFee'))
 const loading = ref(false)
 const fieldData = ref(stores.fieldDetail ?? JSON.parse(localStorage.getItem('fieldDetail')))
 const checkoutData = ref(
@@ -41,7 +45,7 @@ const deleteItem = (index) => {
   stores
     .fieldCheckout(bodyData)
     .then((r) => {
-      console.log(r)
+      // console.log(r)
       if (r.responseCode == '200') {
         checkoutData.value.fieldBookings = deletedItem
       }
@@ -52,6 +56,16 @@ const deleteItem = (index) => {
     .finally(() => {
       loading.value = false
     })
+}
+
+const calculatePrice = (price) => {
+  return Number(price) + Number(bayarindFee.value) + Number(merchantFee.value)
+}
+
+const calculateTotalPayment = (price) => {
+  const itemCount = checkoutData.value.fieldBookings.length
+  const totalFee = (Number(bayarindFee.value) + Number(merchantFee.value)) * itemCount
+  return Number(price) + totalFee
 }
 
 const onSubmit = () => {
@@ -84,15 +98,19 @@ const submit = async () => {
         StartTime: item.startTime,
         EndTime: item.endTime
       }
-    })
+    }),
+    fieldName: fieldData.value?.name,
+    fieldType: fieldData.value?.fieldType,
+    venueId: venueId.value.toString(),
+    expiryDuration: checkoutData.value?.expiryDuration
   }
-  console.log(bodyData)
+  // console.log(bodyData)
   // return false
   stores
     .fieldReservation(bodyData)
     .then((r) => {
       if (r) {
-        alert('success')
+        window.location.href = r.responseData?.paymentUrl
       }
     })
     .catch((err) => {
@@ -110,9 +128,9 @@ watch(
   }
 )
 
-onMounted(() => {
-  console.log(checkoutData.value)
-})
+// onMounted(() => {
+//   console.log(checkoutData.value)
+// })
 </script>
 
 <template>
@@ -140,7 +158,7 @@ onMounted(() => {
               </VCol>
               <VCol cols="12" class="mt-1">
                 <VChip size="small" class="text-text-orange text-caption font-weight-black">
-                  Rp{{ formatNumber(fieldData?.startingPrice) }}
+                  Rp{{ formatNumber(calculatePrice(fieldData?.startingPrice)) }}
                 </VChip>
               </VCol>
             </VRow>
@@ -197,7 +215,7 @@ onMounted(() => {
               <FieldItemCheckout
                 :index="item?.itemIndex"
                 :title="`${formatTimeWithoutSeconds(item?.startTime)} - ${formatTimeWithoutSeconds(item?.endTime)}`"
-                :price="`Rp ${formatNumber(item?.price)}`"
+                :price="`Rp ${formatNumber(calculatePrice(item?.price))}`"
                 @delete="deleteItem(item?.itemIndex)"
               />
             </VCol>
@@ -319,7 +337,7 @@ onMounted(() => {
       </VCol>
       <VCol cols="12" class="mt-2">
         <VCard class="pa-4 border-thin rounded-lg" elevation="0">
-          <VRow no-gutters class="mb-1">
+          <!-- <VRow no-gutters class="mb-1">
             <VCol cols="6">
               <p class="text-caption">Field Price</p>
             </VCol>
@@ -339,7 +357,7 @@ onMounted(() => {
               </p>
             </VCol>
           </VRow>
-          <VRow
+           <VRow
             no-gutters
             class="mb-4 pb-4 border-b-thin border-e-0 border-s-0 border-t-0 border-dashed"
           >
@@ -349,14 +367,14 @@ onMounted(() => {
             <VCol cols="6">
               <p class="text-caption text-right font-weight-bold">Rp 0</p>
             </VCol>
-          </VRow>
+          </VRow> -->
           <VRow no-gutters>
             <VCol cols="6">
               <p class="text-caption font-weight-bold">Total Payment</p>
             </VCol>
             <VCol cols="6">
               <p class="text-body-2 text-right font-weight-black">
-                Rp {{ formatNumber(checkoutData?.totalPayment) }}
+                Rp {{ formatNumber(calculateTotalPayment(checkoutData?.totalPayment)) }}
               </p>
             </VCol>
           </VRow>

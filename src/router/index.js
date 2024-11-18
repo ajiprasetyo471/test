@@ -28,7 +28,9 @@ const router = createRouter({
 })
 
 // setupGuards(router)
-export default function (app) {
+export default router
+
+export function setupRouter(app) {
   app.use(DataLoaderPlugin, { router })
   app.use(router)
 }

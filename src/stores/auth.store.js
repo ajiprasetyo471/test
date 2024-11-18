@@ -21,8 +21,8 @@ export const useAuthStore = defineStore('authStore', {
               tokenService.updateLocalAccessToken(data?.responseData?.accessToken)
               tokenService.updateLocalRefreshToken(data?.responseData?.refreshToken)
 
-              console.log('access token hasil validate', data?.responseData?.accessToken)
-              console.log('refresh token hasil validate', data?.responseData?.refreshToken)
+              // console.log('access token hasil validate', data?.responseData?.accessToken)
+              // console.log('refresh token hasil validate', data?.responseData?.refreshToken)
 
               return Promise.resolve(data)
             }
@@ -46,7 +46,7 @@ export const useAuthStore = defineStore('authStore', {
               this.accessToken = data?.responseData?.accessToken
               tokenService.updateLocalAccessToken(data?.responseData?.accessToken)
 
-              console.log('access token hasil refresh', data?.responseData?.accessToken)
+              // console.log('access token hasil refresh', data?.responseData?.accessToken)
             }
             return Promise.resolve(data)
           },

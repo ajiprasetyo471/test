@@ -18,6 +18,8 @@ const snackStores = useSnackbarStore()
 const route = useRoute()
 const router = useRouter()
 
+const merchantFee = ref(homeStores.merchantFee ?? localStorage.getItem('merchantFee'))
+const bayarindFee = ref(homeStores.bayarindFee ?? localStorage.getItem('bayarindFee'))
 const scrollComponent = ref(null)
 const selectedItemIds = ref(stores.filters.sportId || [])
 const showTimePicker = ref(false)
@@ -226,6 +228,10 @@ const getVenueList = async () => {
   }
 }
 
+const calculatePrice = (price) => {
+  return Number(price) + Number(bayarindFee.value) + Number(merchantFee.value)
+}
+
 const handleScroll = () => {
   let element = scrollComponent.value
   if (
@@ -405,7 +411,7 @@ onUnmounted(() => {
           :title="item.name"
           :location="item.address"
           :activities="item.sportTypes"
-          :amount="item.maxPriceRange"
+          :amount="calculatePrice(item.minPriceRange)"
           :img="item.coverPictureUrl"
           @click="goToDetail(item.id)"
         />

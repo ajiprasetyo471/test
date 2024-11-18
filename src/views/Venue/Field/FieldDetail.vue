@@ -7,14 +7,18 @@ import { formatTimeWithoutSeconds, formatNumber } from '@/helpers/helpers'
 import { useVenueStore } from '@/stores/venue.store.js'
 import { useSnackbarStore } from '@/stores/snackbar'
 import { useModalStore } from '@/stores/modal'
+import { useHomeStore } from '@/stores/home.store'
 
 const stores = useVenueStore()
 const snackStores = useSnackbarStore()
 const modalStore = useModalStore()
+const homeStores = useHomeStore()
 
 const router = useRouter()
 const route = useRoute()
 
+const merchantFee = ref(homeStores.merchantFee ?? localStorage.getItem('merchantFee'))
+const bayarindFee = ref(homeStores.bayarindFee ?? localStorage.getItem('bayarindFee'))
 const selectedMonth = ref({ month: 0, year: 0 })
 const selectedDateIndex = ref(
   (stores.dateTime ?? route.query.date) &&
@@ -128,6 +132,7 @@ const selectDate = (index) => {
   stores.setFieldId(route.params.id)
   stores.setBookingDate(selectedDate)
   router.push({ query: { date: selectedDate } })
+  stores.emptyBookingHour()
 }
 
 const selectHourMorning = (hour) => {
@@ -135,11 +140,17 @@ const selectHourMorning = (hour) => {
     const selectedHour = stores.fieldTimeMorning.find((h) => h.id === hour.id)
 
     if (selectedHour) {
-      selectedHour.selected = !selectedHour.selected // Toggle selected status
-
-      if (selectedHour.selected) {
-        stores.addBookingHour(hour) // Tambahkan jika dipilih
+      if (selectedHour.selected == false) {
+        if (stores.bookingHour.length < 4) {
+          // console.log(stores.bookingHour)
+          selectedHour.selected = true
+          stores.addBookingHour(hour) // Tambahkan jika dipilih
+        } else {
+          snackStores.openSnackbar('Maximum can checkout 4 items', 'error')
+        }
       } else {
+        // console.log(stores.bookingHour)
+        selectedHour.selected = false
         stores.removeBookingHour(hour.id) // Hapus jika tidak dipilih
       }
     }
@@ -151,11 +162,17 @@ const selectHourAfternoon = (hour) => {
     const selectedHour = stores.fieldTimeAfternoon.find((h) => h.id === hour.id)
 
     if (selectedHour) {
-      selectedHour.selected = !selectedHour.selected // Toggle selected status
-
-      if (selectedHour.selected) {
-        stores.addBookingHour(hour) // Tambahkan jika dipilih
+      if (selectedHour.selected == false) {
+        if (stores.bookingHour.length < 4) {
+          // console.log(stores.bookingHour)
+          selectedHour.selected = true
+          stores.addBookingHour(hour) // Tambahkan jika dipilih
+        } else {
+          snackStores.openSnackbar('Maximum can checkout 4 items', 'error')
+        }
       } else {
+        // console.log(stores.bookingHour)
+        selectedHour.selected = false
         stores.removeBookingHour(hour.id) // Hapus jika tidak dipilih
       }
     }
@@ -167,11 +184,17 @@ const selectHourEvening = (hour) => {
     const selectedHour = stores.fieldTimeEvening.find((h) => h.id === hour.id)
 
     if (selectedHour) {
-      selectedHour.selected = !selectedHour.selected // Toggle selected status
-
-      if (selectedHour.selected) {
-        stores.addBookingHour(hour) // Tambahkan jika dipilih
+      if (selectedHour.selected == false) {
+        if (stores.bookingHour.length < 4) {
+          // console.log(stores.bookingHour)
+          selectedHour.selected = true
+          stores.addBookingHour(hour) // Tambahkan jika dipilih
+        } else {
+          snackStores.openSnackbar('Maximum can checkout 4 items', 'error')
+        }
       } else {
+        // console.log(stores.bookingHour)
+        selectedHour.selected = false
         stores.removeBookingHour(hour.id) // Hapus jika tidak dipilih
       }
     }
@@ -209,9 +232,13 @@ const getFieldTimeData = (id, venueId) => {
       // console.log(res)
     })
     .catch((err) => {
-      console.log(err)
+      console.log(err.message)
       snackStores.openSnackbar(err?.message, 'error')
     })
+}
+
+const calculatePrice = (price) => {
+  return Number(price) + Number(bayarindFee.value) + Number(merchantFee.value)
 }
 
 onMounted(() => {
@@ -378,7 +405,7 @@ onMounted(() => {
                         : 'text-text-orange'
                   "
                 >
-                  Rp{{ formatNumber(item.price) }}
+                  Rp{{ formatNumber(calculatePrice(item.price)) }}
                 </p>
                 <div
                   v-if="item.selected == true"
@@ -437,7 +464,7 @@ onMounted(() => {
                         : 'text-text-orange'
                   "
                 >
-                  Rp{{ formatNumber(item.price) }}
+                  Rp{{ formatNumber(calculatePrice(item.price)) }}
                 </p>
                 <div
                   v-if="item.selected == true"
@@ -496,7 +523,7 @@ onMounted(() => {
                         : 'text-text-orange'
                   "
                 >
-                  Rp{{ formatNumber(item.price) }}
+                  Rp{{ formatNumber(calculatePrice(item.price)) }}
                 </p>
                 <div
                   v-if="item.selected == true"

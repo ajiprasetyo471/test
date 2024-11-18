@@ -25,7 +25,8 @@ export const calculateTotalPrice = (items) => {
   const result = items.reduce((total, item) => {
     return item.selected ? total + item.price : total
   }, 0)
-  return formatNumber(result)
+  // return formatNumber(result)
+  return result
 }
 
 export const reverseFormatTime = (formattedTime) => {

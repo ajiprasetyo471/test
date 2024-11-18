@@ -20,6 +20,7 @@ const sendValidateOTT = (data) => {
         router.replace('/venue')
         homeStore.getSportItems()
         homeStore.getCityItems()
+        homeStore.getFees()
       }
     })
     .catch((err) => {

@@ -5,6 +5,7 @@ import { useVenueStore } from '@/stores/venue.store.js'
 import { useActivityStore } from '@/stores/activity.store'
 import { useSnackbarStore } from '@/stores/snackbar'
 import { useModalStore } from '@/stores/modal'
+import tokenService from '@/services/token.service'
 
 const appStores = useAppStore()
 const stores = useHomeStore()
@@ -83,15 +84,27 @@ watch(searchQuery, (newQuery) => {
 })
 
 onMounted(() => {
-  if (stores.cityItems.length == 0 || stores.sportItems.length == 0) {
+  if (tokenService.getLocalAccessToken()) {
     stores.getSportItems()
     stores.getCityItems()
+    stores.getFees()
   }
+  // console.log(pageMeta)
 })
 </script>
 
 <template>
-  <template v-if="pageMeta.isNotHeader == true"> </template>
+  <VSnackbar
+    v-model="snackbarStores.isSnackbarOpen"
+    location="top center"
+    class="position-fixed"
+    timeout="2000"
+    :class="pageMeta.title == 'Venue' ? 'mintop' : undefined"
+    :color="snackbarStores.color"
+  >
+    {{ snackbarStores.title }}
+  </VSnackbar>
+  <template v-if="pageMeta.isNotHeader === true"></template>
   <VAppBar
     v-else
     flat
@@ -178,14 +191,4 @@ onMounted(() => {
       </div>
     </VContainer>
   </VAppBar>
-
-  <VSnackbar
-    v-model="snackbarStores.isSnackbarOpen"
-    :absolute="true"
-    location="top right"
-    timeout="2000"
-    :color="snackbarStores.color"
-  >
-    {{ snackbarStores.title }}
-  </VSnackbar>
 </template>

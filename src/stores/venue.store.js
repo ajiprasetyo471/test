@@ -5,6 +5,7 @@ export const useVenueStore = defineStore('venueStore', {
   state: () => ({
     loading: false,
     loadingTime: false,
+    loadingPay: false,
     filters: {
       latitude: null,
       longitude: null,
@@ -78,7 +79,7 @@ export const useVenueStore = defineStore('venueStore', {
         this.venueCards = []
         const response = await venueService.list(queryParams)
         const resData = response.data
-        console.log(resData)
+        // console.log(resData)
         if (resData?.responseCode == '200') {
           this.venueCards = resData?.responseData?.venueList
         } else {
@@ -370,17 +371,23 @@ export const useVenueStore = defineStore('venueStore', {
       )
     },
     fieldReservation(data) {
-      return venueService.reservation(data).then(
-        (res) => {
-          const data = res.data
-          if (data.responseCode == '200') {
-            return Promise.resolve(data)
+      this.loadingPay = true
+      return venueService
+        .reservation(data)
+        .then(
+          (res) => {
+            const data = res.data
+            if (data.responseCode == '2000000') {
+              return Promise.resolve(data)
+            }
+          },
+          (err) => {
+            return Promise.reject(err)
           }
-        },
-        (err) => {
-          return Promise.reject(err)
-        }
-      )
+        )
+        .finally(() => {
+          this.loadingPay = false
+        })
     },
     setVenueCards(cards) {
       this.venueCards = cards

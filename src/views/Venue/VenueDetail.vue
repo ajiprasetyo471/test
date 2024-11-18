@@ -7,14 +7,18 @@ import { useVenueStore } from '@/stores/venue.store.js'
 import { useSnackbarStore } from '@/stores/snackbar'
 import { useModalStore } from '@/stores/modal'
 import { todaySchedule } from '@/helpers/helpers'
+import { useHomeStore } from '@/stores/home.store'
 
 const stores = useVenueStore()
 const snackStores = useSnackbarStore()
 const modalStore = useModalStore()
+const homeStores = useHomeStore()
 
 const route = useRoute()
 const router = useRouter()
 
+const merchantFee = ref(homeStores.merchantFee ?? localStorage.getItem('merchantFee'))
+const bayarindFee = ref(homeStores.bayarindFee ?? localStorage.getItem('bayarindFee'))
 const isExpanded = ref(false)
 const showModal = ref(false)
 const currentDay = ref(moment().format('dddd').toLowerCase())
@@ -61,6 +65,10 @@ const getFieldData = async (id) => {
   }
 }
 
+const calculatePrice = (price) => {
+  return Number(price) + Number(bayarindFee.value) + Number(merchantFee.value)
+}
+
 onMounted(() => {
   getVenueDetailData(route.params.id)
   getVenueGalleryData(route.params.id)
@@ -92,7 +100,7 @@ onMounted(() => {
           :title="item.name"
           :activity="item?.sportNamesId?.length > 0 ? item.sportNamesId[0] : ''"
           :img="item.coverPictureUrl"
-          :amount="item.startingPrice"
+          :amount="calculatePrice(item.startingPrice)"
           @click="goToDetail(item.id)"
         />
       </VCol>

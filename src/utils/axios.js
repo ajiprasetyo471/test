@@ -1,6 +1,7 @@
 import axios from 'axios'
 import tokenService from '@/services/token.service'
 import { useAuthStore } from '@/stores/auth.store'
+import router from '@/router'
 
 export const $axios = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || process.env.VITE_API_BASE_URL,
@@ -85,7 +86,9 @@ $axios.interceptors.response.use(
         } catch (refreshError) {
           processQueue(refreshError, null)
           isRefreshing = false
-          // tokenService.removeAllToken()
+          // console.log(router)
+          router.push('/error')
+          tokenService.removeAllToken()
           return Promise.reject(refreshError)
         }
       } else {

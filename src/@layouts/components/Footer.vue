@@ -2,11 +2,15 @@
 import moment from 'moment'
 import { useVenueStore } from '@/stores/venue.store.js'
 import { calculateTotalPrice, formatNumber } from '@/helpers/helpers'
+import { useHomeStore } from '@/stores/home.store'
 
 const venueStores = useVenueStore()
 const route = useRoute()
 const router = useRouter()
+const homeStores = useHomeStore()
 
+const merchantFee = ref(homeStores.merchantFee ?? localStorage.getItem('merchantFee'))
+const bayarindFee = ref(homeStores.bayarindFee ?? localStorage.getItem('bayarindFee'))
 const checkoutData = ref(
   venueStores.fieldCheckoutData ?? JSON.parse(localStorage.getItem('fieldCheckoutData'))
 )
@@ -73,7 +77,7 @@ const fieldDataCheckout = () => {
   venueStores
     .fieldCheckout(bodyData)
     .then((r) => {
-      console.log(r)
+      // console.log(r)
       if (r.responseCode == '200') {
         goToPayment()
       }
@@ -84,6 +88,12 @@ const fieldDataCheckout = () => {
     .finally(() => {
       loading.value = false
     })
+}
+
+const calculatePrice = (price) => {
+  const itemCount = venueStores.bookingHour.length
+  const totalFee = (Number(bayarindFee.value) + Number(merchantFee.value)) * itemCount
+  return Number(price) + totalFee
 }
 
 const goToPayment = () => {
@@ -131,7 +141,7 @@ onMounted(() => {
         <div v-else class="">
           <p class="text-xxs text-white">{{ venueStores.fieldDetail?.name }}</p>
           <p class="text-body-1 font-weight-bold text-white">
-            {{ calculateTotalPrice(venueStores.bookingHour) }}
+            Rp {{ formatNumber(calculatePrice(calculateTotalPrice(venueStores.bookingHour))) }}
           </p>
         </div>
         <VBtn
@@ -172,6 +182,7 @@ onMounted(() => {
           class="bg-white rounded-lg d-flex align-center"
           density="compact"
           size="small"
+          :loading="venueStores.loadingPay"
           :readonly="venueStores.agreePayment == false"
           @click="venueStores.agreePayment == true ? triggerValidation() : undefined"
         >

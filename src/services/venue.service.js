@@ -24,7 +24,7 @@ class VenueService {
     return $axios.post('/xpayments/fieldbookingcheckout', query)
   }
   reservation(query) {
-    return $axios.post('/xpayments/fieldbookingreservation', query)
+    return $axios.post('/initiate-order', query)
   }
 }
 
