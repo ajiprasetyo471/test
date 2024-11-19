@@ -32,7 +32,7 @@ const selectedDateIndex = ref(stores.filters.date ? stores.filters.date.split('-
 const selectedDate = ref('')
 const dates = ref(getDates())
 const minPrice = 0 // Minimum price for the slider
-const maxPrice = 7000000 // Maximum price for the slider
+const maxPrice = 9000000 // Maximum price for the slider
 const step = 50000 // Step interval for the slider
 const priceRange = ref([
   stores.filters.minPrice ? stores.filters.minPrice : minPrice,
@@ -200,7 +200,7 @@ const applyFilters = () => {
     endTime.value.hours == 0 && endTime.value.minutes == 0 ? null : formatTime(endTime.value)
   )
   stores.setFilterData('minPrice', priceRange.value[0] == 0 ? null : priceRange.value[0])
-  stores.setFilterData('maxPrice', priceRange.value[1] == 7000000 ? null : priceRange.value[1])
+  stores.setFilterData('maxPrice', priceRange.value[1] == 9000000 ? null : priceRange.value[1])
 
   // Navigate or trigger re-fetch of venues
   router.push({ path: '/venue', query: stores.queryData })
