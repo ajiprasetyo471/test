@@ -1,31 +1,9 @@
 <script setup>
+import { formatNumber, formatTimeWithoutSeconds, formatToCapitalized } from '@/helpers/helpers'
+
 const props = defineProps({
-  img: {
-    type: String,
-    required: true
-  },
-  title: {
-    type: String,
-    required: true
-  },
-  location: {
-    type: String,
-    required: true
-  },
-  date: {
-    type: String,
-    required: true
-  },
-  time: {
-    type: String,
-    required: true
-  },
-  amount: {
-    type: String,
-    required: true
-  },
-  status: {
-    type: String,
+  detail: {
+    type: Object,
     required: true
   }
 })
@@ -43,18 +21,17 @@ const props = defineProps({
           />
         </VBtn>
         <div class="ml-4">
-          <h2 class="text-body-2 font-weight-bold">{{ props.title }}</h2>
-          <h2 class="text-body-2 font-weight-bold">British School Jakarta</h2>
+          <h2 class="text-body-2 font-weight-bold">{{ detail?.fieldName }}</h2>
           <div class="d-flex align-center mt-2">
             <div class="d-flex align-center">
               <Icon class="text-text-grey" icon="fluent-emoji-high-contrast:basketball" />
-              <span class="text-xxs text-text-grey-2">{{ props.activity }}</span>
-              <span class="text-xxs text-text-grey-2 ml-1">Bola Basket</span>
+              <span class="text-xxs text-text-grey-2 ml-1">{{
+                formatToCapitalized(detail?.fieldType)
+              }}</span>
             </div>
             <div class="d-flex align-center ml-4">
               <Icon class="text-text-grey" icon="iconoir:basketball-field" />
-              <span class="text-xxs text-text-grey-2">{{ props.field }}</span>
-              <span class="text-xxs text-text-grey-2 ml-1">21 x 11 m</span>
+              <span class="text-xxs text-text-grey-2 ml-1">{{ detail?.fieldDimensions }}</span>
             </div>
           </div>
         </div>
@@ -65,54 +42,45 @@ const props = defineProps({
     <div
       class="px-4 pb-2 pt-3 ma-1"
       :class="{
-        'bg-bg-grey': status == 'paid',
-        'bg-bg-yellow': status == 'pending',
-        'bg-text-red-2': status == 'failed'
+        'bg-bg-grey': detail?.paymentStatus == 'PAID',
+        'bg-bg-yellow': detail?.paymentStatus == 'PENDING',
+        'bg-text-red-2': detail?.paymentStatus == 'FAILED'
       }"
       style="border-bottom-left-radius: 15px; border-bottom-right-radius: 15px"
     >
       <p class="text-caption">
         <span
           :class="{
-            'text-text-grey': status == 'paid',
-            'text-text-grey': status == 'pending',
-            'text-white': status == 'failed'
+            'text-text-grey': detail?.paymentStatus == 'PAID',
+            'text-text-grey': detail?.paymentStatus == 'PENDING',
+            'text-white': detail?.paymentStatus == 'FAILED'
           }"
-          >Booking ID: </span
-        ><span
-          class="font-weight-black"
-          :class="{
-            'text-white': status == 'failed'
-          }"
-          >{{ status == 'paid' ? 'DUMMY 800K1N9' : '-' }}</span
+        >
+          {{ 'Booking ID: ' + detail?.bookingId }}</span
         >
       </p>
     </div>
   </div>
-  <VCard
-    class="d-flex align-center justify-space-between pa-2 pr-4 border-thin rounded-lg mt-3"
-    elevation="0"
-  >
-    <div class="d-flex align-center">
-      <VBtn class="bg-white" size="27" variant="text">
-        <Icon class="text-text-orange" icon="solar:calendar-outline" />
-      </VBtn>
-      <div class="ml-2">
-        <p class="text-xxs text-text-grey">Date and Day</p>
-        <p class="text-xxs">{{ props.date }}</p>
-        <p class="text-xxs">Selasa, 26 Agustus 2024</p>
-      </div>
-    </div>
-    <div class="d-flex align-center">
-      <VBtn class="bg-white" size="27" variant="text">
-        <Icon class="text-text-orange" icon="solar:clock-circle-outline" />
-      </VBtn>
-      <div class="ml-2">
-        <p class="text-xxs text-text-grey">Booking Time</p>
-        <p class="text-xxs">{{ props.time }}</p>
-        <p class="text-xxs">23:00 - 24:00</p>
-      </div>
-    </div>
+  <VCard class="pa-2 pr-4 border-thin rounded-lg mt-3" elevation="0">
+    <VRow class="border-b-thin border-e-0 border-s-0 border-t-0 pb-3" no-gutters>
+      <VCol class="d-flex align-center">
+        <VBtn class="bg-white" size="27" variant="text">
+          <Icon class="text-text-orange" icon="solar:calendar-outline" />
+        </VBtn>
+        <div class="ml-2">
+          <p class="text-xxs text-text-grey">Date and Time</p>
+          <p class="text-xxs">{{ detail?.bookingDate }}</p>
+        </div>
+      </VCol>
+    </VRow>
+    <VRow no-gutters>
+      <VCol v-for="item in detail?.detailBooking" class="mt-3 pl-2" cols="12">
+        <FieldItemBooking
+          :title="`${formatTimeWithoutSeconds(item?.startTime)} - ${formatTimeWithoutSeconds(item?.endTime)}`"
+          :price="`Rp ${formatNumber(item?.price)}`"
+        />
+      </VCol>
+    </VRow>
   </VCard>
 </template>
 
