@@ -1,5 +1,5 @@
 <script setup>
-import { formatToCapitalized } from '@/helpers/helpers'
+import { formatNumber, formatTimeWithoutSeconds, formatToCapitalized } from '@/helpers/helpers'
 
 const props = defineProps({
   detail: {
@@ -61,28 +61,26 @@ const props = defineProps({
       </p>
     </div>
   </div>
-  <VCard
-    class="d-flex align-center justify-space-between pa-2 pr-4 border-thin rounded-lg mt-3"
-    elevation="0"
-  >
-    <div class="d-flex align-center">
-      <VBtn class="bg-white" size="27" variant="text">
-        <Icon class="text-text-orange" icon="solar:calendar-outline" />
-      </VBtn>
-      <div class="ml-2">
-        <p class="text-xxs text-text-grey">Date and Day</p>
-        <p class="text-xxs">{{ detail?.bookingDate }}</p>
-      </div>
-    </div>
-    <div class="d-flex align-center">
-      <VBtn class="bg-white" size="27" variant="text">
-        <Icon class="text-text-orange" icon="solar:clock-circle-outline" />
-      </VBtn>
-      <div class="ml-2">
-        <p class="text-xxs text-text-grey">Booking Time</p>
-        <p class="text-xxs">{{ detail?.BookingTime }}</p>
-      </div>
-    </div>
+  <VCard class="pa-2 pr-4 border-thin rounded-lg mt-3" elevation="0">
+    <VRow class="border-b-thin border-e-0 border-s-0 border-t-0 pb-3" no-gutters>
+      <VCol class="d-flex align-center">
+        <VBtn class="bg-white" size="27" variant="text">
+          <Icon class="text-text-orange" icon="solar:calendar-outline" />
+        </VBtn>
+        <div class="ml-2">
+          <p class="text-xxs text-text-grey">Date and Time</p>
+          <p class="text-xxs">{{ detail?.bookingDate }}</p>
+        </div>
+      </VCol>
+    </VRow>
+    <VRow no-gutters>
+      <VCol v-for="item in detail?.detailBooking" class="mt-3 pl-2" cols="12">
+        <FieldItemBooking
+          :title="`${formatTimeWithoutSeconds(item?.startTime)} - ${formatTimeWithoutSeconds(item?.endTime)}`"
+          :price="`Rp ${formatNumber(item?.price)}`"
+        />
+      </VCol>
+    </VRow>
   </VCard>
 </template>
 
