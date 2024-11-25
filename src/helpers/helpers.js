@@ -1,7 +1,5 @@
 import moment from 'moment'
 
-export const apiImage = import.meta.env.VITE_API_BASE_URL_IMG || process.env.VITE_API_BASE_URL_IMG
-
 export function formatDate(date) {
   const options = {
     weekday: 'long',
