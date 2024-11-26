@@ -4,7 +4,8 @@ import { useAuthStore } from '@/stores/auth.store'
 import router from '@/router'
 
 export const $axios = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || process.env.VITE_API_BASE_URL,
+  // baseURL: import.meta.env.VITE_API_BASE_URL || process.env.VITE_API_BASE_URL,
+  baseURL: 'https://eternal-hot-doe.ngrok-free.app/api/v1.0/gelora',
   headers: {
     'Content-Type': 'application/json',
     'ngrok-skip-browser-warning': 'true'
